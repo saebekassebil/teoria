@@ -7,6 +7,7 @@ The framework is both modular and object oriented, since almost every component 
 
 Features
 ---------
+
  - A note object (teoria.note), which understands alterations, octaves, keynumber, frequency and etc. and Helmholtz notation
  - Chord representations. Right now they're quite limited, but their functionality will be expanded.
  - Frequency to Note, takes in a frequency and translates it to an object containing the corresponding note and how many cents it's out of tune.
@@ -15,7 +16,8 @@ Features
  
 Syntax
 ---------
-This is just a short introduction to what the framework can be used to. You can experiment with it yourself, be simply dropping a <script> tag.
+
+This is just a short introduction to what the framework can be used to. You can experiment with it yourself, be simply dropping a script tag.
 
 ```javascript
 
