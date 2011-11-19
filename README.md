@@ -21,20 +21,25 @@ This is just a short introduction to what the framework can be used to. You can 
 
 ```javascript
 
-// Note creation
-var a4 = new teoria.note("a4");   // equivalent to new teoria.note("a'");
-var g5 = new teoria.note("g''");  // equivalent to new teoria.note("g5");
+// Note creation with scientific and Helmholtz notation
+var a4 = teoria.note("a4");   // equivalent to teoria.note("a'");
+var g5 = teoria.note("g''");  // equivalent to teoria.note("g5");
+var c3 = teoria.note.fromKey(28); // equivalent to teoria.note('c');
     
 // Intervals
-console.log(teoria.interval(a4, g5));   // Outputs: {"direction": "up", "name": "seventh", "quality": "minor"}            -> A minor sevent
-console.log(teoria.interval(a4, 'M6')); // Outputs: {"value":4,"accidental":{"value":1,"name":"#"},"name":"f","octave":5} -> F5#
+teoria.interval(a4, g5);   // Outputs: {"direction": "up", "name": "seventh", "quality": "minor"}            -> A minor sevent
+teoria.interval(a4, 'M6'); // Outputs: {"value":4,"accidental":{"value":1,"name":"#"},"name":"f","octave":5} -> F5#
+a4.interval('m3'); // Output a c#4 teoria.note object
+a4.interval(g5); // Outputs: {"direction": "up", "name": "seventh", "quality": "minor"} 
     
 // Scales
-console.log(teoria.scale.list(a4, 'aeolian', true));    // Outputs: ["a", "b", "c", "d", "e", "f", "g"]
-console.log(teoria.scale.list(a4, 'mixolydian', true)); // Outputs: ["a", "b", "c#", "d", "e", "f#", "g"]
-console.log(teoria.scale.list(g5, 'ionian', true));     // Outputs: ["g", "a", "b", "c", "d", "e", "f#"]
-console.log(teoria.scale.list(g5, 'dorian'));     // Outputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}], an array of teoria.note objects
+teoria.scale.list(a4, 'mixolydian', true); // Outputs: ["a", "b", "c#", "d", "e", "f#", "g"]
+a4.scale('aeolian', true);    // Outputs: ["a", "b", "c", "d", "e", "f", "g"]
+g5.scale('ionian', true);     // Outputs: ["g", "a", "b", "c", "d", "e", "f#"]
+g5.scale('dorian');    // Outputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}], an array of teoria.note objects
     
 // Frequency
-console.log(teoria.frequency.note(467)); // Outputs: {"note":{...},"cents":3.1028314220028586} -> A4# a little out of tune.
+teoria.frequency.note(467); // Outputs: {"note":{...},"cents":3.1028314220028586} -> A4# a little out of tune.
+a4.fq(); // Outputs 440
+g5.fq(); // Outputs 783.9908719634985
 ```
