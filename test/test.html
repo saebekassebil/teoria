@@ -40,7 +40,7 @@
     	    deepEqual(a4.scale('phrygian', true), ['a', 'bb', 'c', 'd', 'e', 'f', 'g'], 'A phrygian scale');
     	    deepEqual(a4.scale(teoria.scale.scales.lydian, true), ['a', 'b', 'c#', 'd#', 'e', 'f#', 'g#'], 'A lydian scale, using the direct scale element');
     	    deepEqual(cis.scale('major', true), ['c#', 'd#', 'e#', 'f#', 'g#', 'a#', 'b#'], 'Cis Major scale');
-    	    deepEqual(dis.scale('major', true), ['d#', 'e#', 'f##', 'g#', 'a#', 'b#', 'c##'], 'Dis Major scale');
+    	    deepEqual(dis.scale('major', true), ['d#', 'e#', 'fx', 'g#', 'a#', 'b#', 'cx'], 'Dis Major scale');
     	    
     	    deepEqual(teoria.scale.list(a4, 'minorpentatonic', true), ['a', 'c', 'd', 'e', 'g'], 'An a minor pentatonic from the scale namespace');
     	  });

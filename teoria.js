@@ -180,7 +180,14 @@
     '-1': 'b',
     '0': '',
     '1': '#',
-    '2': '##'
+    '2': 'x'
+  };
+  
+  var SIGNTOACCIDENTAL = {
+    'bb': -2,
+    'b': -1,
+    '#': 1,
+    'x': 2
   };
   
   /**
@@ -223,7 +230,7 @@
     this.name = name;
     this.duration = duration || 4;
     this.accidental = {value: 0, sign: ''};
-    var parser = name.match(/^([abcdefgh])(##|#|bb|b?)(-?\d*)/i); // 1 = note, 2 = accidentals, 3 = octave
+    var parser = name.match(/^([abcdefgh])(x|#|bb|b?)(-?\d*)/i); // 1 = note, 2 = accidentals, 3 = octave
     
     if(parser && name === parser[0] && parser[3].length !== 0) { // Scientific Notation
       this.name = parser[1].toLowerCase();
@@ -231,11 +238,11 @@
         
       if(parser[2].length !== 0) {
         this.accidental.sign = parser[2].toLowerCase();
-        this.accidental.value = (parser[2][0] === 'b') ? (-parser[2].length) : (parser[2].length);
+        this.accidental.value = SIGNTOACCIDENTAL[parser[2]];
       }
     } else { // Helmholtz Notation
       name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
-      var info = name.match(/^(,*)([abcdefgh])(##|#|bb|b?)([,\']*)$/i); // 1 = pre, 2 = note, 3 = accidentals, 4 = pro
+      var info = name.match(/^(,*)([abcdefgh])(x|#|bb|b?)([,\']*)$/i); // 1 = pre, 2 = note, 3 = accidentals, 4 = pro
       if(!info || info.length !== 5 || name !== info[0]) {
         throw Error("Invalid note format");
       } else if(info[1] === '' && info[4] === '') { // Only note name
@@ -269,7 +276,7 @@
       this.name = info[2].toLowerCase();
       if(info[3].length !== 0) {
         this.accidental.sign = info[3].toLowerCase();
-        this.accidental.value = (info[3][0] === 'b') ? (-info[3].length) : (info[3].length);
+        this.accidental.value = SIGNTOACCIDENTAL[info[3]];
       }
     }
   }
@@ -539,7 +546,7 @@
    */
   teoria.chord = function(name) {
     var root;
-    root = name.match(/^([abcdefgh])(##|#|bb|b?)/i);
+    root = name.match(/^([abcdefgh])(x|#|bb|b?)/i);
     if(root && root[0]) {
       return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()), name.substr(root[0].length));
     } else {
