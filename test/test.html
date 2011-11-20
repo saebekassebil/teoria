@@ -32,14 +32,16 @@
     	  });
     	  
     	  test("Teoria Scales", function() {
-    	    var a4 = teoria.note('A4');
+    	    var a4 = teoria.note('A4'), cis = teoria.note('C#4'), dis = teoria.note('D#4');
     	    deepEqual(a4.scale('aeolian', true), ['a', 'b', 'c', 'd', 'e', 'f', 'g'], 'An aeolian scale');
     	    deepEqual(a4.scale('locrian', true), ['a', 'bb', 'c', 'd', 'eb', 'f', 'g'], 'A locrian scale');
     	    deepEqual(a4.scale('ionian', true), ['a', 'b', 'c#', 'd', 'e', 'f#', 'g#'], 'A ionian scale');
     	    deepEqual(a4.scale('dorian', true), ['a', 'b', 'c', 'd', 'e', 'f#', 'g'], 'A dorian scale');
     	    deepEqual(a4.scale('phrygian', true), ['a', 'bb', 'c', 'd', 'e', 'f', 'g'], 'A phrygian scale');
     	    deepEqual(a4.scale(teoria.scale.scales.lydian, true), ['a', 'b', 'c#', 'd#', 'e', 'f#', 'g#'], 'A lydian scale, using the direct scale element');
-    	  
+    	    deepEqual(cis.scale('major', true), ['c#', 'd#', 'e#', 'f#', 'g#', 'a#', 'b#'], 'Cis Major scale');
+    	    deepEqual(dis.scale('major', true), ['d#', 'e#', 'f##', 'g#', 'a#', 'b#', 'c##'], 'Dis Major scale');
+    	    
     	    deepEqual(teoria.scale.list(a4, 'minorpentatonic', true), ['a', 'c', 'd', 'e', 'g'], 'An a minor pentatonic from the scale namespace');
     	  });
     	  
