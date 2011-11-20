@@ -460,7 +460,7 @@
           } 
         }
         
-        for(var x = 0, start = new teoria.note(chord.root), xLength = CHORDS[chord.type].length; x < xLength; x++) {
+        for(var x = 0, start = new TeoriaNote(chord.root), xLength = CHORDS[chord.type].length; x < xLength; x++) {
           chord.notes.push(teoria.interval(start, CHORDS[chord.type][x]).toString(true));
         }
         
@@ -491,7 +491,7 @@
         
         var key, octave, distance, note, name, cents, originalFq;
         key = Math.round(49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2)));
-        originalFq = concertPitch * Math.pow(Math.pow(2, 1/12), key-49);
+        originalFq = concertPitch * Math.pow(2, (key-49)/12);
         cents = 1200 * (Math.log(fq/originalFq)/Math.log(2));
         octave = Math.floor((key - 4)/12); // Actually this is octave-1
         distance = key - (octave*12) - 4;
@@ -503,8 +503,8 @@
         } else if(note.distance > distance) {
           name += 'b';
         }
-        
-        return {note: new teoria.note(name+(octave+1)), cents: cents};
+
+        return {note: new TeoriaNote(name+(octave+1)), cents: cents};
       }
   };
   
@@ -577,7 +577,7 @@
       octave--;
     }
     
-    return new teoria.note(note + (octave || ''));
+    return new TeoriaNote(note + (octave || ''));
   };
   
   /**
