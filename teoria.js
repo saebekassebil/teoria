@@ -237,33 +237,33 @@
       name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
       var info = name.match(/^(,*)([abcdefgh])(##|#|bb|b?)([,\']*)$/i); // 1 = pre, 2 = note, 3 = accidentals, 4 = pro
       if(!info || info.length !== 5 || name !== info[0]) {
-        throw "Invalid note format";
+        throw Error("Invalid note format");
       } else if(info[1] === '' && info[4] === '') { // Only note name
         this.octave = (info[2] === info[2].toLowerCase()) ? 3 : 2;
       } else if(info[1] !== '' && info[4] === '') { // Pre
         if(info[2] === info[2].toLowerCase()) { // If lower-case
-          throw "Invalid note format. Format must respect the Helmholtz notation.";
+          throw Error("Invalid note format. Format must respect the Helmholtz notation.");
         }
           
         this.octave = 2 - info[1].length;
       } else if(info[1] === '' && info[4] !== '') { // Pro       
         if(info[4].match(/^'+$/)) { // Up
           if(info[2] === info[2].toUpperCase()) { // If upper-case
-            throw "Invalid note format. Format must respect the Helmholtz notation";
+            throw Error("Invalid note format. Format must respect the Helmholtz notation");
           }
           
           this.octave = 3 + info[4].length;
         } else if(info[4].match(/^,+$/)) {
           if(info[2] === info[2].toLowerCase()) { // If lower-case
-            throw "Invalid note format. Format must respect the Helmholtz notation";
+            throw Error("Invalid note format. Format must respect the Helmholtz notation");
           }
           
           this.octave = 2 - info[4].length;
         } else {
-          throw "Invalid characters after note name.";
+          throw Error("Invalid characters after note name.");
         }
       } else {
-        throw "Invalid note format";
+        throw Error("Invalid note format");
       }
 
       this.name = info[2].toLowerCase();
@@ -507,7 +507,7 @@
           }
           flat = sharp = false;
         } else {
-          throw "Unexpected character: '"+c+"' in chord name";
+          throw Error("Unexpected character: '"+c+"' in chord name");
         }
       } 
     }
@@ -543,7 +543,7 @@
     if(root && root[0]) {
       return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()), name.substr(root[0].length));
     } else {
-      throw new Error("Invalid Chord. Couldn't find note name");
+      throw Error("Invalid Chord. Couldn't find note name");
     }
   };
   
@@ -593,14 +593,14 @@
       var quality = QUALITY_STRING[to[0]];
       var interval = parseFloat(to.substr(1));
       if(!quality || isNaN(interval)) {
-        throw "Invalid string-interval format";
+        throw Error("Invalid string-interval format");
       }
       
       return teoria.interval.from(from, {quality:quality, interval:INTERVALS[interval-1].name}, direction);    
     } else if(to instanceof TeoriaNote && from instanceof TeoriaNote) {
       return teoria.interval.between(from, to);
     } else {
-      throw "Invalid parameters";
+      throw Error("Invalid parameters");
     }
   },
   
@@ -621,7 +621,7 @@
     
     note = NOTES_INDEX[index];
     if(ALTERATIONS[interval.quality].indexOf(to.quality) === -1 || ALTERATIONS[interval.quality].indexOf(interval.quality) === -1) {
-      throw "Invalid interval quality";
+      throw Error("Invalid interval quality");
     }
     accDiff = ALTERATIONS[interval.quality].indexOf(to.quality)-ALTERATIONS[interval.quality].indexOf(interval.quality);
     diff = (interval.size+accDiff)-getDistance(from.name, note);
@@ -655,7 +655,7 @@
     
     semitones = toKey - fromKey;
     if(semitones > 24 || semitones < -25) {
-      throw "Too big interval. Highest interval is a augmented fifteenth (25 semitones)";
+      throw Error("Too big interval. Highest interval is a augmented fifteenth (25 semitones)");
     } else if(semitones < 0) {
       tmp = from;
       from = to;
