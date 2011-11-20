@@ -9,7 +9,7 @@ Features
 ---------
 
  - A note object (teoria.note), which understands alterations, octaves, keynumber, frequency and etc. and Helmholtz notation
- - Chord representations. Right now they're quite limited, but their functionality will be expanded.
+ - Chord representations. Understands all from simple major/minor chords to advanced Jazz chords (Ab#5b9, F(#11) and such)
  - Frequency to Note, takes in a frequency and translates it to an object containing the corresponding note and how many cents it's out of tune.
  - Intervals. A very strong interval structure, which can find intervals between notes, or return a note given a relative interval and a note object.
  - Scales, contains right now only the 7 modes (Ionian, Dorian, Phrygian etc.) and a major and minor pentatonic, but this is *easily* extendable.
