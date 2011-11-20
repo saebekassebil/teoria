@@ -204,6 +204,17 @@
     return str;
   }
   
+  
+  /**
+   * TeoriaNote - teoria.note - the note object
+   * 
+   * This object is the representation of a note.
+   * The constructor must be called with a name, and optionally a value argument.
+   * The first parameter (name) can be specified in either scientific notation (name+accidentals+octave). Fx:
+   *    A4 - Cb3 - D#8 - Hbb - etc.
+   * Or in the Helmholtz notation:
+   *    ,,C - F#'' - d - Eb - etc.
+   */
   function TeoriaNote(name, duration) {
     if(typeof name !== 'string') {
       return null;
@@ -284,22 +295,35 @@
         return concertPitch * Math.pow(2, (this.key()-49)/12);
       },
       
+      /**
+       * Sugar function for teoria.scale.list(note, scale[, simple])
+       */
       scale: function(scale, simple) {
         return teoria.scale.list(this, scale, simple);
       },
       
+      /**
+       * Sugar function for teoria.interval(note, interval[, direction])
+       */
       interval: function(interval, direction) {
         return teoria.interval(this, interval, direction);
       },
       
+      /**
+       * Returns a TeoriaChord object with this note as root
+       */
       chord: function(chord) {
+        chord = chord || 'major';
         if(chord in CHORDLOOKUP) {
           chord = CHORDLOOKUP[chord];
         }
         
-        return teoria.chord.notes(this.name + this.accidental.sign + chord);
+        return new TeoriaChord(this, chord);
       },
       
+      /**
+       * Returns the Helmholtz notation form of the note (fx ,,C d' F# g#'')
+       */
       helmholtz: function() {
         var name = (this.octave < 3) ? this.name.toUpperCase() : this.name.toLowerCase();
         var padding;
@@ -312,10 +336,16 @@
         }
       },
       
+      /**
+       * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
+       */
       scientific: function() {
         return this.name.toUpperCase() + this.accidental.sign + ((typeof this.octave === 'number') ? this.octave :  '');
       },
       
+      /**
+       * Returns notes that are enharmonic with this note.
+       */
       enharmonics: function() {
         var enharmonics = [], key = this.key(), upper = this.interval('m2', 'up'), lower = this.interval('m2', 'down');
         var upperKey = upper.key() - upper.accidental.value;
@@ -352,132 +382,169 @@
       }
   };
   
-  /**
-   * teoria.note - the note object
-   * 
-   * This object is the representation of a note.
-   * The constructor must be called with a name, and optionally a value argument.
-   * The first parameter (name) can be specified in either scientific notation (name+accidentals+octave). Fx:
-   *    A4 - Cb3 - D#8 - Hbb - etc.
-   * Or in the Helmholtz notation:
-   *    ,,C - F#'' - d - Eb  - etc.
-   */
+  function TeoriaChord(root, name) {
+    if(!(root instanceof TeoriaNote)) {
+      return null;
+    }
+    
+    this.root = root;
+    this.notes = [root];
+    this.quality = 'major';
+    this.type = 'major';
+    
+    // Analyze
+    var c, code, strQuality, extensions = [], i, length, seventh = false, parsing = 'quality',
+        sharp = false, flat = false, five = null;
+    
+    for(i = 0, length = name.length; i < length; i++) {
+      c = name[i];
+      while(c === ' ' || c === '(' || c === ')') {
+        c = name[++i];
+      }
+      if(!c) {
+        break;
+      }
+      
+      code = c.charCodeAt(0);
+      strQuality = ((i+3) <= length) ? name.substr(i, 3) : '';
+      
+      if(parsing === 'quality') {
+        if(c === 'M') {
+          // A Major chord is default
+        } else if(strQuality === 'maj' || code === 916) { // Maj7 chord
+          this.type = 'major';
+          extensions.push('M7'); // Maj7
+          seventh = true;
+          if((name[i+3] && name[i+3] === '7') || (code === 916 && name[i+1] === '7')) {
+            i++; // Jump over '7'
+          }
+        } else if(c === 'm' || c === '-' || strQuality === 'min') {
+          this.quality = this.type = 'minor';
+        } else if(code === 111 || code === 176 || strQuality === 'dim') { // Diminished
+          this.quality = 'minor';
+          this.type = 'diminished';
+        } else if(c === '+' || strQuality === 'aug') {
+          this.quality = 'major';
+          this.type = 'augmented';
+        } else if(code === 216 || code === 248) { // Half-diminished
+          this.quality = 'minor';
+          this.type = 'diminished';
+          extensions.push('m7'); // Minor 7
+          seventh = true;
+        } else if(strQuality === 'sus') {
+          this.quality = 'sus';
+          this.type = (name[i+3] && name[i+3] === '2') ? 'sus2' : 'sus4';
+        } else if(c === '5') {
+          this.quality = 'power';
+          this.type = 'power';
+        } else {
+          i -= 1;
+        }
+        
+        if(strQuality in QUALITY_STRING) {
+          i += 2;
+        }
+        parsing = '';
+      } else {
+        if(c === '#') {
+          sharp = true;
+        } else if(c === 'b') {
+          flat = true;
+        } else if(c === '5') {
+          if(sharp) {
+            five = 'A5';
+            if(this.quality === 'major') {
+              this.type = 'augmented';
+            }
+          } else if(flat) {
+            five = 'd5';
+            if(this.quality === 'minor') {
+              this.type = 'diminished';
+            }
+          }
+          flat = sharp = false;
+        } else if(c === '6') {
+          extensions.push('M6');
+          flat = sharp = false;
+        } else if(c === '7') {
+          if(this.type === 'diminished') {
+            extensions.push('d7');
+          } else {
+            extensions.push('m7');
+          }
+          seventh = true;
+          flat = sharp = false;
+        } else if(c === '9') {
+          if(!seventh) {
+            extensions.push('m7');
+          }
+          if(flat) {
+            extensions.push('m9');
+          } else if(sharp) {
+            extensions.push('A9');
+          } else {
+            extensions.push('M9');
+          }
+          flat = sharp = false;
+        } else if(c === '1') {
+          c = name[++i];
+          if(c === '1') {
+            if(flat) {
+              extensions.push('d11');
+            } else if(sharp) {
+              extensions.push('A11');
+            } else {
+              extensions.push('P11');
+            }
+          } else if(c === '3') {
+            if(flat) {
+              extensions.push('m13');
+            } else if(sharp) {
+              extensions.push('A13');
+            } else {
+              extensions.push('M13');
+            }
+          }
+          flat = sharp = false;
+        } else {
+          throw "Unexpected character: '"+c+"' in chord name";
+        }
+      } 
+    }
+    
+    for(var x = 0, xLength = CHORDS[this.type].length; x < xLength; x++) {
+      if(CHORDS[this.type][x][1] === '5' && five) {
+        this.notes.push(teoria.interval(this.root, five));
+      } else {
+        this.notes.push(teoria.interval(this.root, CHORDS[this.type][x]));
+      }
+    }
+    
+    for(x = 0, xLength = extensions.length; x < xLength; x++) {
+      this.notes.push(teoria.interval(this.root, extensions[x]));
+    }
+  }
+
   teoria.note = function(name, value) {
     return (new TeoriaNote(name, value));
-  },
+  };
   
   teoria.note.fromKey = function(key) {
     var fq = 440 * Math.pow(2, (key-49)/12);
     return teoria.frequency.note(fq).note;
-  },
-  
+  };
+
   /**
    * teoria.chord contains Chord functionality
    */
-  teoria.chord  = {
-      /**
-       * Returns the contained notes of the chord
-       * 
-       * @param name        string  Chord name (European style)
-       * @param inversion   number  Optional inversion
-       */
-      notes: function(name, inversion) {
-        if(typeof name !== 'string' || (name = name.replace(/^\s\s*/, '').replace(/\s\s*$/, '')) === '') { // Replace stuff is just .trim()
-          return null;
-        }
-        inversion = (inversion && inversion > 0) ? inversion-1 : 0;
-        name = name.replace(/\u266D/g, 'b').replace(/\u266F/g, '#'); // replace unicode sharp and flat with ASCII characters
-        
-        var chord = {notes: [], quality: 'major', type: 'major'}, c, code, strQuality, parsing = 'name',
-        extensions = [], alterations = [], i, length;
-        
-        for(i = 0, length = name.length; i < length; i++) {
-          c = name[i];
-          while(c === ' ') {
-            c = name[++i];
-          }
-          
-          code = c.charCodeAt(0);
-          strQuality = ((i+3) <= length) ? name.substr(i, 3) : '';
-          
-          if(parsing === 'name') {
-            c = name.match(/^([abcdefgh])(##|#|bb|b?)/i)[0].toLowerCase();
-            chord.root = c;
-            chord.notes.push(c);
-            parsing = 'quality';
-            i += c.length-1;
-          } else if(parsing === 'quality') {
-            if(c === 'M') {
-              // A Major chord is default
-            } else if(strQuality === 'maj' || code === 916) { // Maj7 chord
-              chord.type = 'major';
-              extensions.push('M7'); // Maj7
-              if(name[i+3] && name[i+3] === '7') {
-                i++; // Jump over '7'
-              }
-            } else if(c === 'm' || c === '-' || strQuality === 'min') {
-              chord.quality = chord.type = 'minor';
-            } else if(code === 111 || code === 176 || strQuality === 'dim') { // Diminished
-              chord.quality = 'minor';
-              chord.type = 'diminished';
-            } else if(c === '+' || strQuality === 'aug') {
-              chord.type = 'augmented';
-            } else if(code === 216 || code === 248) { // Half-diminished
-              chord.quality = 'minor';
-              chord.type = 'diminished';
-              extensions.push('m7'); // Minor 7
-            } else if(strQuality === 'sus') {
-              chord.quality = 'sus';
-              chord.type = (name[i+3] && name[i+3] === '2') ? 'sus2' : 'sus4';
-            } else if(c === '5') {
-              chord.quality = 'power';
-              chord.type = 'power';
-            } else {
-              parsing = '';
-              i -= 1;
-            }
-            
-            if(strQuality === 'min' || strQuality === 'maj' || strQuality === 'sus' || strQuality === 'aug' || strQuality === 'dim') {
-              i += 2;
-            }
-            parsing = '';
-          } else {
-            if(c === '6') {
-              extensions.push('M6');
-            } else if(c === '7') {
-              if(chord.type === 'diminished') {
-                extensions.push('d7');
-              } else {
-                extensions.push('m7');
-              }
-            } else if(c === '9') {
-              extensions.push('M9');
-            } else if(c === '1') {
-              
-            } else {
-              throw "Unexpected character: '"+c+"' in chord name";
-            }
-          } 
-        }
-        
-        for(var x = 0, start = new TeoriaNote(chord.root), xLength = CHORDS[chord.type].length; x < xLength; x++) {
-          chord.notes.push(teoria.interval(start, CHORDS[chord.type][x]).toString(true));
-        }
-        
-        for(x = 0, xLength = extensions.length; x < xLength; x++) {
-          chord.notes.push(teoria.interval(start, extensions[x]).toString(true));
-        }
-        if(inversion >= chord.notes.length) {
-          throw "Invalid inversion";
-        }
-        
-        // Simple inversion algorithm
-        for(x = 0; x < inversion; x++) {
-          chord.notes.push(chord.notes.shift());
-        }
-        
-        return chord;
-      }
+  teoria.chord = function(name) {
+    var root;
+    root = name.match(/^([abcdefgh])(##|#|bb|b?)/i);
+    if(root && root[0]) {
+      return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()), name.substr(root[0].length));
+    } else {
+      throw new Error("Invalid Chord. Couldn't find note name");
+    }
   };
   
   /**
@@ -602,12 +669,15 @@
   };
   
   teoria.interval.invert = function(sInterval) {
-    if(sInterval.length !== 2) {
+    if(sInterval.length !== 2 && sInterval.length !== 3) {
       return false;
     }
     
     var quality = INTERVAL_INVERSION[sInterval[0]];
-    var inverse = parseFloat(sInterval[1]);
+    var inverse = (sInterval.length === 2) ? parseFloat(sInterval[1]) : parseFloat(sInterval.substr(1));
+    if(inverse > 8) {
+      inverse = inverse - 7;
+    }
     if(inverse !== 8 && inverse !== 1) {
       inverse = 9 - inverse;
     }
