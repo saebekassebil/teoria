@@ -554,24 +554,15 @@
   
   TeoriaChord.prototype.parallel = function(additional) {
     additional = additional || '';
-    if(this.chordType() !== 'triad') {
-      throw new Error('Only triads have parallel chords');
+    if(this.chordType() !== 'triad' || this.quality === 'diminished' || this.quality === 'augmented') {
+      throw new Error('Only major/minor triads have parallel chords');
     }
     
-    switch(this.quality) {
-    case 'major': {
+    if(this.quality === 'major') {
       return new TeoriaChord(this.root.interval('m3', 'down'), 'm');
-    } break;
-    
-    case 'minor': {
+    } else {
       return new TeoriaChord(this.root.interval('m3', 'up'));
-    } break;
-    
-    case 'augmented':
-    case 'diminished': {
-      // ?
-    } break;
-    };
+    }
   };
   
   TeoriaChord.prototype.chordType = function() { // In need of better name
