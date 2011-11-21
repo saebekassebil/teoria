@@ -144,6 +144,14 @@
       'dim': 'diminished'
   };
   
+  var QUALITY_TO_SIMPLE = {
+      'perfect': 'P',
+      'major': 'M',
+      'minor': 'm',
+      'augmented': 'A',
+      'diminished': 'd'
+  };
+  
   var INTERVAL_INVERSION = {
       'P': 'P',
       'M': 'm',
@@ -394,6 +402,8 @@
       return null;
     }
     
+    name = name || '';
+    this.name = root.name.toUpperCase() + root.accidental.sign + name;
     this.root = root;
     this.notes = [root];
     this.quality = 'major';
@@ -531,6 +541,79 @@
       this.notes.push(teoria.interval(this.root, extensions[x]));
     }
   }
+  
+  TeoriaChord.prototype.dominant = function(additional) {
+    additional = additional || '';
+    return new TeoriaChord(this.root.interval('P5'), additional);
+  };
+  
+  TeoriaChord.prototype.subdominant = function(additional) {
+    additional = additional || '';
+    return new TeoriaChord(this.root.interval('P4'), additional);
+  };
+  
+  TeoriaChord.prototype.parallel = function(additional) {
+    additional = additional || '';
+    if(this.chordType() !== 'triad') {
+      throw new Error('Only triads have parallel chords');
+    }
+    
+    switch(this.quality) {
+    case 'major': {
+      return new TeoriaChord(this.root.interval('m3', 'down'), 'm');
+    } break;
+    
+    case 'minor': {
+      return new TeoriaChord(this.root.interval('m3', 'up'));
+    } break;
+    
+    case 'augmented':
+    case 'diminished': {
+      // ?
+    } break;
+    };
+  };
+  
+  TeoriaChord.prototype.chordType = function() { // In need of better name
+    var is = true, interval, has, invert;
+    if(this.notes.length === 2) {
+      return 'dyad';
+    } else if(this.notes.length === 3) {
+      has = {unison: false, third: false, fifth: false};
+      for(var i = 0, length = this.notes.length; i < length; i++) {
+        interval = this.root.interval(this.notes[i]);
+        invert = INTERVALS[parseFloat(teoria.interval.invert(interval.simple)[1])-1];
+        if(interval.name in has) {
+          has[interval.name] = true;
+        } else if(invert.name in has) {
+          has[invert.name] = true;
+        }
+      }
+      
+      return (has.unison && has.third && has.fifth) ? 'triad' : 'trichord';
+    } else if(this.notes.length === 4) {
+      has = {unison: false, third: false, fifth: false, seventh: false};
+      for(var i = 0, length = this.notes.length; i < length; i++) {
+        interval = this.root.interval(this.notes[i]);
+        invert = INTERVALS[parseFloat(teoria.interval.invert(interval.simple)[1])-1];
+        if(interval.name in has) {
+          has[interval.name] = true;
+        } else if(invert.name in has) {
+          has[invert.name] = true;
+        }
+      }
+      
+      if(has.unison && has.third && has.fifth && has.seventh) {
+        return 'tetrad';
+      }
+    } 
+    
+    return 'unknown';
+  };
+  
+  TeoriaChord.prototype.toString = function() {
+    return this.name;
+  };
 
   teoria.note = function(name, value) {
     return (new TeoriaNote(name, value));
@@ -658,7 +741,7 @@
    * Returns the interval between two instances of teoria.note
    */
   teoria.interval.between = function(from, to) {
-    var fromKey = from.key(), toKey = to.key(), semitones, interval, tmp;
+    var fromKey = from.key(), toKey = to.key(), semitones, interval, intervalInt, tmp, simpleName, quality;
     
     semitones = toKey - fromKey;
     if(semitones > 24 || semitones < -25) {
@@ -669,10 +752,11 @@
       to = tmp;
     }
 
-    interval = NOTES[to.name].index - NOTES[from.name].index + (7 * (to.octave - from.octave));
-    interval = INTERVALS[interval];
-    
-    return {name: interval.name, quality: ALTERATIONS[interval.quality][Math.abs(semitones)-interval.size+1], direction: (semitones > 0 ? 'up' : 'down')};
+    intervalInt = NOTES[to.name].index - NOTES[from.name].index + (7 * (to.octave - from.octave));
+    interval = INTERVALS[intervalInt];
+    quality = ALTERATIONS[interval.quality][Math.abs(semitones)-interval.size+1];
+    simpleName = QUALITY_TO_SIMPLE[quality] + Number(intervalInt+1).toString();
+    return {name: interval.name, quality: quality, direction: (semitones > 0 ? 'up' : 'down'), simple: simpleName};
   };
   
   teoria.interval.invert = function(sInterval) {
