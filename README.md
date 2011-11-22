@@ -47,5 +47,6 @@ g5.fq(); // Outputs 783.9908719634985
 Documentation & Examples
 ------------------------
 
+http://saebekassebil.github.com/teoria - Here you'll find the compiled documentation, which is generally quite helpful.
 The `examples` folder contains some Annotated Source objects which can help you to fully understand the structure of `teoria`.
 You can build the examples/docs with `docco`, but I think for now that I'll just upload the generated docs along in the `docs` folder.
