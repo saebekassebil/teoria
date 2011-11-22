@@ -43,3 +43,9 @@ teoria.frequency.note(467); // Outputs: {"note":{...},"cents":3.1028314220028586
 a4.fq(); // Outputs 440
 g5.fq(); // Outputs 783.9908719634985
 ```
+
+Documentation & Examples
+------------------------
+
+The `examples` folder contains some Annotated Source objects which can help you to fully understand the structure of `teoria`.
+You can build the examples/docs with `docco`, but I think for now that I'll just upload the generated docs along in the `docs` folder.
