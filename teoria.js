@@ -555,7 +555,7 @@
   TeoriaChord.prototype.parallel = function(additional) {
     additional = additional || '';
     if(this.chordType() !== 'triad' || this.quality === 'diminished' || this.quality === 'augmented') {
-      throw new Error('Only major/minor triads have parallel chords');
+      throw Error('Only major/minor triads have parallel chords');
     }
     
     if(this.quality === 'major') {
@@ -666,14 +666,13 @@
    * @param to    [string | teoria.note] The to parameter
    */
   teoria.interval = function(from, to, direction) {
-    var typeofTo = typeof to;
-    if(typeofTo === 'string') {
+    if(typeof to === 'string') {
       if(direction === 'down') {
         to = teoria.interval.invert(to);
       }
       var quality = QUALITY_STRING[to[0]];
       var interval = parseFloat(to.substr(1));
-      if(!quality || isNaN(interval)) {
+      if(!quality || isNaN(interval) || interval < 1) {
         throw Error("Invalid string-interval format");
       }
       
