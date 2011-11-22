@@ -6,8 +6,8 @@
 //
 // At the left of the screen, you can see the full source of `teoria.js`. It will not always be the updated version, but I'll try to 
 // keep it as up-to-date as possible.
-// This pages is mostly the frontpage. You can, in the upper right corner of the screen choose between some different files.
-// These files are Anotated Source files, which are very describing, and should guide you on the right way to use this framework.
+// This pages serves mostly as frontpage. You can, in the upper right corner of the screen choose between some different files.
+// These files are Annotated Source files, which are very describing, and should guide you on the right way to use this framework.
 //
 // Good luck!
 
