@@ -410,7 +410,7 @@
     this.type = 'major';
     
     // Analyze
-    var c, code, strQuality, extensions = [], i, length, seventh = false, parsing = 'quality',
+    var c, code, strQuality, extensions = [], i, length, seventh = false, ninth = false, eleventh = false, parsing = 'quality',
         sharp = false, flat = false, five = null;
     
     for(i = 0, length = name.length; i < length; i++) {
@@ -424,111 +424,134 @@
       
       code = c.charCodeAt(0);
       strQuality = ((i+3) <= length) ? name.substr(i, 3) : '';
-      
-      if(parsing === 'quality') {
-        if(c === 'M') {
-          // A Major chord is default
-        } else if(strQuality === 'maj' || code === 916) { // Maj7 chord
-          this.type = 'major';
-          extensions.push('M7'); // Maj7
-          seventh = true;
-          if((name[i+3] && name[i+3] === '7') || (code === 916 && name[i+1] === '7')) {
-            i++; // Jump over '7'
+
+      if(c === 'M') {
+        // A Major chord is default
+      } else if(strQuality === 'maj' || code === 916) { // Maj7 chord
+        extensions.push('M7'); // Maj7
+        seventh = true;
+        if((name[i+3] && name[i+3] === '7') || (code === 916 && name[i+1] === '7')) {
+          i++; // Jump over '7'
+        }
+      } else if(c === 'm' || c === '-' || strQuality === 'min') {
+        this.quality = this.type = 'minor';
+      } else if(code === 111 || code === 176 || strQuality === 'dim') { // Diminished
+        this.quality = 'minor';
+        this.type = 'diminished';
+      } else if(c === '+' || strQuality === 'aug') {
+        this.quality = 'major';
+        this.type = 'augmented';
+      } else if(code === 216 || code === 248) { // Half-diminished
+        this.quality = 'minor';
+        this.type = 'diminished';
+        extensions.push('m7'); // Minor 7
+        seventh = true;
+      } else if(c === '#') {
+        sharp = true;
+      } else if(c === 'b') {
+        flat = true;
+      } else if(strQuality === 'sus') {
+        this.quality = 'sus';
+        this.type = (name[i+3] && name[i+3] === '2') ? 'sus2' : 'sus4';
+
+        if(name[i+3] === '2' || name[i+3] === '4') {
+          i += 1;
+        }
+        i += 2;
+      } else if(c === '5') {
+        if(sharp) {
+          five = 'A5';
+          if(this.quality === 'major') {
+            this.type = 'augmented';
           }
-        } else if(c === 'm' || c === '-' || strQuality === 'min') {
-          this.quality = this.type = 'minor';
-        } else if(code === 111 || code === 176 || strQuality === 'dim') { // Diminished
-          this.quality = 'minor';
-          this.type = 'diminished';
-        } else if(c === '+' || strQuality === 'aug') {
-          this.quality = 'major';
-          this.type = 'augmented';
-        } else if(code === 216 || code === 248) { // Half-diminished
-          this.quality = 'minor';
-          this.type = 'diminished';
-          extensions.push('m7'); // Minor 7
-          seventh = true;
-        } else if(strQuality === 'sus') {
-          this.quality = 'sus';
-          this.type = (name[i+3] && name[i+3] === '2') ? 'sus2' : 'sus4';
-        } else if(c === '5') {
-          this.quality = 'power';
-          this.type = 'power';
+        } else if(flat) {
+          five = 'd5';
+          if(this.quality === 'minor') {
+            this.type = 'diminished';
+          }
+        }
+        flat = sharp = false;
+      } else if(c === '6') {
+        if(flat) {
+          extensions.push('m6');
         } else {
-          i -= 1;
-        }
-        
-        if(strQuality in QUALITY_STRING) {
-          i += 2;
-        }
-        parsing = '';
-      } else {
-        if(c === '#') {
-          sharp = true;
-        } else if(c === 'b') {
-          flat = true;
-        } else if(c === '5') {
-          if(sharp) {
-            five = 'A5';
-            if(this.quality === 'major') {
-              this.type = 'augmented';
-            }
-          } else if(flat) {
-            five = 'd5';
-            if(this.quality === 'minor') {
-              this.type = 'diminished';
-            }
-          }
-          flat = sharp = false;
-        } else if(c === '6') {
           extensions.push('M6');
-          flat = sharp = false;
-        } else if(c === '7') {
-          if(this.type === 'diminished') {
-            extensions.push('d7');
-          } else {
+        }
+        flat = sharp = false;
+      } else if(c === '7') {
+        if(this.type === 'diminished') {
+          extensions.push('d7');
+        } else {
+          extensions.push('m7');
+        }
+        seventh = true;
+        flat = sharp = false;
+      } else if(c === '9') {
+        if(!seventh) {
+          extensions.push('m7');
+        }
+        if(flat) {
+          extensions.push('m9');
+        } else if(sharp) {
+          extensions.push('A9');
+        } else {
+          extensions.push('M9');
+        }
+        ninth = true;
+        flat = sharp = false;
+      } else if(c === '1') {
+        c = name[++i];
+        if(c === '1') {
+          if(!seventh && this.name.indexOf('7') === -1) {
             extensions.push('m7');
+            seventh = true;
           }
-          seventh = true;
-          flat = sharp = false;
-        } else if(c === '9') {
-          if(!seventh) {
-            extensions.push('m7');
+
+          if(!ninth && this.name.indexOf('9') === -1) {
+            extensions.push('M9');
+            ninth = true;
           }
           if(flat) {
-            extensions.push('m9');
+            extensions.push('d11');
           } else if(sharp) {
-            extensions.push('A9');
+            extensions.push('A11');
           } else {
+            extensions.push('P11');
+          }
+          eleventh = true;
+        } else if(c === '3') {
+          if(!seventh) {
+            extensions.push('m7');
+            seventh = true;
+          }
+
+          if(!ninth) {
             extensions.push('M9');
+            ninth = true;
           }
-          flat = sharp = false;
-        } else if(c === '1') {
-          c = name[++i];
-          if(c === '1') {
-            if(flat) {
-              extensions.push('d11');
-            } else if(sharp) {
-              extensions.push('A11');
-            } else {
-              extensions.push('P11');
-            }
-          } else if(c === '3') {
-            if(flat) {
-              extensions.push('m13');
-            } else if(sharp) {
-              extensions.push('A13');
-            } else {
-              extensions.push('M13');
-            }
+
+          if(!eleventh) {
+            extensions.push('P11');
+            eleventh = true;
           }
-          flat = sharp = false;
-        } else {
-          throw Error("Unexpected character: '"+c+"' in chord name");
+          if(flat) {
+            extensions.push('m13');
+          } else if(sharp) {
+            extensions.push('A13');
+          } else {
+            extensions.push('M13');
+          }
         }
-      } 
+        flat = sharp = false;
+      } else {
+        throw Error("Unexpected character: '"+c+"' in chord '"+this.name+"'");
+      }
+
+      if(strQuality in QUALITY_STRING) {
+        i += 2;
+      }
     }
-    
+
     for(var x = 0, xLength = CHORDS[this.type].length; x < xLength; x++) {
       if(CHORDS[this.type][x][1] === '5' && five) {
         this.notes.push(teoria.interval(this.root, five));
@@ -537,6 +560,11 @@
       }
     }
     
+    extensions.sort(function(a, b) {
+      var aint = parseFloat(a.substr(1)), bint = parseFloat(b.substr(1));
+      
+      return aint > bint;
+    });
     for(x = 0, xLength = extensions.length; x < xLength; x++) {
       this.notes.push(teoria.interval(this.root, extensions[x]));
     }
@@ -675,7 +703,7 @@
       if(!quality || isNaN(interval) || interval < 1) {
         throw Error("Invalid string-interval format");
       }
-      
+
       return teoria.interval.from(from, {quality:quality, interval:INTERVALS[interval-1].name}, direction);    
     } else if(to instanceof TeoriaNote && from instanceof TeoriaNote) {
       return teoria.interval.between(from, to);
@@ -693,7 +721,7 @@
     index = INTERVAL_INDEX[to.interval];
     interval = INTERVALS[index];
     if(index > 7) index -= 7;
-    
+
     index = NOTES[from.name].index + index;
     if(index > NOTES_INDEX.length-1) {
       index = index - NOTES_INDEX.length;
@@ -711,11 +739,10 @@
     }
     
     diff += from.accidental.value;
-    
-    if(diff >= 11) {
+    if(diff >= 10) {
       diff -= 12;
     }
-    
+
     if(diff > -3 && diff < 3) {
       note += ACCIDENTALTOSIGN[diff];
     }
