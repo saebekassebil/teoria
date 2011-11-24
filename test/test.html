@@ -26,7 +26,7 @@
     	    equal(cis5.scientific(), 'C#5', "c#'' is C#5 in scientific notation");
     	    equal(cis5.fq(), 554.3652619537442, 'The frequency of C#5 is 554.3652619537442');
     	    
-    	    deepEqual(cis5.interval(a4), {name: "third", quality: "major", direction: "down"}, 'A4 is a Major third below C#5');
+    	    deepEqual(cis5.interval(a4), {name: "third", quality: "major", direction: "down", simple: 'M3'}, 'A4 is a Major third below C#5');
     	    
     	    deepEqual(teoria.note.fromKey(28), teoria.note('c3'), 'Key number 28 is the same as C3');
     	  });
@@ -54,7 +54,38 @@
     	    equal(teoria.interval.invert('M3'), 'm6', 'Invert M3 is m6');
     	    equal(teoria.interval.invert('A5'), 'd4', 'Invert A5 is d4');
     	    equal(teoria.interval.invert('d4'), 'A5', 'Invert d4 is A5');
-    	    deepEqual(teoria.interval.between(e, fis), {name: 'second', quality: 'major', direction: 'up'}, 'Interval between e and f# is M2');
+    	    deepEqual(teoria.interval.between(e, fis), {name: 'second', quality: 'major', direction: 'up', simple: 'M2'}, 'Interval between e and f# is M2');
+    	  });
+    	  
+    	  test("Teoria Chord Notes", function() {
+    	    function msa(chord) { // Make Simple Array
+    	      var notes = [];
+    	      for(var i = 0, length = chord.notes.length; i < length; i++) {
+    	        notes.push(chord.notes[i].name + chord.notes[i].accidental.sign);
+    	      }
+    	      
+    	      return notes;
+    	    }
+    	    //deepEqual(msa(teoria.chord('')), ['', '', '', ''], '');
+    	    deepEqual(msa(teoria.chord('Emaj7')), ['e', 'g#', 'b', 'd#'], 'Emaj7');
+    	    deepEqual(msa(teoria.chord('F#maj7')), ['f#','a#','c#','e#'], 'F#maj7');
+    	    deepEqual(msa(teoria.chord('Hmaj7')), ['h','d#','f#','a#'], 'Hmaj7');
+    	    deepEqual(msa(teoria.chord('H#maj7')), ['h#','dx','fx','ax'], 'H#maj7');
+    	    deepEqual(msa(teoria.chord('C7b5')), ['c','e','gb','bb'], 'C7b5');
+    	    deepEqual(msa(teoria.chord('Eb7b5')), ['eb','g','bbb','db'], 'Eb7b5');
+    	    deepEqual(msa(teoria.chord('D#7b5')), ['d#','fx','a','c#'], 'D#7b5');
+    	    deepEqual(msa(teoria.chord('C9')), ['c','e','g','bb', 'd'], 'C9');
+    	    deepEqual(msa(teoria.chord('Eb9')), ['eb','g','bb','db', 'f'], 'Eb9');
+    	    deepEqual(msa(teoria.chord('G#(#9)')), ['g#','b#','d#','f#', 'ax'], 'G#(#9)');
+    	    deepEqual(msa(teoria.chord('Ab(b9)')), ['ab','c','eb','gb', 'bbb'], 'Ab(b9)');
+    	    deepEqual(msa(teoria.chord('F#(#11)')), ['f#','a#','c#','e', 'g#', 'b#'], 'F#(#11)');
+    	    deepEqual(msa(teoria.chord('Ab13')), ['ab', 'c', 'eb', 'gb', 'bb', 'db', 'f'], 'Ab13');
+    	    deepEqual(msa(teoria.chord('C7sus4')), ['c', 'f', 'g', 'bb'], 'C7sus4');
+    	    deepEqual(msa(teoria.chord('Cmaj9')), ['c', 'e', 'g', 'b', 'd'], 'Cmaj9');
+    	    deepEqual(msa(teoria.chord('Dmb6')), ['d', 'f', 'a', 'bb'], 'Dmb6');
+    	    deepEqual(msa(teoria.chord('C#(#5#9)')), ['c#', 'e#', 'gx', 'b', 'dx'], 'C#(#5#9)');
+    	    deepEqual(msa(teoria.chord('Cm(maj7)')), ['c', 'eb', 'g', 'b'], 'Cm(maj7)');
+    	    deepEqual(msa(teoria.chord('F#m(11b5b9)')), ['f#', 'a', 'c', 'e', 'g', 'b'], 'F#m(11b5b9)');
     	  });
     	}
     </script>
