@@ -66,7 +66,7 @@
   };
   
   var INTERVALS = [{
-    name: 'unison',
+    name: 'first',
     quality: 'perfect',
     size: 0
   }, {
@@ -127,7 +127,7 @@
     size: 24
   }];
   
-  var INTERVAL_INDEX = {'unison':0, 'second':1, 'third':2, 'fourth':3, 'fifth':4, 'sixth':5, 'seventh':6, 'octave':7, 'ninth':8,
+  var INTERVAL_INDEX = {'first':0, 'second':1, 'third':2, 'fourth':3, 'fifth':4, 'sixth':5, 'seventh':6, 'octave':7, 'ninth':8,
                         'tenth': 9,'eleventh':10, 'twelfth':11, 'thirteenth':12, 'fourteenth':13, 'fifteenth':14};
   
   var QUALITY_STRING = {
@@ -572,7 +572,6 @@
       this.notes.push(this.root.interval(additionals[i]));
     }
   }
-  window.TeoriaChord = TeoriaChord;
   
   TeoriaChord.prototype.dominant = function(additional) {
     additional = additional || '';
@@ -602,7 +601,7 @@
     if(this.notes.length === 2) {
       return 'dyad';
     } else if(this.notes.length === 3) {
-      has = {unison: false, third: false, fifth: false};
+      has = {first: false, third: false, fifth: false};
       for(var i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
         invert = INTERVALS[parseFloat(teoria.interval.invert(interval.simple)[1])-1];
@@ -613,9 +612,9 @@
         }
       }
       
-      return (has.unison && has.third && has.fifth) ? 'triad' : 'trichord';
+      return (has.first && has.third && has.fifth) ? 'triad' : 'trichord';
     } else if(this.notes.length === 4) {
-      has = {unison: false, third: false, fifth: false, seventh: false};
+      has = {first: false, third: false, fifth: false, seventh: false};
       for(var i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
         invert = INTERVALS[parseFloat(teoria.interval.invert(interval.simple)[1])-1];
@@ -626,12 +625,42 @@
         }
       }
       
-      if(has.unison && has.third && has.fifth && has.seventh) {
+      if(has.first && has.third && has.fifth && has.seventh) {
         return 'tetrad';
       }
     } 
     
     return 'unknown';
+  };
+  
+  TeoriaChord.prototype.get = function(interval) {
+    var lookup = {
+      'first': '1',
+      'tonic': '1',
+      'second': '2',
+      'third': '3',
+      'fourth': '4',
+      'fifth': '5',
+      'sixth': '6',
+      'seventh': '7',
+      'ninth': '9',
+      'eleventh': '11',
+      'thirteenth': '13'
+    };
+    
+    if(interval in lookup) {
+      var quality = (INTERVALS[INTERVAL_INDEX[interval]].quality === 'perfect') ? 'P' : 'M';
+      interval = this.root.interval(quality + lookup[interval]);
+      for(var i = 0, length = this.notes.length; i < length; i++) {
+        if(this.notes[i].name == interval.name) {
+          return this.notes[i];
+        }
+      }
+      
+      return null;
+    } else {
+      throw new Error('Invalid interval name');
+    }
   };
   
   TeoriaChord.prototype.toString = function() {
