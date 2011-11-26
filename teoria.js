@@ -137,9 +137,6 @@
       'A': 'augmented', 
       'd': 'diminished',
       
-      'perf': 'perfect',
-      'maj': 'major',
-      'min': 'minor',
       'aug': 'augmented',
       'dim': 'diminished'
   };
@@ -407,168 +404,175 @@
     this.root = root;
     this.notes = [root];
     this.quality = 'major';
-    this.type = 'major';
     
-    // Analyze
-    var c, code, strQuality, extensions = [], i, length, seventh = false, ninth = false, eleventh = false, parsing = 'quality',
-        sharp = false, flat = false, five = null;
+    // TODO implement these...
+    // Half-diminished 'ø': code === 216 || code === 248
+    // Diminished 'o':      code === 111 || code === 176
     
+    var c, code, strQuality, parsing = 'quality', notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'], chordLength = 2, additionals = [];
+    
+    name = name.replace(' ', '').replace('(', '').replace(')', '').replace(',', '');
     for(i = 0, length = name.length; i < length; i++) {
       c = name[i];
-      while(c === ' ' || c === '(' || c === ')') {
-        c = name[++i];
-      }
+
       if(!c) {
         break;
       }
       
-      code = c.charCodeAt(0);
-      strQuality = ((i+3) <= length) ? name.substr(i, 3) : '';
-
-      if(c === 'M') {
-        // A Major chord is default
-      } else if(strQuality === 'maj' || code === 916) { // Maj7 chord
-        extensions.push('M7'); // Maj7
-        seventh = true;
-        if((name[i+3] && name[i+3] === '7') || (code === 916 && name[i+1] === '7')) {
-          i++; // Jump over '7'
-        }
-      } else if(c === 'm' || c === '-' || strQuality === 'min') {
-        this.quality = this.type = 'minor';
-      } else if(code === 111 || code === 176 || strQuality === 'dim') { // Diminished
-        this.quality = 'minor';
-        this.type = 'diminished';
-      } else if(c === '+' || strQuality === 'aug') {
-        this.quality = 'major';
-        this.type = 'augmented';
-      } else if(code === 216 || code === 248) { // Half-diminished
-        this.quality = 'minor';
-        this.type = 'diminished';
-        extensions.push('m7'); // Minor 7
-        seventh = true;
-      } else if(c === '#') {
-        sharp = true;
-      } else if(c === 'b') {
-        flat = true;
-      } else if(strQuality === 'sus') {
-        this.quality = 'sus';
-        this.type = (name[i+3] && name[i+3] === '2') ? 'sus2' : 'sus4';
-
-        if(name[i+3] === '2' || name[i+3] === '4') {
-          i += 1;
-        }
-        i += 2;
-      } else if(c === '5') {
-        if(sharp) {
-          five = 'A5';
-          if(this.quality === 'major') {
-            this.type = 'augmented';
-          }
-        } else if(flat) {
-          five = 'd5';
-          if(this.quality === 'minor') {
-            this.type = 'diminished';
-          }
-        }
-        flat = sharp = false;
-      } else if(c === '6') {
-        if(flat) {
-          extensions.push('m6');
+      code = c.charCodeAt(i);
+      strQuality = ((i+3) <= length) ? name.substr(i, 3) : null;
+      
+      switch(parsing) {
+      case 'quality': {
+        var triad;
+        if(strQuality && QUALITY_STRING[strQuality]) {
+          triad = CHORDS[QUALITY_STRING[strQuality]];
+          this.quality = QUALITY_STRING[strQuality];
+          i += strQuality.length-1;
+        } else if(QUALITY_STRING[c] && strQuality !== 'maj') {
+          triad = CHORDS[QUALITY_STRING[c]];
+          this.quality = QUALITY_STRING[c];
         } else {
-          extensions.push('M6');
+          triad = CHORDS['major'];
+          i -= 1;
         }
-        flat = sharp = false;
-      } else if(c === '7') {
-        if(this.type === 'diminished') {
-          extensions.push('d7');
+        
+        notes[0] = triad[0];
+        notes[1] = triad[1];
+        parsing = 'extension';
+      } break;
+      
+      case 'extension': {
+        c = (c === '1' && name[i+1]) ? parseFloat(name.substr(i, 2)) : parseFloat(c);
+
+        if(!isNaN(c)) {
+          chordLength = (c-1)/2;
+          i += String(c).length - 1;
         } else {
-          extensions.push('m7');
+          i -= 1;
         }
-        seventh = true;
-        flat = sharp = false;
-      } else if(c === '9') {
-        if(!seventh) {
-          extensions.push('m7');
+        
+        parsing = 'alterations';
+      } break;
+      
+      case 'alterations': {
+        var alterations = name.substr(i).split(/(#|b|add|maj|sus)/), next, flat = false, sharp = false;
+        if(alterations.length === 1) {
+          throw new Error('Invalid alterations');
+        } else if(alterations[0].length !== 0) {
+          throw new Error('Invalid token: \''+alterations[0]+'\'');
         }
-        if(flat) {
-          extensions.push('m9');
-        } else if(sharp) {
-          extensions.push('A9');
-        } else {
-          extensions.push('M9');
-        }
-        ninth = true;
-        flat = sharp = false;
-      } else if(c === '1') {
-        c = name[++i];
-        if(c === '1') {
-          if(!seventh && this.name.indexOf('7') === -1) {
-            extensions.push('m7');
-            seventh = true;
-          }
+        for(var a = 1, aLength = alterations.length; a < aLength; a++) {
+          next = (aLength > a+1) ? alterations[a+1] : null;
+          switch(alterations[a]) {
+          case 'maj': {
+            if(chordLength < 3) {
+              chordLength = 3;
+            }
 
-          if(!ninth && this.name.indexOf('9') === -1) {
-            extensions.push('M9');
-            ninth = true;
-          }
-          if(flat) {
-            extensions.push('d11');
-          } else if(sharp) {
-            extensions.push('A11');
-          } else {
-            extensions.push('P11');
-          }
-          eleventh = true;
-        } else if(c === '3') {
-          if(!seventh) {
-            extensions.push('m7');
-            seventh = true;
-          }
+            notes[2] = 'M7';
+          } break;
 
-          if(!ninth) {
-            extensions.push('M9');
-            ninth = true;
-          }
+          case 'sus': {
+            var type = 'P4';
+            if(next === '2' || next === '4') {
+              if(next === '2') {
+                type = 'M2';
+              }
+              a++;
+            }
+            notes[0] = type; // Replace third with either major second or perfecth fourth
+          } break;
+          
+          case 'add': {
+            if(next && !isNaN(parseFloat(next))) {
+              if(next === '9') {
+                additionals.push('M9');
+              } else if(next === '11') {
+                additionals.push('P11');
+              } else if(next === '13') {
+                additionals.push('M13');
+              }
+              
+              a += next.length;
+            }
+          } break;
+          
+          case 'b': {
+            flat = true;
+          } break;
+          
+          case '#': {
+            sharp = true;
+          } break;
+          
+          default: {
+            var token = parseFloat(alterations[a]), quality, interval = parseFloat(alterations[a]), intPos;
+            if(isNaN(token) || String(token).length !== alterations[a].length) {
+              throw new Error('Invalid token: \''+alterations[a]+'\'');
+            }
+            
+            if(token === 6) {
+              if(sharp) {
+                notes[2] = 'A6';
+              } else if(flat) {
+                notes[2] = 'm6';
+              } else {
+                notes[2] = 'M6';
+              }
+              
+              if(chordLength < 3) {
+                chordLength = 3;
+              }
+              continue;
+            }
+            
+            intPos = (interval-1)/2-1;
+            if(chordLength < intPos+1) {
+              chordLength = intPos+1;
+            }
 
-          if(!eleventh) {
-            extensions.push('P11');
-            eleventh = true;
-          }
-          if(flat) {
-            extensions.push('m13');
-          } else if(sharp) {
-            extensions.push('A13');
-          } else {
-            extensions.push('M13');
-          }
+            quality = notes[intPos][0];
+            if(sharp) {
+              if(quality == 'd') {
+                quality = 'm';
+              } else if(quality == 'm') {
+                quality = 'M';
+              } else if(quality == 'M' || quality == 'P') {
+                quality = 'A';
+              }
+            } else if(flat) {
+              if(quality == 'A') {
+                quality = 'M';
+              } else if(quality == 'M') {
+                quality = 'm';
+              } else if(quality == 'm' || quality == 'P') {
+                quality = 'd';
+              }
+            }
+            notes[intPos] = quality + notes[intPos].substr(1);
+          } break;
+          };
         }
-        flat = sharp = false;
-      } else {
-        throw Error("Unexpected character: '"+c+"' in chord '"+this.name+"'");
+        
+        parsing = 'ended';
       }
-
-      if(strQuality in QUALITY_STRING) {
-        i += 2;
-      }
-    }
-
-    for(var x = 0, xLength = CHORDS[this.type].length; x < xLength; x++) {
-      if(CHORDS[this.type][x][1] === '5' && five) {
-        this.notes.push(teoria.interval(this.root, five));
-      } else {
-        this.notes.push(teoria.interval(this.root, CHORDS[this.type][x]));
+      };
+      
+      if(parsing === 'ended') {
+        break;
       }
     }
     
-    extensions.sort(function(a, b) {
-      var aint = parseFloat(a.substr(1)), bint = parseFloat(b.substr(1));
-      
-      return aint > bint;
-    });
-    for(x = 0, xLength = extensions.length; x < xLength; x++) {
-      this.notes.push(teoria.interval(this.root, extensions[x]));
+    for(i = 0; i < chordLength; i++) {
+      this.notes.push(this.root.interval(notes[i]));
+    }
+    
+    for(i = 0, length = additionals.length; i < length; i++) {
+      this.notes.push(this.root.interval(additionals[i]));
     }
   }
+  window.TeoriaChord = TeoriaChord;
   
   TeoriaChord.prototype.dominant = function(additional) {
     additional = additional || '';
