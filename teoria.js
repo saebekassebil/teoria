@@ -885,6 +885,8 @@
         minorpentatonic: ['m3', 'M2', 'M2', 'm3']
     }
   };
-
+  
+  teoria.TeoriaNote = TeoriaNote;
+  teoria.TeoriaChord = TeoriaChord;
   window.teoria = teoria;
 }());
