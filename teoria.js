@@ -564,12 +564,9 @@
       }
     }
     
-    for(i = 0; i < chordLength; i++) {
+    notes = notes.slice(0, chordLength).concat(additionals);
+    for(i = 0; i < notes.length; i++) {
       this.notes.push(this.root.interval(notes[i]));
-    }
-    
-    for(i = 0, length = additionals.length; i < length; i++) {
-      this.notes.push(this.root.interval(additionals[i]));
     }
   }
   
@@ -801,9 +798,10 @@
       from = to;
       to = tmp;
     }
-
+    
     intervalInt = NOTES[to.name].index - NOTES[from.name].index + (7 * (to.octave - from.octave));
     interval = INTERVALS[intervalInt];
+    
     quality = ALTERATIONS[interval.quality][Math.abs(semitones)-interval.size+1];
     simpleName = QUALITY_TO_SIMPLE[quality] + Number(intervalInt+1).toString();
     return {name: interval.name, quality: quality, direction: (semitones > 0 ? 'up' : 'down'), simple: simpleName};
