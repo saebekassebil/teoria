@@ -225,7 +225,8 @@
    * TeoriaNote - teoria.note - the note object
    *
    * This object is the representation of a note.
-   * The constructor must be called with a name, and optionally a value argument.
+   * The constructor must be called with a name,
+   * and optionally a value argument.
    * The first parameter (name) can be specified in either
    * scientific notation (name+accidentals+octave). Fx:
    *    A4 - Cb3 - D#8 - Hbb - etc.
@@ -259,20 +260,20 @@
         this.octave = (info[2] === info[2].toLowerCase()) ? 3 : 2;
       } else if (info[1] !== '' && info[4] === '') { // Pre
         if (info[2] === info[2].toLowerCase()) { // If lower-case
-          throw Error('Invalid note format. Format must respect the Helmholtz notation.');
+          throw Error('Format must respect the Helmholtz notation.');
         }
 
         this.octave = 2 - info[1].length;
-      } else if (info[1] === '' && info[4] !== '') { // Pro
+      } else if (info[1] == '' && info[4] != '') { // Pro
         if (info[4].match(/^'+$/)) { // Up
           if (info[2] === info[2].toUpperCase()) { // If upper-case
-            throw Error('Invalid note format. Format must respect the Helmholtz notation');
+            throw Error('Format must respect the Helmholtz notation');
           }
 
           this.octave = 3 + info[4].length;
         } else if (info[4].match(/^,+$/)) {
           if (info[2] === info[2].toLowerCase()) { // If lower-case
-            throw Error('Invalid note format. Format must respect the Helmholtz notation');
+            throw Error('Format must respect the Helmholtz notation');
           }
 
           this.octave = 2 - info[4].length;
@@ -297,7 +298,8 @@
        */
       key: function(whitenotes) {
         if (whitenotes) {
-          return (this.octave - 1) * 7 + 3 + Math.ceil(NOTES[this.name].distance / 2);
+          var noteValue = Math.ceil(NOTES[this.name].distance / 2);
+          return (this.octave - 1) * 7 + 3 + noteValue;
         } else {
           var noteValue = NOTES[this.name].distance + this.accidental.value;
           return (this.octave - 1) * 12 + 4 + noteValue;
@@ -344,7 +346,8 @@
        * Returns the Helmholtz notation form of the note (fx ,,C d' F# g#'')
        */
       helmholtz: function() {
-        var name = (this.octave < 3) ? this.name.toUpperCase() : this.name.toLowerCase();
+        var name = (this.octave < 3) ? this.name.toUpperCase() :
+                                      this.name.toLowerCase();
         var padding;
         if (this.octave <= 2) {
           padding = pad('', ',', 2 - this.octave);
@@ -359,14 +362,16 @@
        * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
        */
       scientific: function() {
-        return this.name.toUpperCase() + this.accidental.sign + ((typeof this.octave === 'number') ? this.octave : '');
+        var octave = (typeof this.octave == 'number') ? this.octave : '';
+        return this.name.toUpperCase() + this.accidental.sign + octave;
       },
 
       /**
        * Returns notes that are enharmonic with this note.
        */
       enharmonics: function() {
-        var enharmonics = [], key = this.key(), upper = this.interval('m2', 'up'), lower = this.interval('m2', 'down');
+        var enharmonics = [], key = this.key(),
+        upper = this.interval('m2', 'up'), lower = this.interval('m2', 'down');
         var upperKey = upper.key() - upper.accidental.value;
         var lowerKey = lower.key() - lower.accidental.value;
         var diff = key - upperKey;
@@ -385,19 +390,19 @@
       },
 
       /**
-       * Returns the name of the value, such as 'whole', 'quarter', 'sixteenth' etc.
+       * Returns the name of the value,
+       * such as 'whole', 'quarter', 'sixteenth' etc.
        */
       valueName: function() {
         return DURATIONS[this.duration];
       },
 
       /**
-       * Returns the name of the note, with an optional dipsplay of octave number
+       * Returns the name of the note, with an optional display of octave number
        */
       toString: function(dontShow) {
-        dontShow = (typeof dontShow === 'boolean') ? dontShow : ((typeof this.octave === 'number') ? false : true);
-
-        return this.name.toLowerCase() + this.accidental.sign + ((!dontShow) ? this.octave : '');
+        var octave = dontShow ? '' : this.octave;
+        return this.name.toLowerCase() + this.accidental.sign + octave;
       }
   };
 
@@ -416,9 +421,11 @@
     // Half-diminished 'ø': code === 216 || code === 248
     // Diminished 'o':      code === 111 || code === 176
 
-    var c, code, strQuality, parsing = 'quality', notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'], chordLength = 2, additionals = [];
+    var c, code, strQuality, parsing = 'quality',
+        notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
+        chordLength = 2, additionals = [];
 
-    name = name.replace(' ', '').replace('(', '').replace(')', '').replace(',', '');
+    name = name.replace(/[,\s\(\)]/g, '');
     for (i = 0, length = name.length; i < length; i++) {
       c = name[i];
 
@@ -450,8 +457,8 @@
       } break;
 
       case 'extension': {
-        c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) : parseFloat(c);
-
+        c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) :
+                                          parseFloat(c);
         if (!isNaN(c)) {
           chordLength = (c - 1) / 2;
           i += String(c).length - 1;
@@ -463,7 +470,8 @@
       } break;
 
       case 'alterations': {
-        var alterations = name.substr(i).split(/(#|b|add|maj|sus)/), next, flat = false, sharp = false;
+        var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
+            next, flat = false, sharp = false;
         if (alterations.length === 1) {
           throw new Error('Invalid alterations');
         } else if (alterations[0].length !== 0) {
@@ -488,7 +496,7 @@
               }
               a++;
             }
-            notes[0] = type; // Replace third with either major second or perfecth fourth
+            notes[0] = type; // Replace third with M2 or P4
           } break;
 
           case 'add': {
@@ -514,8 +522,9 @@
           } break;
 
           default: {
-            var token = parseFloat(alterations[a]), quality, interval = parseFloat(alterations[a]), intPos;
-            if (isNaN(token) || String(token).length !== alterations[a].length) {
+            var token = parseFloat(alterations[a]), quality,
+                interval = parseFloat(alterations[a]), intPos;
+            if (isNaN(token) || String(token).length != alterations[a].length) {
               throw new Error('Invalid token: \'' + alterations[a] + '\'');
             }
 
@@ -589,7 +598,8 @@
 
   TeoriaChord.prototype.parallel = function(additional) {
     additional = additional || '';
-    if (this.chordType() !== 'triad' || this.quality === 'diminished' || this.quality === 'augmented') {
+    if (this.chordType() != 'triad' || this.quality == 'diminished' ||
+        this.quality == 'augmented') {
       throw Error('Only major/minor triads have parallel chords');
     }
 
@@ -601,14 +611,15 @@
   };
 
   TeoriaChord.prototype.chordType = function() { // In need of better name
-    var is = true, interval, has, invert;
+    var is = true, interval, has, invert, num;
     if (this.notes.length === 2) {
       return 'dyad';
     } else if (this.notes.length === 3) {
       has = {first: false, third: false, fifth: false};
       for (var i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
-        invert = INTERVALS[parseFloat(teoria.interval.invert(interval.simple)[1]) - 1];
+        num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
+        invert = INTERVALS[num];
         if (interval.name in has) {
           has[interval.name] = true;
         } else if (invert.name in has) {
@@ -621,7 +632,8 @@
       has = {first: false, third: false, fifth: false, seventh: false};
       for (var i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
-        invert = INTERVALS[parseFloat(teoria.interval.invert(interval.simple)[1]) - 1];
+        num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
+        invert = INTERVALS[num];
         if (interval.name in has) {
           has[interval.name] = true;
         } else if (invert.name in has) {
@@ -653,7 +665,8 @@
     };
 
     if (interval in lookup) {
-      var quality = (INTERVALS[INTERVAL_INDEX[interval]].quality === 'perfect') ? 'P' : 'M';
+      var quality = INTERVALS[INTERVAL_INDEX[interval]].quality;
+      quality = (quality === 'perfect') ? 'P' : 'M';
       interval = this.root.interval(quality + lookup[interval]);
       for (var i = 0, length = this.notes.length; i < length; i++) {
         if (this.notes[i].name == interval.name) {
@@ -687,7 +700,8 @@
     var root;
     root = name.match(/^([abcdefgh])(x|#|bb|b?)/i);
     if (root && root[0]) {
-      return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()), name.substr(root[0].length));
+      return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()),
+                            name.substr(root[0].length));
     } else {
       throw Error("Invalid Chord. Couldn't find note name");
     }
@@ -703,7 +717,8 @@
         concertPitch = concertPitch || 440;
 
         var key, octave, distance, note, name, cents, originalFq;
-        key = Math.round(49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2)));
+        key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
+        key = Math.round(key);
         originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
         cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
         octave = Math.floor((key - 4) / 12); // Actually this is octave-1
@@ -726,9 +741,6 @@
    *
    * Sugar function for #from and #between methods, with the possibility to
    * declare a interval by its string name: P8, M3, m7 etc.
-   *
-   * @param from  teoria.note                     Must be an instance of teoria.note.
-   * @param to    [string | teoria.note] The to parameter.
    */
   teoria.interval = function(from, to, direction) {
     if (typeof to === 'string') {
@@ -741,7 +753,10 @@
         throw Error('Invalid string-interval format');
       }
 
-      return teoria.interval.from(from, {quality: quality, interval: INTERVALS[interval - 1].name}, direction);
+      return teoria.interval.from(from, {
+        quality: quality,
+        interval: INTERVALS[interval - 1].name
+      }, direction);
     } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
       return teoria.interval.between(from, to);
     } else {
@@ -754,7 +769,7 @@
    */
   teoria.interval.from = function(from, to, direction) {
     to.direction = direction || to.direction || 'up';
-    var note, accDiff, diff, octave, index, interval;
+    var note, accDiff, diff, octave, index, interval, alterations, dist;
     index = INTERVAL_INDEX[to.interval];
     interval = INTERVALS[index];
     if (index > 7) index -= 7;
@@ -765,14 +780,19 @@
     }
 
     note = NOTES_INDEX[index];
-    if (ALTERATIONS[interval.quality].indexOf(to.quality) === -1 || ALTERATIONS[interval.quality].indexOf(interval.quality) === -1) {
+    alterations = ALTERATIONS[interval.quality];
+    if (alterations.indexOf(to.quality) == -1 ||
+        alterations.indexOf(interval.quality) == -1) {
       throw Error('Invalid interval quality');
     }
-    accDiff = ALTERATIONS[interval.quality].indexOf(to.quality) - ALTERATIONS[interval.quality].indexOf(interval.quality);
+    accDiff = alterations.indexOf(to.quality) -
+              alterations.indexOf(interval.quality);
     diff = (interval.size + accDiff) - getDistance(from.name, note);
 
     if (from.octave) {
-      octave = Math.floor(((from.key() - from.accidental.value) + getDistance(from.name, note) - 4) / 12) + 1 + Math.floor(INTERVAL_INDEX[to.interval] / 7);
+      dist = getDistance(from.name, note);
+      octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
+      octave += 1 + Math.floor(INTERVAL_INDEX[to.interval] / 7);
     }
 
     diff += from.accidental.value;
@@ -795,23 +815,30 @@
    * Returns the interval between two instances of teoria.note
    */
   teoria.interval.between = function(from, to) {
-    var fromKey = from.key(), toKey = to.key(), semitones, interval, intervalInt, tmp, simpleName, quality;
+    var fromKey = from.key(), toKey = to.key(), semitones, interval,
+        intervalInt, tmp, simpleName, quality, alteration;
 
     semitones = toKey - fromKey;
     if (semitones > 24 || semitones < -25) {
-      throw Error('Too big interval. Highest interval is a augmented fifteenth (25 semitones)');
+      throw Error('Interval is bigger than an augmented fifteenth');
     } else if (semitones < 0) {
       tmp = from;
       from = to;
       to = tmp;
     }
 
-    intervalInt = NOTES[to.name].index - NOTES[from.name].index + (7 * (to.octave - from.octave));
+    intervalInt = NOTES[to.name].index - NOTES[from.name].index +
+                  (7 * (to.octave - from.octave));
     interval = INTERVALS[intervalInt];
-
-    quality = ALTERATIONS[interval.quality][Math.abs(semitones) - interval.size + 1];
-    simpleName = QUALITY_TO_SIMPLE[quality] + Number(intervalInt + 1).toString();
-    return {name: interval.name, quality: quality, direction: (semitones > 0 ? 'up' : 'down'), simple: simpleName};
+    alteration = ALTERATIONS[interval.quality];
+    quality = alteration[Math.abs(semitones) - interval.size + 1];
+    simpleName = QUALITY_TO_SIMPLE[quality] + (intervalInt + 1);
+    return {
+      name: interval.name,
+      quality: quality,
+      direction: (semitones > 0 ? 'up' : 'down'),
+      simple: simpleName
+    };
   };
 
   teoria.interval.invert = function(sInterval) {
@@ -820,7 +847,8 @@
     }
 
     var quality = INTERVAL_INVERSION[sInterval[0]];
-    var inverse = (sInterval.length === 2) ? parseFloat(sInterval[1]) : parseFloat(sInterval.substr(1));
+    var inverse = (sInterval.length === 2) ? parseFloat(sInterval[1]) :
+                                            parseFloat(sInterval.substr(1));
     if (inverse > 8) {
       inverse = inverse - 7;
     }
@@ -870,7 +898,8 @@
 
     /**
      * A list of scales, used internally in the #list function.
-     * Scales are written in interval format. (M2 = Major second, m2 = Minor second, etc.)
+     * Scales are written in interval format.
+     * (M2 = Major second, m2 = Minor second, etc.)
      * Note that the root note is not listed.
      */
     scales: {
