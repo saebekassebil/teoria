@@ -1,12 +1,12 @@
 /**
  * Teoria.js - Music Theory for JavaScript
- * 
+ *
  * Jakob Miland - Copyleft 2011
  **/
 
 (function() {
   var teoria = {};
-  
+
   var NOTES = {
       'c': {
         name: 'c',
@@ -49,9 +49,9 @@
         index: 6
       }
   };
-  
-  var NOTES_INDEX = ['c','d','e','f','g','a','b'];
-  
+
+  var NOTES_INDEX = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
+
   var DURATIONS = {
       '0.25': 'longa',
       '0.5': 'breve',
@@ -64,7 +64,7 @@
       '64': 'sixty-fourth',
       '128': 'hundred-twenty-eighth'
   };
-  
+
   var INTERVALS = [{
     name: 'first',
     quality: 'perfect',
@@ -126,21 +126,25 @@
     quality: 'perfect',
     size: 24
   }];
-  
-  var INTERVAL_INDEX = {'first':0, 'second':1, 'third':2, 'fourth':3, 'fifth':4, 'sixth':5, 'seventh':6, 'octave':7, 'ninth':8,
-                        'tenth': 9,'eleventh':10, 'twelfth':11, 'thirteenth':12, 'fourteenth':13, 'fifteenth':14};
-  
+
+  var INTERVAL_INDEX = {
+    'first': 0, 'second': 1, 'third': 2, 'fourth': 3,
+    'fifth': 4, 'sixth': 5, 'seventh': 6, 'octave': 7,
+    'ninth': 8, 'tenth': 9, 'eleventh': 10, 'twelfth': 11,
+    'thirteenth': 12, 'fourteenth': 13, 'fifteenth': 14
+  };
+
   var QUALITY_STRING = {
-      'P': 'perfect', 
-      'M': 'major', 
-      'm': 'minor', 
-      'A': 'augmented', 
+      'P': 'perfect',
+      'M': 'major',
+      'm': 'minor',
+      'A': 'augmented',
       'd': 'diminished',
-      
+
       'aug': 'augmented',
       'dim': 'diminished'
   };
-  
+
   var QUALITY_TO_SIMPLE = {
       'perfect': 'P',
       'major': 'M',
@@ -148,7 +152,7 @@
       'augmented': 'A',
       'diminished': 'd'
   };
-  
+
   var INTERVAL_INVERSION = {
       'P': 'P',
       'M': 'm',
@@ -156,22 +160,22 @@
       'A': 'd',
       'd': 'A'
   };
-  
+ 
   var ALTERATIONS = {
       perfect: ['diminished', 'perfect', 'augmented'],
       minor: ['diminished', 'minor', 'major', 'augmented']
   };
-  
+
   var CHORDS = {
-      'major':            ['M3', 'P5'],
-      'minor':            ['m3', 'P5'],
-      'augmented':        ['M3', 'A5'],
-      'diminished':       ['m3', 'd5'],
-      'sus2':             ['M2', 'P5'],
-      'sus4':             ['P4', 'P5'],
-      'power':            ['P5']
+      'major': ['M3', 'P5'],
+      'minor': ['m3', 'P5'],
+      'augmented': ['M3', 'A5'],
+      'diminished': ['m3', 'd5'],
+      'sus2': ['M2', 'P5'],
+      'sus4': ['P4', 'P5'],
+      'power': ['P5']
   };
-  
+ 
   var CHORDLOOKUP = {
       'major': 'M',
       'minor': 'm',
@@ -179,7 +183,7 @@
       'diminished': 'dim',
       'power': '5'
   };
-  
+
   var ACCIDENTALTOSIGN = {
     '-2': 'bb',
     '-1': 'b',
@@ -187,67 +191,68 @@
     '1': '#',
     '2': 'x'
   };
-  
+ 
   var SIGNTOACCIDENTAL = {
     'bb': -2,
     'b': -1,
     '#': 1,
     'x': 2
   };
-  
+ 
   /**
    * getDistance, returns the distance in semitones between two notes
    */
   function getDistance(from, to) {
     from = NOTES[from];
     to = NOTES[to];
-    if(from.distance > to.distance) {
-      return (to.distance+12)-from.distance;
+    if (from.distance > to.distance) {
+      return (to.distance + 12) - from.distance;
     } else {
-      return to.distance-from.distance;
+      return to.distance - from.distance;
     }
   }
-  
+ 
   function pad(str, ch, len) {
-    for(; len > 0; len--) {
+    for (; len > 0; len--) {
       str += ch;
     }
-    
+ 
     return str;
   }
-  
-  
+
+ 
   /**
    * TeoriaNote - teoria.note - the note object
-   * 
+   *
    * This object is the representation of a note.
    * The constructor must be called with a name, and optionally a value argument.
-   * The first parameter (name) can be specified in either scientific notation (name+accidentals+octave). Fx:
+   * The first parameter (name) can be specified in either 
+   * scientific notation (name+accidentals+octave). Fx:
    *    A4 - Cb3 - D#8 - Hbb - etc.
    * Or in the Helmholtz notation:
    *    ,,C - F#'' - d - Eb - etc.
    */
   function TeoriaNote(name, duration) {
-    if(typeof name !== 'string') {
+    if (typeof name !== 'string') {
       return null;
     }
     
     this.name = name;
     this.duration = duration || 4;
     this.accidental = {value: 0, sign: ''};
-    var parser = name.match(/^([abcdefgh])(x|#|bb|b?)(-?\d*)/i); // 1 = note, 2 = accidentals, 3 = octave
-    
-    if(parser && name === parser[0] && parser[3].length !== 0) { // Scientific Notation
+    var parser = name.match(/^([abcdefgh])(x|#|bb|b?)(-?\d*)/i);
+
+    if(parser && name === parser[0] && parser[3].length !== 0) { // Scientific
       this.name = parser[1].toLowerCase();
       this.octave = parseFloat(parser[3]);
-        
+
       if(parser[2].length !== 0) {
         this.accidental.sign = parser[2].toLowerCase();
         this.accidental.value = SIGNTOACCIDENTAL[parser[2]];
       }
     } else { // Helmholtz Notation
       name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
-      var info = name.match(/^(,*)([abcdefgh])(x|#|bb|b?)([,\']*)$/i); // 1 = pre, 2 = note, 3 = accidentals, 4 = pro
+      var info = name.match(/^(,*)([abcdefgh])(x|#|bb|b?)([,\']*)$/i);
       if(!info || info.length !== 5 || name !== info[0]) {
         throw Error("Invalid note format");
       } else if(info[1] === '' && info[4] === '') { // Only note name
@@ -256,20 +261,20 @@
         if(info[2] === info[2].toLowerCase()) { // If lower-case
           throw Error("Invalid note format. Format must respect the Helmholtz notation.");
         }
-          
+
         this.octave = 2 - info[1].length;
-      } else if(info[1] === '' && info[4] !== '') { // Pro       
+      } else if(info[1] === '' && info[4] !== '') { // Pro
         if(info[4].match(/^'+$/)) { // Up
           if(info[2] === info[2].toUpperCase()) { // If upper-case
             throw Error("Invalid note format. Format must respect the Helmholtz notation");
           }
-          
+
           this.octave = 3 + info[4].length;
         } else if(info[4].match(/^,+$/)) {
           if(info[2] === info[2].toLowerCase()) { // If lower-case
             throw Error("Invalid note format. Format must respect the Helmholtz notation");
           }
-          
+
           this.octave = 2 - info[4].length;
         } else {
           throw Error("Invalid characters after note name.");
@@ -285,7 +290,7 @@
       }
     }
   }
-  
+
   TeoriaNote.prototype = {
       /**
        * Returns the key number of the note
@@ -294,33 +299,35 @@
         if(whitenotes) {
           return (this.octave-1) * 7 + 3 + Math.ceil(NOTES[this.name].distance/2);
         } else {
-          return (this.octave-1) * 12 + 4 + NOTES[this.name].distance + this.accidental.value;
+          var noteValue = NOTES[this.name].distance + this.accidental.value;
+          return (this.octave-1) * 12 + 4 + noteValue;
         } 
       },
-      
+
       /**
-       * Calculates and returns the frequency of the note, with an optional concert pitch (def. 440)
+       * Calculates and returns the frequency of the note.
+       * Optional concert pitch (def. 440)
        */
       fq: function(concertPitch) {
         concertPitch = concertPitch || 440;
 
-        return concertPitch * Math.pow(2, (this.key()-49)/12);
+        return concertPitch * Math.pow(2, (this.key() - 49) / 12);
       },
-      
+
       /**
        * Sugar function for teoria.scale.list(note, scale[, simple])
        */
       scale: function(scale, simple) {
         return teoria.scale.list(this, scale, simple);
       },
-      
+
       /**
        * Sugar function for teoria.interval(note, interval[, direction])
        */
       interval: function(interval, direction) {
         return teoria.interval(this, interval, direction);
       },
-      
+
       /**
        * Returns a TeoriaChord object with this note as root
        */
@@ -329,10 +336,10 @@
         if(chord in CHORDLOOKUP) {
           chord = CHORDLOOKUP[chord];
         }
-        
+
         return new TeoriaChord(this, chord);
       },
-      
+
       /**
        * Returns the Helmholtz notation form of the note (fx ,,C d' F# g#'')
        */
