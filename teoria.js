@@ -3,6 +3,7 @@
  *
  * Jakob Miland - Copyleft 2011
  **/
+'use strict';
 
 (function() {
   var teoria = {};
@@ -241,7 +242,7 @@
     this.name = name;
     this.duration = duration || 4;
     this.accidental = {value: 0, sign: ''};
-    var parser = name.match(/^([abcdefgh])(x|#|bb|b?)(-?\d*)/i);
+    var parser = name.match(/^([a-h])(x|#|bb|b?)(-?\d*)/i);
 
     if (parser && name === parser[0] && parser[3].length !== 0) { // Scientific
       this.name = parser[1].toLowerCase();
@@ -253,7 +254,7 @@
       }
     } else { // Helmholtz Notation
       name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
-      var info = name.match(/^(,*)([abcdefgh])(x|#|bb|b?)([,\']*)$/i);
+      var info = name.match(/^(,*)([a-h])(x|#|bb|b?)([,\']*)$/i);
       if (!info || info.length !== 5 || name !== info[0]) {
         throw Error('Invalid note format');
       } else if (info[1] === '' && info[4] === '') { // Only note name
@@ -421,7 +422,7 @@
     // Half-diminished 'ø': code === 216 || code === 248
     // Diminished 'o':      code === 111 || code === 176
 
-    var c, code, strQuality, parsing = 'quality',
+    var i, length, c, code, strQuality, parsing = 'quality',
         notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
         chordLength = 2, additionals = [];
 
@@ -437,142 +438,142 @@
       strQuality = ((i + 3) <= length) ? name.substr(i, 3) : null;
 
       switch (parsing) {
-      case 'quality': {
-        var triad;
-        if (strQuality && QUALITY_STRING[strQuality]) {
-          triad = CHORDS[QUALITY_STRING[strQuality]];
-          this.quality = QUALITY_STRING[strQuality];
-          i += strQuality.length - 1;
-        } else if (QUALITY_STRING[c] && strQuality !== 'maj') {
-          triad = CHORDS[QUALITY_STRING[c]];
-          this.quality = QUALITY_STRING[c];
-        } else {
-          triad = CHORDS['major'];
-          i -= 1;
-        }
+        case 'quality': {
+          var triad;
+          if (strQuality && QUALITY_STRING[strQuality]) {
+            triad = CHORDS[QUALITY_STRING[strQuality]];
+            this.quality = QUALITY_STRING[strQuality];
+            i += strQuality.length - 1;
+          } else if (QUALITY_STRING[c] && strQuality !== 'maj') {
+            triad = CHORDS[QUALITY_STRING[c]];
+            this.quality = QUALITY_STRING[c];
+          } else {
+            triad = CHORDS['major'];
+            i -= 1;
+          }
 
-        notes[0] = triad[0];
-        notes[1] = triad[1];
-        parsing = 'extension';
-      } break;
+          notes[0] = triad[0];
+          notes[1] = triad[1];
+          parsing = 'extension';
+        } break;
 
-      case 'extension': {
-        c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) :
-                                          parseFloat(c);
-        if (!isNaN(c)) {
-          chordLength = (c - 1) / 2;
-          i += String(c).length - 1;
-        } else {
-          i -= 1;
-        }
+        case 'extension': {
+          c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) :
+                                            parseFloat(c);
+          if (!isNaN(c)) {
+            chordLength = (c - 1) / 2;
+            i += String(c).length - 1;
+          } else {
+            i -= 1;
+          }
 
-        parsing = 'alterations';
-      } break;
+          parsing = 'alterations';
+        } break;
 
-      case 'alterations': {
-        var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
-            next, flat = false, sharp = false;
-        if (alterations.length === 1) {
-          throw new Error('Invalid alterations');
-        } else if (alterations[0].length !== 0) {
-          throw new Error('Invalid token: \'' + alterations[0] + '\'');
-        }
-        for (var a = 1, aLength = alterations.length; a < aLength; a++) {
-          next = (aLength > a + 1) ? alterations[a + 1] : null;
-          switch (alterations[a]) {
-          case 'maj': {
-            if (chordLength < 3) {
-              chordLength = 3;
-            }
-
-            notes[2] = 'M7';
-          } break;
-
-          case 'sus': {
-            var type = 'P4';
-            if (next === '2' || next === '4') {
-              if (next === '2') {
-                type = 'M2';
-              }
-              a++;
-            }
-            notes[0] = type; // Replace third with M2 or P4
-          } break;
-
-          case 'add': {
-            if (next && !isNaN(parseFloat(next))) {
-              if (next === '9') {
-                additionals.push('M9');
-              } else if (next === '11') {
-                additionals.push('P11');
-              } else if (next === '13') {
-                additionals.push('M13');
-              }
-
-              a += next.length;
-            }
-          } break;
-
-          case 'b': {
-            flat = true;
-          } break;
-
-          case '#': {
-            sharp = true;
-          } break;
-
-          default: {
-            var token = parseFloat(alterations[a]), quality,
-                interval = parseFloat(alterations[a]), intPos;
-            if (isNaN(token) || String(token).length != alterations[a].length) {
-              throw new Error('Invalid token: \'' + alterations[a] + '\'');
-            }
-
-            if (token === 6) {
-              if (sharp) {
-                notes[2] = 'A6';
-              } else if (flat) {
-                notes[2] = 'm6';
-              } else {
-                notes[2] = 'M6';
-              }
-
+        case 'alterations': {
+          var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
+              next, flat = false, sharp = false;
+          if (alterations.length === 1) {
+            throw new Error('Invalid alterations');
+          } else if (alterations[0].length !== 0) {
+            throw new Error('Invalid token: \'' + alterations[0] + '\'');
+          }
+          for (var a = 1, aLength = alterations.length; a < aLength; a++) {
+            next = (aLength > a + 1) ? alterations[a + 1] : null;
+            switch (alterations[a]) {
+            case 'maj': {
               if (chordLength < 3) {
                 chordLength = 3;
               }
-              continue;
-            }
 
-            intPos = (interval - 1) / 2 - 1;
-            if (chordLength < intPos + 1) {
-              chordLength = intPos + 1;
-            }
+              notes[2] = 'M7';
+            } break;
 
-            quality = notes[intPos][0];
-            if (sharp) {
-              if (quality == 'd') {
-                quality = 'm';
-              } else if (quality == 'm') {
-                quality = 'M';
-              } else if (quality == 'M' || quality == 'P') {
-                quality = 'A';
+            case 'sus': {
+              var type = 'P4';
+              if (next === '2' || next === '4') {
+                if (next === '2') {
+                  type = 'M2';
+                }
+                a++;
               }
-            } else if (flat) {
-              if (quality == 'A') {
-                quality = 'M';
-              } else if (quality == 'M') {
-                quality = 'm';
-              } else if (quality == 'm' || quality == 'P') {
-                quality = 'd';
+              notes[0] = type; // Replace third with M2 or P4
+            } break;
+
+            case 'add': {
+              if (next && !isNaN(parseFloat(next))) {
+                if (next === '9') {
+                  additionals.push('M9');
+                } else if (next === '11') {
+                  additionals.push('P11');
+                } else if (next === '13') {
+                  additionals.push('M13');
+                }
+
+                a += next.length;
               }
+            } break;
+
+            case 'b': {
+              flat = true;
+            } break;
+
+            case '#': {
+              sharp = true;
+            } break;
+
+            default: {
+              var token = parseFloat(alterations[a]), quality,
+                  interval = parseFloat(alterations[a]), intPos;
+              if (isNaN(token) || String(token).length != alterations[a].length) {
+                throw new Error('Invalid token: \'' + alterations[a] + '\'');
+              }
+
+              if (token === 6) {
+                if (sharp) {
+                  notes[2] = 'A6';
+                } else if (flat) {
+                  notes[2] = 'm6';
+                } else {
+                  notes[2] = 'M6';
+                }
+
+                if (chordLength < 3) {
+                  chordLength = 3;
+                }
+                continue;
+              }
+
+              intPos = (interval - 1) / 2 - 1;
+              if (chordLength < intPos + 1) {
+                chordLength = intPos + 1;
+              }
+
+              quality = notes[intPos][0];
+              if (sharp) {
+                if (quality == 'd') {
+                  quality = 'm';
+                } else if (quality == 'm') {
+                  quality = 'M';
+                } else if (quality == 'M' || quality == 'P') {
+                  quality = 'A';
+                }
+              } else if (flat) {
+                if (quality == 'A') {
+                  quality = 'M';
+                } else if (quality == 'M') {
+                  quality = 'm';
+                } else if (quality == 'm' || quality == 'P') {
+                  quality = 'd';
+                }
+              }
+              notes[intPos] = quality + notes[intPos].substr(1);
+            } break;
             }
-            notes[intPos] = quality + notes[intPos].substr(1);
-          } break;
           }
-        }
 
-        parsing = 'ended';
-      }
+          parsing = 'ended';
+        }
       }
 
       if (parsing === 'ended') {
@@ -698,7 +699,7 @@
    */
   teoria.chord = function(name) {
     var root;
-    root = name.match(/^([abcdefgh])(x|#|bb|b?)/i);
+    root = name.match(/^([a-h])(x|#|bb|b?)/i);
     if (root && root[0]) {
       return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()),
                             name.substr(root[0].length));
