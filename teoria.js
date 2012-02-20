@@ -525,7 +525,8 @@
             default: {
               var token = parseFloat(alterations[a]), quality,
                   interval = parseFloat(alterations[a]), intPos;
-              if (isNaN(token) || String(token).length != alterations[a].length) {
+              if (isNaN(token) ||
+                  String(token).length != alterations[a].length) {
                 throw new Error('Invalid token: \'' + alterations[a] + '\'');
               }
 
