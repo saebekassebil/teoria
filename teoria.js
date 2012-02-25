@@ -777,7 +777,9 @@
     var note, accDiff, diff, octave, index, interval, alterations, dist;
     index = INTERVAL_INDEX[to.interval];
     interval = INTERVALS[index];
-    if (index > 7) index -= 7;
+    if (index > 7) {
+      index -= 7;
+    }
 
     index = NOTES[from.name].index + index;
     if (index > NOTES_INDEX.length - 1) {
