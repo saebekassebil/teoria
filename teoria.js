@@ -3,9 +3,9 @@
  *
  * Jakob Miland - Copyleft 2011
  **/
-'use strict';
+(function teoriaClosure(globalScope) {
+  'use strict';
 
-(function() {
   var teoria = {};
 
   var NOTES = {
@@ -256,33 +256,33 @@
       name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
       var info = name.match(/^(,*)([a-h])(x|#|bb|b?)([,\']*)$/i);
       if (!info || info.length !== 5 || name !== info[0]) {
-        throw Error('Invalid note format');
+        throw new Error('Invalid note format');
       } else if (info[1] === '' && info[4] === '') { // Only note name
         this.octave = (info[2] === info[2].toLowerCase()) ? 3 : 2;
       } else if (info[1] !== '' && info[4] === '') { // Pre
         if (info[2] === info[2].toLowerCase()) { // If lower-case
-          throw Error('Format must respect the Helmholtz notation.');
+          throw new Error('Format must respect the Helmholtz notation.');
         }
 
         this.octave = 2 - info[1].length;
-      } else if (info[1] == '' && info[4] != '') { // Pro
+      } else if (info[1] === '' && info[4] !== '') { // Pro
         if (info[4].match(/^'+$/)) { // Up
           if (info[2] === info[2].toUpperCase()) { // If upper-case
-            throw Error('Format must respect the Helmholtz notation');
+            throw new Error('Format must respect the Helmholtz notation');
           }
 
           this.octave = 3 + info[4].length;
         } else if (info[4].match(/^,+$/)) {
           if (info[2] === info[2].toLowerCase()) { // If lower-case
-            throw Error('Format must respect the Helmholtz notation');
+            throw new Error('Format must respect the Helmholtz notation');
           }
 
           this.octave = 2 - info[4].length;
         } else {
-          throw Error('Invalid characters after note name.');
+          throw new Error('Invalid characters after note name.');
         }
       } else {
-        throw Error('Invalid note format');
+        throw new Error('Invalid note format');
       }
 
       this.name = info[2].toLowerCase();
@@ -298,11 +298,12 @@
        * Returns the key number of the note
        */
       key: function(whitenotes) {
+        var noteValue;
         if (whitenotes) {
-          var noteValue = Math.ceil(NOTES[this.name].distance / 2);
+          noteValue = Math.ceil(NOTES[this.name].distance / 2);
           return (this.octave - 1) * 7 + 3 + noteValue;
         } else {
-          var noteValue = NOTES[this.name].distance + this.accidental.value;
+          noteValue = NOTES[this.name].distance + this.accidental.value;
           return (this.octave - 1) * 12 + 4 + noteValue;
         }
       },
@@ -419,8 +420,8 @@
     this.quality = 'major';
 
     // TODO implement these...
-    // Half-diminished 'ø': code === 216 || code === 248
-    // Diminished 'o':      code === 111 || code === 176
+    // Half-diminished code === 216 || code === 248
+    // Diminished code === 111 || code === 176
 
     var i, length, c, code, strQuality, parsing = 'quality',
         notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
@@ -438,7 +439,7 @@
       strQuality = ((i + 3) <= length) ? name.substr(i, 3) : null;
 
       switch (parsing) {
-        case 'quality': {
+        case 'quality':
           var triad;
           if (strQuality && QUALITY_STRING[strQuality]) {
             triad = CHORDS[QUALITY_STRING[strQuality]];
@@ -448,16 +449,17 @@
             triad = CHORDS[QUALITY_STRING[c]];
             this.quality = QUALITY_STRING[c];
           } else {
-            triad = CHORDS['major'];
+            triad = CHORDS.major;
             i -= 1;
           }
 
           notes[0] = triad[0];
           notes[1] = triad[1];
           parsing = 'extension';
-        } break;
 
-        case 'extension': {
+          break;
+
+        case 'extension':
           c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) :
                                             parseFloat(c);
           if (!isNaN(c)) {
@@ -468,9 +470,9 @@
           }
 
           parsing = 'alterations';
-        } break;
+          break;
 
-        case 'alterations': {
+        case 'alterations':
           var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
               next, flat = false, sharp = false;
           if (alterations.length === 1) {
@@ -481,15 +483,15 @@
           for (var a = 1, aLength = alterations.length; a < aLength; a++) {
             next = (aLength > a + 1) ? alterations[a + 1] : null;
             switch (alterations[a]) {
-            case 'maj': {
+            case 'maj':
               if (chordLength < 3) {
                 chordLength = 3;
               }
 
               notes[2] = 'M7';
-            } break;
+              break;
 
-            case 'sus': {
+            case 'sus':
               var type = 'P4';
               if (next === '2' || next === '4') {
                 if (next === '2') {
@@ -497,10 +499,11 @@
                 }
                 a++;
               }
+              
               notes[0] = type; // Replace third with M2 or P4
-            } break;
+              break;
 
-            case 'add': {
+            case 'add':
               if (next && !isNaN(parseFloat(next))) {
                 if (next === '9') {
                   additionals.push('M9');
@@ -512,17 +515,17 @@
 
                 a += next.length;
               }
-            } break;
+              break;
 
-            case 'b': {
+            case 'b':
               flat = true;
-            } break;
+              break;
 
-            case '#': {
+            case '#':
               sharp = true;
-            } break;
+              break;
 
-            default: {
+            default:
               var token = parseFloat(alterations[a]), quality,
                   interval = parseFloat(alterations[a]), intPos;
               if (isNaN(token) ||
@@ -569,12 +572,12 @@
                 }
               }
               notes[intPos] = quality + notes[intPos].substr(1);
-            } break;
+              break;
             }
           }
 
           parsing = 'ended';
-        }
+          break;
       }
 
       if (parsing === 'ended') {
@@ -602,7 +605,7 @@
     additional = additional || '';
     if (this.chordType() != 'triad' || this.quality == 'diminished' ||
         this.quality == 'augmented') {
-      throw Error('Only major/minor triads have parallel chords');
+      throw new Error('Only major/minor triads have parallel chords');
     }
 
     if (this.quality === 'major') {
@@ -613,12 +616,12 @@
   };
 
   TeoriaChord.prototype.chordType = function() { // In need of better name
-    var is = true, interval, has, invert, num;
+    var is = true, interval, has, invert, num, i, length;
     if (this.notes.length === 2) {
       return 'dyad';
     } else if (this.notes.length === 3) {
       has = {first: false, third: false, fifth: false};
-      for (var i = 0, length = this.notes.length; i < length; i++) {
+      for (i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
         num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
         invert = INTERVALS[num];
@@ -632,7 +635,7 @@
       return (has.first && has.third && has.fifth) ? 'triad' : 'trichord';
     } else if (this.notes.length === 4) {
       has = {first: false, third: false, fifth: false, seventh: false};
-      for (var i = 0, length = this.notes.length; i < length; i++) {
+      for (i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
         num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
         invert = INTERVALS[num];
@@ -705,7 +708,7 @@
       return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()),
                             name.substr(root[0].length));
     } else {
-      throw Error("Invalid Chord. Couldn't find note name");
+      throw new Error("Invalid Chord. Couldn't find note name");
     }
   };
 
@@ -752,7 +755,7 @@
       var quality = QUALITY_STRING[to[0]];
       var interval = parseFloat(to.substr(1));
       if (!quality || isNaN(interval) || interval < 1) {
-        throw Error('Invalid string-interval format');
+        throw new Error('Invalid string-interval format');
       }
 
       return teoria.interval.from(from, {
@@ -762,9 +765,9 @@
     } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
       return teoria.interval.between(from, to);
     } else {
-      throw Error('Invalid parameters');
+      throw new Error('Invalid parameters');
     }
-  },
+  };
 
   /**
    * Returns the note from a given note (from), with a given interval (to)
@@ -785,7 +788,7 @@
     alterations = ALTERATIONS[interval.quality];
     if (alterations.indexOf(to.quality) == -1 ||
         alterations.indexOf(interval.quality) == -1) {
-      throw Error('Invalid interval quality');
+      throw new Error('Invalid interval quality');
     }
     accDiff = alterations.indexOf(to.quality) -
               alterations.indexOf(interval.quality);
@@ -822,7 +825,7 @@
 
     semitones = toKey - fromKey;
     if (semitones > 24 || semitones < -25) {
-      throw Error('Interval is bigger than an augmented fifteenth');
+      throw new Error('Interval is bigger than an augmented fifteenth');
     } else if (semitones < 0) {
       tmp = from;
       from = to;
@@ -924,5 +927,5 @@
 
   teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;
-  window.teoria = teoria;
-}());
+  globalScope.teoria = teoria;
+})(window);
