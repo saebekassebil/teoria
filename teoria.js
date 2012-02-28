@@ -294,118 +294,118 @@
   }
 
   TeoriaNote.prototype = {
-      /**
-       * Returns the key number of the note
-       */
-      key: function(whitenotes) {
-        var noteValue;
-        if (whitenotes) {
-          noteValue = Math.ceil(NOTES[this.name].distance / 2);
-          return (this.octave - 1) * 7 + 3 + noteValue;
-        } else {
-          noteValue = NOTES[this.name].distance + this.accidental.value;
-          return (this.octave - 1) * 12 + 4 + noteValue;
-        }
-      },
-
-      /**
-       * Calculates and returns the frequency of the note.
-       * Optional concert pitch (def. 440)
-       */
-      fq: function(concertPitch) {
-        concertPitch = concertPitch || 440;
-
-        return concertPitch * Math.pow(2, (this.key() - 49) / 12);
-      },
-
-      /**
-       * Sugar function for teoria.scale.list(note, scale[, simple])
-       */
-      scale: function(scale, simple) {
-        return teoria.scale.list(this, scale, simple);
-      },
-
-      /**
-       * Sugar function for teoria.interval(note, interval[, direction])
-       */
-      interval: function(interval, direction) {
-        return teoria.interval(this, interval, direction);
-      },
-
-      /**
-       * Returns a TeoriaChord object with this note as root
-       */
-      chord: function(chord) {
-        chord = chord || 'major';
-        if (chord in CHORDLOOKUP) {
-          chord = CHORDLOOKUP[chord];
-        }
-
-        return new TeoriaChord(this, chord);
-      },
-
-      /**
-       * Returns the Helmholtz notation form of the note (fx ,,C d' F# g#'')
-       */
-      helmholtz: function() {
-        var name = (this.octave < 3) ? this.name.toUpperCase() :
-                                      this.name.toLowerCase();
-        var padding;
-        if (this.octave <= 2) {
-          padding = pad('', ',', 2 - this.octave);
-          return padding + name + this.accidental.sign;
-        } else {
-          padding = pad('', '\'', this.octave - 3);
-          return name + this.accidental.sign + padding;
-        }
-      },
-
-      /**
-       * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
-       */
-      scientific: function() {
-        var octave = (typeof this.octave == 'number') ? this.octave : '';
-        return this.name.toUpperCase() + this.accidental.sign + octave;
-      },
-
-      /**
-       * Returns notes that are enharmonic with this note.
-       */
-      enharmonics: function() {
-        var enharmonics = [], key = this.key(),
-        upper = this.interval('m2', 'up'), lower = this.interval('m2', 'down');
-        var upperKey = upper.key() - upper.accidental.value;
-        var lowerKey = lower.key() - lower.accidental.value;
-        var diff = key - upperKey;
-        if (diff < 3 && diff > -3) {
-          upper.accidental = {value: diff, sign: ACCIDENTALTOSIGN[diff]};
-          enharmonics.push(upper);
-        }
-
-        diff = key - lowerKey;
-        if (diff < 3 && diff > -3) {
-          lower.accidental = {value: diff, sign: ACCIDENTALTOSIGN[diff]};
-          enharmonics.push(lower);
-        }
-
-        return enharmonics;
-      },
-
-      /**
-       * Returns the name of the value,
-       * such as 'whole', 'quarter', 'sixteenth' etc.
-       */
-      valueName: function() {
-        return DURATIONS[this.duration];
-      },
-
-      /**
-       * Returns the name of the note, with an optional display of octave number
-       */
-      toString: function(dontShow) {
-        var octave = dontShow ? '' : this.octave;
-        return this.name.toLowerCase() + this.accidental.sign + octave;
+    /**
+     * Returns the key number of the note
+     */
+    key: function(whitenotes) {
+      var noteValue;
+      if (whitenotes) {
+        noteValue = Math.ceil(NOTES[this.name].distance / 2);
+        return (this.octave - 1) * 7 + 3 + noteValue;
+      } else {
+        noteValue = NOTES[this.name].distance + this.accidental.value;
+        return (this.octave - 1) * 12 + 4 + noteValue;
       }
+    },
+
+    /**
+     * Calculates and returns the frequency of the note.
+     * Optional concert pitch (def. 440)
+     */
+    fq: function(concertPitch) {
+      concertPitch = concertPitch || 440;
+
+      return concertPitch * Math.pow(2, (this.key() - 49) / 12);
+    },
+
+    /**
+     * Sugar function for teoria.scale.list(note, scale[, simple])
+     */
+    scale: function(scale, simple) {
+      return teoria.scale.list(this, scale, simple);
+    },
+
+    /**
+     * Sugar function for teoria.interval(note, interval[, direction])
+     */
+    interval: function(interval, direction) {
+      return teoria.interval(this, interval, direction);
+    },
+
+    /**
+     * Returns a TeoriaChord object with this note as root
+     */
+    chord: function(chord) {
+      chord = chord || 'major';
+      if (chord in CHORDLOOKUP) {
+        chord = CHORDLOOKUP[chord];
+      }
+
+      return new TeoriaChord(this, chord);
+    },
+
+    /**
+     * Returns the Helmholtz notation form of the note (fx ,,C d' F# g#'')
+     */
+    helmholtz: function() {
+      var name = (this.octave < 3) ? this.name.toUpperCase() :
+                                    this.name.toLowerCase();
+      var padding;
+      if (this.octave <= 2) {
+        padding = pad('', ',', 2 - this.octave);
+        return padding + name + this.accidental.sign;
+      } else {
+        padding = pad('', '\'', this.octave - 3);
+        return name + this.accidental.sign + padding;
+      }
+    },
+
+    /**
+     * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
+     */
+    scientific: function() {
+      var octave = (typeof this.octave == 'number') ? this.octave : '';
+      return this.name.toUpperCase() + this.accidental.sign + octave;
+    },
+
+    /**
+     * Returns notes that are enharmonic with this note.
+     */
+    enharmonics: function() {
+      var enharmonics = [], key = this.key(),
+      upper = this.interval('m2', 'up'), lower = this.interval('m2', 'down');
+      var upperKey = upper.key() - upper.accidental.value;
+      var lowerKey = lower.key() - lower.accidental.value;
+      var diff = key - upperKey;
+      if (diff < 3 && diff > -3) {
+        upper.accidental = {value: diff, sign: ACCIDENTALTOSIGN[diff]};
+        enharmonics.push(upper);
+      }
+
+      diff = key - lowerKey;
+      if (diff < 3 && diff > -3) {
+        lower.accidental = {value: diff, sign: ACCIDENTALTOSIGN[diff]};
+        enharmonics.push(lower);
+      }
+
+      return enharmonics;
+    },
+
+    /**
+     * Returns the name of the value,
+     * such as 'whole', 'quarter', 'sixteenth' etc.
+     */
+    valueName: function() {
+      return DURATIONS[this.duration];
+    },
+
+    /**
+     * Returns the name of the note, with an optional display of octave number
+     */
+    toString: function(dontShow) {
+      var octave = dontShow ? '' : this.octave;
+      return this.name.toLowerCase() + this.accidental.sign + octave;
+    }
   };
 
   function TeoriaChord(root, name) {
