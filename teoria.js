@@ -499,7 +499,7 @@
                 }
                 a++;
               }
-              
+
               notes[0] = type; // Replace third with M2 or P4
               break;
 
@@ -894,8 +894,8 @@
       }
 
       for (i = 0, length = scale.length; i < length; i++) {
-        notes.push(teoria.interval(notes[i], scale[i]));
-        if (simple && notes.length > i + 1) {
+        notes.push(teoria.interval(root, scale[i]));
+        if (simple) {
           sNotes.push(notes[i + 1].name + (notes[i + 1].accidental.sign || ''));
         }
       }
@@ -905,25 +905,30 @@
 
     /**
      * A list of scales, used internally in the #list function.
-     * Scales are written in interval format.
-     * (M2 = Major second, m2 = Minor second, etc.)
-     * Note that the root note is not listed.
+     * Scales are written in absolute interval format.
+     * Notice that the root note is not listed.
      */
     scales: {
         // Modal Scales
-        major: ['M2', 'M2', 'm2', 'M2', 'M2', 'M2'],
-        ionian: ['M2', 'M2', 'm2', 'M2', 'M2', 'M2'],
-        dorian: ['M2', 'm2', 'M2', 'M2', 'M2', 'm2'],
-        phrygian: ['m2', 'M2', 'M2', 'M2', 'm2', 'M2'],
-        lydian: ['M2', 'M2', 'M2', 'm2', 'M2', 'M2'],
-        mixolydian: ['M2', 'M2', 'm2', 'M2', 'M2', 'm2'],
-        minor: ['M2', 'm2', 'M2', 'M2', 'm2', 'M2'],
-        aeolian: ['M2', 'm2', 'M2', 'M2', 'm2', 'M2'],
-        locrian: ['m2', 'M2', 'M2', 'm2', 'M2', 'M2'],
+        major: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+        ionian: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+        dorian: ['M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
+        phrygian: ['m2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+        lydian: ['M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
+        mixolydian: ['M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
+        minor: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+        aeolian: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+        locrian: ['m2', 'm3', 'P4', 'd5', 'm6', 'm7'],
 
         // Pentatonic
-        majorpentatonic: ['M2', 'M2', 'm3', 'M2'],
-        minorpentatonic: ['m3', 'M2', 'M2', 'm3']
+        majorpentatonic: ['M2', 'M3', 'P5', 'M6'],
+        minorpentatonic: ['m3', 'P4', 'P5', 'm7'],
+
+        // Chromatic
+        chromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
+                    'P5', 'm6', 'M6', 'm7', 'M7'],
+        harmonicchromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
+                    'P5', 'm6', 'M6', 'm7', 'M7']
     }
   };
 
