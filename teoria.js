@@ -3,6 +3,7 @@
  *
  * Jakob Miland - Copyleft 2011
  **/
+var scope = (typeof exports === 'object') ? exports : window;
 (function teoriaClosure(globalScope) {
   'use strict';
 
@@ -935,4 +936,4 @@
   teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;
   globalScope.teoria = teoria;
-})(window);
+})(scope);
