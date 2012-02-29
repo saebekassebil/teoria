@@ -1,14 +1,18 @@
 Teoria.js
 =========
 
-Teoria.js is a lightweight (3.84KB Gzipped) and fast JavaScript framework for music theory, both Jazz and Classical. 
-It aims at providing an intuitive programming interface for music software (such as Sheet Readers, Sheet Writers, MIDI Players etc.).
-The framework is both modular and object oriented, since almost every component can be used together, but doesn't *require* the other.
+Teoria.js is a lightweight (3.9KB Gzipped) and fast JavaScript framework 
+for music theory, both Jazz and Classical. It aims at providing an intuitive 
+programming interface for music software (such as Sheet Readers, 
+Sheet Writers, MIDI Players etc.). The framework is both modular and 
+object oriented, since almost every component can be used together, 
+but doesn't *require* the other.
 
 Features
 ---------
 
- - A note object (teoria.note), which understands alterations, octaves, keynumber, frequency and etc. and Helmholtz notation
+ - A note object (teoria.note), which understands alterations, octaves, 
+ keynumber, frequency and etc. and Helmholtz notation
  - A chord object (teoria.chord), which understands everything 
  from simple major/minor chords to advanced Jazz chords (Ab#5b9, F(#11) and such)
  - Frequency to Note, takes in a frequency and translates it 
@@ -18,13 +22,15 @@ Features
  or find a note which is a given interval from a note.
  - Scales. It's possible to construct a scale from a teoria.note object, 
  either from the predefined scales, which by default contains the 7 modes 
- (Ionian, Dorian, Phrygian etc.) and a major and minor pentatonic, 
- or from a arbitary array of intervals.
+ (Ionian, Dorian, Phrygian etc.) a major and minor pentatonic and the harmonic
+ chromatic scale or from a arbitary array of intervals.
  
 Syntax
 ---------
 
-This is just a short introduction to what the framework can be used to. You can experiment with it yourself, be simply dropping a script tag.
+This is just a short introduction to what the framework can be used to.
+I suggest that you look in the code and and experiment a little locally
+untill a proper documentation is created.
 
 ```javascript
 

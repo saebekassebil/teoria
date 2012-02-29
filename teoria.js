@@ -9,7 +9,7 @@ var scope = (typeof exports === 'object') ? exports : window;
 
   var teoria = {};
 
-  var NOTES = {
+  var kNotes = {
       'c': {
         name: 'c',
         distance: 0,
@@ -52,9 +52,9 @@ var scope = (typeof exports === 'object') ? exports : window;
       }
   };
 
-  var NOTES_INDEX = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
+  var kNoteIndex = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
 
-  var DURATIONS = {
+  var kDurations = {
       '0.25': 'longa',
       '0.5': 'breve',
       '1': 'whole',
@@ -67,7 +67,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       '128': 'hundred-twenty-eighth'
   };
 
-  var INTERVALS = [{
+  var kIntervals = [{
     name: 'first',
     quality: 'perfect',
     size: 0
@@ -129,14 +129,14 @@ var scope = (typeof exports === 'object') ? exports : window;
     size: 24
   }];
 
-  var INTERVAL_INDEX = {
+  var kIntervalIndex = {
     'first': 0, 'second': 1, 'third': 2, 'fourth': 3,
     'fifth': 4, 'sixth': 5, 'seventh': 6, 'octave': 7,
     'ninth': 8, 'tenth': 9, 'eleventh': 10, 'twelfth': 11,
     'thirteenth': 12, 'fourteenth': 13, 'fifteenth': 14
   };
 
-  var QUALITY_STRING = {
+  var kQualityLong = {
       'P': 'perfect',
       'M': 'major',
       'm': 'minor',
@@ -147,7 +147,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       'dim': 'diminished'
   };
 
-  var QUALITY_TO_SIMPLE = {
+  var kQualityTemp = {
       'perfect': 'P',
       'major': 'M',
       'minor': 'm',
@@ -155,7 +155,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       'diminished': 'd'
   };
 
-  var INTERVAL_INVERSION = {
+  var kIntervalInversion = {
       'P': 'P',
       'M': 'm',
       'm': 'M',
@@ -163,12 +163,12 @@ var scope = (typeof exports === 'object') ? exports : window;
       'd': 'A'
   };
 
-  var ALTERATIONS = {
+  var kAlterations = {
       perfect: ['diminished', 'perfect', 'augmented'],
       minor: ['diminished', 'minor', 'major', 'augmented']
   };
 
-  var CHORDS = {
+  var kChords = {
       'major': ['M3', 'P5'],
       'minor': ['m3', 'P5'],
       'augmented': ['M3', 'A5'],
@@ -178,7 +178,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       'power': ['P5']
   };
 
-  var CHORDLOOKUP = {
+  var kChordShort = {
       'major': 'M',
       'minor': 'm',
       'augmented': 'aug',
@@ -186,7 +186,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       'power': '5'
   };
 
-  var ACCIDENTALTOSIGN = {
+  var kAccidentalSign = {
     '-2': 'bb',
     '-1': 'b',
     '0': '',
@@ -194,7 +194,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     '2': 'x'
   };
 
-  var SIGNTOACCIDENTAL = {
+  var kAccidentalValue = {
     'bb': -2,
     'b': -1,
     '#': 1,
@@ -205,8 +205,8 @@ var scope = (typeof exports === 'object') ? exports : window;
    * getDistance, returns the distance in semitones between two notes
    */
   function getDistance(from, to) {
-    from = NOTES[from];
-    to = NOTES[to];
+    from = kNotes[from];
+    to = kNotes[to];
     if (from.distance > to.distance) {
       return (to.distance + 12) - from.distance;
     } else {
@@ -251,7 +251,7 @@ var scope = (typeof exports === 'object') ? exports : window;
 
       if (parser[2].length !== 0) {
         this.accidental.sign = parser[2].toLowerCase();
-        this.accidental.value = SIGNTOACCIDENTAL[parser[2]];
+        this.accidental.value = kAccidentalValue[parser[2]];
       }
     } else { // Helmholtz Notation
       name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
@@ -289,7 +289,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       this.name = info[2].toLowerCase();
       if (info[3].length !== 0) {
         this.accidental.sign = info[3].toLowerCase();
-        this.accidental.value = SIGNTOACCIDENTAL[info[3]];
+        this.accidental.value = kAccidentalValue[info[3]];
       }
     }
   }
@@ -301,10 +301,10 @@ var scope = (typeof exports === 'object') ? exports : window;
     key: function(whitenotes) {
       var noteValue;
       if (whitenotes) {
-        noteValue = Math.ceil(NOTES[this.name].distance / 2);
+        noteValue = Math.ceil(kNotes[this.name].distance / 2);
         return (this.octave - 1) * 7 + 3 + noteValue;
       } else {
-        noteValue = NOTES[this.name].distance + this.accidental.value;
+        noteValue = kNotes[this.name].distance + this.accidental.value;
         return (this.octave - 1) * 12 + 4 + noteValue;
       }
     },
@@ -338,8 +338,8 @@ var scope = (typeof exports === 'object') ? exports : window;
      */
     chord: function(chord) {
       chord = chord || 'major';
-      if (chord in CHORDLOOKUP) {
-        chord = CHORDLOOKUP[chord];
+      if (chord in kChordShort) {
+        chord = kChordShort[chord];
       }
 
       return new TeoriaChord(this, chord);
@@ -379,13 +379,13 @@ var scope = (typeof exports === 'object') ? exports : window;
       var lowerKey = lower.key() - lower.accidental.value;
       var diff = key - upperKey;
       if (diff < 3 && diff > -3) {
-        upper.accidental = {value: diff, sign: ACCIDENTALTOSIGN[diff]};
+        upper.accidental = {value: diff, sign: kAccidentalSign[diff]};
         enharmonics.push(upper);
       }
 
       diff = key - lowerKey;
       if (diff < 3 && diff > -3) {
-        lower.accidental = {value: diff, sign: ACCIDENTALTOSIGN[diff]};
+        lower.accidental = {value: diff, sign: kAccidentalSign[diff]};
         enharmonics.push(lower);
       }
 
@@ -397,7 +397,7 @@ var scope = (typeof exports === 'object') ? exports : window;
      * such as 'whole', 'quarter', 'sixteenth' etc.
      */
     valueName: function() {
-      return DURATIONS[this.duration];
+      return kDurations[this.duration];
     },
 
     /**
@@ -442,15 +442,15 @@ var scope = (typeof exports === 'object') ? exports : window;
       switch (parsing) {
         case 'quality':
           var triad;
-          if (strQuality && QUALITY_STRING[strQuality]) {
-            triad = CHORDS[QUALITY_STRING[strQuality]];
-            this.quality = QUALITY_STRING[strQuality];
+          if (strQuality && kQualityLong[strQuality]) {
+            triad = kChords[kQualityLong[strQuality]];
+            this.quality = kQualityLong[strQuality];
             i += strQuality.length - 1;
-          } else if (QUALITY_STRING[c] && strQuality !== 'maj') {
-            triad = CHORDS[QUALITY_STRING[c]];
-            this.quality = QUALITY_STRING[c];
+          } else if (kQualityLong[c] && strQuality !== 'maj') {
+            triad = kChords[kQualityLong[c]];
+            this.quality = kQualityLong[c];
           } else {
-            triad = CHORDS.major;
+            triad = kChords.major;
             i -= 1;
           }
 
@@ -625,7 +625,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       for (i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
         num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
-        invert = INTERVALS[num];
+        invert = kIntervals[num];
         if (interval.name in has) {
           has[interval.name] = true;
         } else if (invert.name in has) {
@@ -639,7 +639,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       for (i = 0, length = this.notes.length; i < length; i++) {
         interval = this.root.interval(this.notes[i]);
         num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
-        invert = INTERVALS[num];
+        invert = kIntervals[num];
         if (interval.name in has) {
           has[interval.name] = true;
         } else if (invert.name in has) {
@@ -671,7 +671,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     };
 
     if (interval in lookup) {
-      var quality = INTERVALS[INTERVAL_INDEX[interval]].quality;
+      var quality = kIntervals[kIntervalIndex[interval]].quality;
       quality = (quality === 'perfect') ? 'P' : 'M';
       interval = this.root.interval(quality + lookup[interval]);
       for (var i = 0, length = this.notes.length; i < length; i++) {
@@ -730,7 +730,7 @@ var scope = (typeof exports === 'object') ? exports : window;
         octave = Math.floor((key - 4) / 12); // Actually this is octave-1
         distance = key - (octave * 12) - 4;
 
-        note = NOTES[NOTES_INDEX[Math.round(distance / 2)]];
+        note = kNotes[kNoteIndex[Math.round(distance / 2)]];
         name = note.name;
         if (note.distance < distance) {
           name += '#';
@@ -753,7 +753,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       if (direction === 'down') {
         to = teoria.interval.invert(to);
       }
-      var quality = QUALITY_STRING[to[0]];
+      var quality = kQualityLong[to[0]];
       var interval = parseFloat(to.substr(1));
       if (!quality || isNaN(interval) || interval < 1) {
         throw new Error('Invalid string-interval format');
@@ -761,7 +761,7 @@ var scope = (typeof exports === 'object') ? exports : window;
 
       return teoria.interval.from(from, {
         quality: quality,
-        interval: INTERVALS[interval - 1].name
+        interval: kIntervals[interval - 1].name
       }, direction);
     } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
       return teoria.interval.between(from, to);
@@ -776,19 +776,19 @@ var scope = (typeof exports === 'object') ? exports : window;
   teoria.interval.from = function(from, to, direction) {
     to.direction = direction || to.direction || 'up';
     var note, accDiff, diff, octave, index, interval, alterations, dist;
-    index = INTERVAL_INDEX[to.interval];
-    interval = INTERVALS[index];
+    index = kIntervalIndex[to.interval];
+    interval = kIntervals[index];
     if (index > 7) {
       index -= 7;
     }
 
-    index = NOTES[from.name].index + index;
-    if (index > NOTES_INDEX.length - 1) {
-      index = index - NOTES_INDEX.length;
+    index = kNotes[from.name].index + index;
+    if (index > kNoteIndex.length - 1) {
+      index = index - kNoteIndex.length;
     }
 
-    note = NOTES_INDEX[index];
-    alterations = ALTERATIONS[interval.quality];
+    note = kNoteIndex[index];
+    alterations = kAlterations[interval.quality];
     if (alterations.indexOf(to.quality) == -1 ||
         alterations.indexOf(interval.quality) == -1) {
       throw new Error('Invalid interval quality');
@@ -800,7 +800,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     if (from.octave) {
       dist = getDistance(from.name, note);
       octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
-      octave += 1 + Math.floor(INTERVAL_INDEX[to.interval] / 7);
+      octave += 1 + Math.floor(kIntervalIndex[to.interval] / 7);
     }
 
     diff += from.accidental.value;
@@ -809,7 +809,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     }
 
     if (diff > -3 && diff < 3) {
-      note += ACCIDENTALTOSIGN[diff];
+      note += kAccidentalSign[diff];
     }
 
     if (direction === 'down') {
@@ -835,12 +835,12 @@ var scope = (typeof exports === 'object') ? exports : window;
       to = tmp;
     }
 
-    intervalInt = NOTES[to.name].index - NOTES[from.name].index +
+    intervalInt = kNotes[to.name].index - kNotes[from.name].index +
                   (7 * (to.octave - from.octave));
-    interval = INTERVALS[intervalInt];
-    alteration = ALTERATIONS[interval.quality];
+    interval = kIntervals[intervalInt];
+    alteration = kAlterations[interval.quality];
     quality = alteration[Math.abs(semitones) - interval.size + 1];
-    simpleName = QUALITY_TO_SIMPLE[quality] + (intervalInt + 1);
+    simpleName = kQualityTemp[quality] + (intervalInt + 1);
     return {
       name: interval.name,
       quality: quality,
@@ -854,7 +854,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       return false;
     }
 
-    var quality = INTERVAL_INVERSION[sInterval[0]];
+    var quality = kIntervalInversion[sInterval[0]];
     var inverse = (sInterval.length === 2) ? parseFloat(sInterval[1]) :
                                             parseFloat(sInterval.substr(1));
     if (inverse > 8) {
