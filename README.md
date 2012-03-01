@@ -61,13 +61,8 @@ g5.fq(); // Outputs 783.9908719634985
 Documentation
 ------------------------
 
-### teoria.note (TeoriaNote)
 
-The teoria.note object is teoria's interpretation and representation of a
-musical note. When calling teoria.note you're actually instantiating a
-TeoriaNote object.
-
-#### TeoriaNote(name[, duration])
+## TeoriaNote(name[, duration])
  - This function construct a teoria.note object.
 
 *name* - The name argument is the note name as a string. The note can both
@@ -77,7 +72,24 @@ Some examples of valid note names:
 
 *duration* - The duration argument is optional, and not much used in the library.
 If supplied, it should be number corresponding to a note duration, such as:
-```1 = whole```, ```2 = half (minim)```, ```4 = quarter```, ```8 = eigth```
+```1 = whole```, ```2 = half (minim)```, ```4 = quarter```, ```8 = eight```
+
+### teoria.note (TeoriaNote)
+
+The teoria.note object is teoria's interpretation and representation of a
+musical note. When calling teoria.note you're actually instantiating a
+```TeoriaNote``` object.
+
+### teoria.note.fromKey(key)
+Returns an instance of TeoriaNote set to the note at the given piano key
+
+### teoria.note.fromFrequency(fq)
+Returns an object containing two elements:
+
+*note* - A ```TeoriaNote``` which corresponds to the closest note with the
+given frequency
+
+*cents* - A number value of how many cents the note is out of tune
 
 #### TeoriaNote.name
  - The name of the note, in lowercase letter (*only* the name, not the
@@ -154,4 +166,174 @@ Example: ```teoria.note('A', 8).durationName() -> 'eighth'```,
 
 *dontShow* - If set to ```true``` the value will not be included in the returned
 string.
+
+
+## TeoriaChord(root, chord)
+ - A chord class with a lot of functionality to alter and analyze the chord.
+
+*root* - A ```TeoriaNote``` instance which is to be the root of the chord
+
+*chord* - A string containing the chord symbol. This can be anything from
+simple chords, to super-advanced jazz chords thanks to the detailed and
+robust chord parser engine. Example values:
+```'m'```, ```'m7'```, ```'#5b9'```, ```'9sus4``` and ```'#11b5#9'```
+
+### teoria.chord(name)
+ - A simple function for getting the notes, no matter octave in a chord
+
+*name* - A string containing the full chord symbol, with note name. Examples:
+```'Ab7'```, ```'F#(#11b5)'```
+
+#### TeoriaChord.name
+ - Holds the full chord symbol, inclusive the root name
+
+#### TeoriaChord.root
+ - Holds the ```TeoriaNote``` that is the root of the chord
+
+#### TeoriaChord.notes
+ - An array of notes that the chords is built of
+
+#### TeoriaChord.quality
+ - A string which holds the quality of the chord, 'major', 'minor',
+ 'augmented' or 'diminished'
+
+#### TeoriaChord#get(interval)
+ - Returns the note at a given interval in the chord, if it exists.
+
+*interval* - A string name of an interval, for example 'third', 'fifth', 'ninth'.
+
+#### TeoriaChord#dominant([additional])
+ - Returns the naïvely chosen dominant which is a perfect fifth away.
+
+*additional* - Additional chord extension, for example: 'b9' or '#5'
+
+#### TeoriaChord#subdominant([additional])
+ - Returns the naïvely chosen subdominant which is a perfecth fourth away.
+
+*additional* - Like the dominant's.
+
+#### TeoriaChord#parallel([additional])
+ - Returns the parallel chord for major and minor triads
+
+*additional* - Like the dominant's
+
+#### TeoriaChord#chordType()
+ - Returns the type of the chord: 'dyad', 'triad', 'trichord',
+ 'tetrad' or 'unknown'.
+
+#### TeoriaChord#toString()
+ - Simple usability function which is an alias for TeoriaChord.name
+
+
+## TeoriaScale(tonic, scale)
+ - The teoria representation of a scale, with a given tonic.
+
+*tonic* - A ```TeoriaNote``` which is to be the tonic of the scale
+
+*scale* - Can either be a name of a scale (string), or an array of
+absolute intervals that defines the scale. The default supported scales are:
+
+ - major
+ - minor
+ - ionian (Alias for major)
+ - dorian
+ - phrygian
+ - lydian
+ - mixolydian
+ - aeolian (Alias for minor)
+ - locrian
+ - majorpentatonic
+ - minorpentatonic
+ - chromatic
+ - harmonicchromatic (Alias for chromatic)
+
+### teoria.scale(tonic, scale)
+ - Sugar function for constructing a new TeoriaScale object
+
+### TeoriaScale.notes
+ - An array of ```TeoriaNote```s which is the scale's notes
+
+### TeoriaScale.tonic
+ - The ```TeoriaNote``` which is the scale's tonic
+
+### TeoriaScale#simple()
+ - Returns an array of only the note's name, not the full ```TeoriaNote``` objects.
+
+### TeoriaScale#type()
+ - Returns the type of the scale, depending on the number of notes.
+ A scale of length x gives y:
+  - 2 gives 'ditonic'
+  - 3 gives 'tritonic'
+  - 4 gives 'tetratonic'
+  - 5 gives 'pentatonic'
+  - 6 gives 'hexatonic',
+  - 7 gives 'heptatonic',
+  - 8 gives 'octatonic'
+
+### TeoriaScale#get(index)
+ - Returns the note at the given scale index
+
+*index* - Can be a number referring to the scale step, or the name (string) og the
+scale step. Example 'first', 'second', 'fourth', 'seventh'.
+
+### TeoriaScale#solfege(index)
+ - Returns the solfege name of the given scale step
+
+*index* Same as ```TeoriaScale#get```
+
+
+## teoria.interval(from, to[, direction])
+ - A sugar function for the #from and #between methods of the same namespace.
+
+*from* - A ```TeoriaNote``` that is the root of the interval-measuring.
+
+*to* - Either a string, which is a "simple-format" interval such as 'M2' for 
+major second, and 'P5' for perfect fifth. More details on this format later.
+If it's a string the note which is the given interval (*to*) away from the 
+note (*from*) is returned. If *to* is a ```TeoriaNote``` then an interval
+object is returned, which represents the interval between the two notes. For
+the format of this interval object, take a look at the #between method
+
+*direction* - The direction of the interval (only relevant when *to* is a string).
+Can be 'up' or 'down', defaults to 'up'
+
+### teoria.interval.from(from, to[, direction])
+ - Returns a note which lies a given interval away from a root note.
+
+*from* - Same as above, the ```TeoriaNote``` which is the base of the measuring
+
+*to* - A string as described above.
+
+*direction* - The direction as described above.
+
+### teoria.interval.between(from, to)
+ - Returns an interval object which represents the interval between two notes.
+
+*from* and *to* are two ```TeoriaNote```s which are the notes that the
+interval is measured from. For example if 'a' and 'c' are given, the resulting
+interval object would represent a minor third.
+
+*interval object*: The interval object contains the following data:
+```javascript
+teoria.interval.between(teoria.note("a"), teoria.note("c'")) ->
+{
+  simple: 'm3',     // The simple name of the interval
+  direction: 'up',  // The direction of the interval
+  quality: 'minor', // The quality of the interval
+  name: 'third'     // The name of the interval
+}
+```
+
+### teoria.interval.invert(simpleInterval)
+ - Returns the inversion of the interval provided
+
+*simpleInterval* - An interval represented in simple string form. Examples:
+ - 'm3' = minor third
+ - 'P4' = perfect fourth
+ - 'A4' = augmented fifth
+ - 'd7' = diminished seventh
+ - 'M6' = major sixth.
+
+```'m' = minor```, ```'M' = major```, ```'A' = augmented``` and 
+```'d' = diminished```
 
