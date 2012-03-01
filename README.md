@@ -31,8 +31,7 @@ Syntax
 ---------
 
 This is just a short introduction to what the framework can be used to.
-I suggest that you look in the code and and experiment a little locally
-untill a proper documentation is created.
+For a technical library reference, look further down this document.
 
 ```javascript
 
@@ -59,13 +58,26 @@ a4.fq(); // Outputs 440
 g5.fq(); // Outputs 783.9908719634985
 ```
 
-Documentation & Examples
+Documentation
 ------------------------
 
-http://saebekassebil.github.com/teoria - Here you'll find the 
-compiled documentation, which tries to be generally helpful.
-The `examples` folder contains some Annotated Source objects which 
-can help you to fully understand the inner structure of `teoria`.
-You can build the examples/docs with `docco`, but it's also available
-at the GitHub Pages site.
+### teoria.note (TeoriaNote)
 
+The teoria.note object is teoria's interpretation and representation of a
+musical note. When calling teoria.note you're actually instantiating a
+TeoriaNote object.
+
+#### TeoriaNote(name[, duration])
+ - This function construct a teoria.note object.
+
+*name* - The name argument is the note name as a string. The note can both
+be expressed in scientific and Helmholtz notation.
+Some examples of valid note names:
+```Eb4```, ```,,C#```, ```C4```, ```d#''```, ```Ab2```
+
+*duration* - The duration argument is optional, and not much used in the library.
+If supplied, it should be number corresponding to a note duration, such as:
+```1 = whole```, ```2 = half (minim)```, ```4 = quarter```, ```8 = eigth```
+
+#### TeoriaNote#key()
+ - Returns the piano key number. Fx A4 would return 49
