@@ -435,7 +435,7 @@ var scope = (typeof exports === 'object') ? exports : window;
      * Returns the name of the value,
      * such as 'whole', 'quarter', 'sixteenth' etc.
      */
-    valueName: function() {
+    durationName: function() {
       return kDurations[this.duration];
     },
 

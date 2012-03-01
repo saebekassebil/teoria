@@ -79,5 +79,79 @@ Some examples of valid note names:
 If supplied, it should be number corresponding to a note duration, such as:
 ```1 = whole```, ```2 = half (minim)```, ```4 = quarter```, ```8 = eigth```
 
-#### TeoriaNote#key()
+#### TeoriaNote.name
+ - The name of the note, in lowercase letter (*only* the name, not the
+ accidental signs)
+
+#### TeoriaNote.octave
+ - The numeric value of the octave of the note
+
+#### TeoriaNote.duration
+ - Holds the numeric value supplied in the construct. If no value was given
+ the duration will default to 4
+
+#### TeoriaNote.accidental
+ - An object containing two elements:
+
+*sign* - The string symbolic of the accidental sign ```#, x, b or bb```
+
+*value* - The numeric value (mostly used internally) of the sign:
+```# = 1, x = 2, b = -1, bb = -2```
+
+#### TeoriaNote#key([whitetones])
  - Returns the piano key number. Fx A4 would return 49
+
+*whitenotes* - If this parameter is set to ````true``` only the white keys will
+be counted when finding the key number. This is mostly used internally.
+
+#### TeoriaNote#fq([concertPitch])
+ - Calculates and returns the frequency of the note.
+
+*concertPitch* - If supplied this number will be used instead of the normal
+concert pitch which is 440hz. This is useful for older classical music.
+
+#### TeoriaNote#scale(scaleName)
+ - Returns an instance of TeoriaScale, with tonic set to this note.
+
+*scaleName* - The name of the scale to be returned. ```'minor'```, 
+```'chromatic'````, ```'ionian'``` and others are valid scale names.
+
+#### TeoriaNote#interval(interval[, direction])
+ - A sugar function for calling teoria.interval(interval, direction)
+
+Look at the documentation for ```teoria.interval```
+
+#### TeoriaNote#chord([name])
+ - Returns an instance of TeoriaChord, with root note set to this note
+
+*name* - The name attribute is the last part of the chord symbol.
+Examples: ```'m7'```, ```'#5b9'```, ```'major'```. If the name parameter
+isn't set, a standard major chord will be returned.
+
+#### TeoriaNote#helmholtz()
+ - Returns the note name formatted in helmholtz notation.
+
+Example: ```teoria.note('A5').helmholtz() -> "a''"```
+
+#### TeoriaNote#scientific()
+ - Returns the note name formatted in scientific notation.
+
+Example: ```teoria.note("ab'").scientific() -> "Ab4"```
+
+#### TeoriaNote#enharmonics()
+ - Returns all notes that are enharmonic with the note
+
+Example: ```teoria.note('C').enharmonics() -> [teoria.note('Dbb'), teoria.note('b#')]```
+
+#### TeoriaNote#durationName()
+ - Returns the duration name.
+
+Example: ```teoria.note('A', 8).durationName() -> 'eighth'```, 
+```teoria.note('C', 16).durationName() -> 'sixteenth'```
+
+#### TeoriaNote#toString([dontShow])
+ - Usability function for returning the note as a string
+
+*dontShow* - If set to ```true``` the value will not be included in the returned
+string.
+
