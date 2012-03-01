@@ -767,12 +767,12 @@ var scope = (typeof exports === 'object') ? exports : window;
       return name;
     },
 
-    get: function(index) {
-      if (typeof index == 'number') {
-        return (index > 0 && index <= this.notes.length) ? this.notes[i] : null;
-      } else if (typeof index == 'string' && index in kStepNumber) {
-        index = parseFloat(kStepNumber[index]);
-        return (index > 0 && index <= this.notes.length) ? this.notes[i] : null;
+    get: function(i) {
+      if (typeof i == 'number') {
+        return (i > 0 && i <= this.notes.length) ? this.notes[i-1] : null;
+      } else if (typeof i == 'string' && i in kStepNumber) {
+        i = parseFloat(kStepNumber[i]);
+        return (i > 0 && i <= this.notes.length) ? this.notes[i-1] : null;
       }
     },
 
