@@ -328,6 +328,7 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) ->
  - Returns the inversion of the interval provided
 
 *simpleInterval* - An interval represented in simple string form. Examples:
+
  - 'm3' = minor third
  - 'P4' = perfect fourth
  - 'A4' = augmented fifth
