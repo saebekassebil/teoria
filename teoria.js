@@ -10,61 +10,61 @@ var scope = (typeof exports === 'object') ? exports : window;
   var teoria = {};
 
   var kNotes = {
-      'c': {
-        name: 'c',
-        distance: 0,
-        index: 0
-      },
-      'd': {
-        name: 'd',
-        distance: 2,
-        index: 1
-      },
-      'e': {
-        name: 'e',
-        distance: 4,
-        index: 2
-      },
-      'f': {
-        name: 'f',
-        distance: 5,
-        index: 3
-      },
-      'g': {
-        name: 'g',
-        distance: 7,
-        index: 4
-      },
-      'a': {
-        name: 'a',
-        distance: 9,
-        index: 5
-      },
-      'b': {
-        name: 'b',
-        distance: 11,
-        index: 6
-      },
-      'h': {
-        name: 'h',
-        distance: 11,
-        index: 6
-      }
+    'c': {
+      name: 'c',
+      distance: 0,
+      index: 0
+    },
+    'd': {
+      name: 'd',
+      distance: 2,
+      index: 1
+    },
+    'e': {
+      name: 'e',
+      distance: 4,
+      index: 2
+    },
+    'f': {
+      name: 'f',
+      distance: 5,
+      index: 3
+    },
+    'g': {
+      name: 'g',
+      distance: 7,
+      index: 4
+    },
+    'a': {
+      name: 'a',
+      distance: 9,
+      index: 5
+    },
+    'b': {
+      name: 'b',
+      distance: 11,
+      index: 6
+    },
+    'h': {
+      name: 'h',
+      distance: 11,
+      index: 6
+    }
   };
 
   var kNoteIndex = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
 
   var kDurations = {
-      '0.25': 'longa',
-      '0.5': 'breve',
-      '1': 'whole',
-      '2': 'half',
-      '4': 'quarter',
-      '8': 'eighth',
-      '16': 'sixteenth',
-      '32': 'thirty-second',
-      '64': 'sixty-fourth',
-      '128': 'hundred-twenty-eighth'
+    '0.25': 'longa',
+    '0.5': 'breve',
+    '1': 'whole',
+    '2': 'half',
+    '4': 'quarter',
+    '8': 'eighth',
+    '16': 'sixteenth',
+    '32': 'thirty-second',
+    '64': 'sixty-fourth',
+    '128': 'hundred-twenty-eighth'
   };
 
   var kIntervals = [{
@@ -137,53 +137,53 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   var kQualityLong = {
-      'P': 'perfect',
-      'M': 'major',
-      'm': 'minor',
-      'A': 'augmented',
-      'd': 'diminished',
+    'P': 'perfect',
+    'M': 'major',
+    'm': 'minor',
+    'A': 'augmented',
+    'd': 'diminished',
 
-      'aug': 'augmented',
-      'dim': 'diminished'
+    'aug': 'augmented',
+    'dim': 'diminished'
   };
 
   var kQualityTemp = {
-      'perfect': 'P',
-      'major': 'M',
-      'minor': 'm',
-      'augmented': 'A',
-      'diminished': 'd'
+    'perfect': 'P',
+    'major': 'M',
+    'minor': 'm',
+    'augmented': 'A',
+    'diminished': 'd'
   };
 
   var kIntervalInversion = {
-      'P': 'P',
-      'M': 'm',
-      'm': 'M',
-      'A': 'd',
-      'd': 'A'
+    'P': 'P',
+    'M': 'm',
+    'm': 'M',
+    'A': 'd',
+    'd': 'A'
   };
 
   var kAlterations = {
-      perfect: ['diminished', 'perfect', 'augmented'],
-      minor: ['diminished', 'minor', 'major', 'augmented']
+    perfect: ['diminished', 'perfect', 'augmented'],
+    minor: ['diminished', 'minor', 'major', 'augmented']
   };
 
   var kChords = {
-      'major': ['M3', 'P5'],
-      'minor': ['m3', 'P5'],
-      'augmented': ['M3', 'A5'],
-      'diminished': ['m3', 'd5'],
-      'sus2': ['M2', 'P5'],
-      'sus4': ['P4', 'P5'],
-      'power': ['P5']
+    'major': ['M3', 'P5'],
+    'minor': ['m3', 'P5'],
+    'augmented': ['M3', 'A5'],
+    'diminished': ['m3', 'd5'],
+    'sus2': ['M2', 'P5'],
+    'sus4': ['P4', 'P5'],
+    'power': ['P5']
   };
 
   var kChordShort = {
-      'major': 'M',
-      'minor': 'm',
-      'augmented': 'aug',
-      'diminished': 'dim',
-      'power': '5'
+    'major': 'M',
+    'minor': 'm',
+    'augmented': 'aug',
+    'diminished': 'dim',
+    'power': '5'
   };
 
   var kAccidentalSign = {
@@ -719,27 +719,27 @@ var scope = (typeof exports === 'object') ? exports : window;
    * Frequence functionalty
    */
   teoria.frequency = {
-      note: function(fq, concertPitch) {
-        concertPitch = concertPitch || 440;
+    note: function(fq, concertPitch) {
+      concertPitch = concertPitch || 440;
 
-        var key, octave, distance, note, name, cents, originalFq;
-        key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
-        key = Math.round(key);
-        originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
-        cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
-        octave = Math.floor((key - 4) / 12); // Actually this is octave-1
-        distance = key - (octave * 12) - 4;
+      var key, octave, distance, note, name, cents, originalFq;
+      key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
+      key = Math.round(key);
+      originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
+      cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
+      octave = Math.floor((key - 4) / 12); // Actually this is octave-1
+      distance = key - (octave * 12) - 4;
 
-        note = kNotes[kNoteIndex[Math.round(distance / 2)]];
-        name = note.name;
-        if (note.distance < distance) {
-          name += '#';
-        } else if (note.distance > distance) {
-          name += 'b';
-        }
-
-        return {note: new TeoriaNote(name + (octave + 1)), cents: cents};
+      note = kNotes[kNoteIndex[Math.round(distance / 2)]];
+      name = note.name;
+      if (note.distance < distance) {
+        name += '#';
+      } else if (note.distance > distance) {
+        name += 'b';
       }
+
+      return {note: new TeoriaNote(name + (octave + 1)), cents: cents};
+    }
   };
 
   /**
@@ -910,26 +910,26 @@ var scope = (typeof exports === 'object') ? exports : window;
      * Notice that the root note is not listed.
      */
     scales: {
-        // Modal Scales
-        major: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-        ionian: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-        dorian: ['M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
-        phrygian: ['m2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-        lydian: ['M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
-        mixolydian: ['M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
-        minor: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-        aeolian: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-        locrian: ['m2', 'm3', 'P4', 'd5', 'm6', 'm7'],
+      // Modal Scales
+      major: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+      ionian: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+      dorian: ['M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
+      phrygian: ['m2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+      lydian: ['M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
+      mixolydian: ['M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
+      minor: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+      aeolian: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+      locrian: ['m2', 'm3', 'P4', 'd5', 'm6', 'm7'],
 
-        // Pentatonic
-        majorpentatonic: ['M2', 'M3', 'P5', 'M6'],
-        minorpentatonic: ['m3', 'P4', 'P5', 'm7'],
+      // Pentatonic
+      majorpentatonic: ['M2', 'M3', 'P5', 'M6'],
+      minorpentatonic: ['m3', 'P4', 'P5', 'm7'],
 
-        // Chromatic
-        chromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
-                    'P5', 'm6', 'M6', 'm7', 'M7'],
-        harmonicchromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
-                    'P5', 'm6', 'M6', 'm7', 'M7']
+      // Chromatic
+      chromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
+                  'P5', 'm6', 'M6', 'm7', 'M7'],
+      harmonicchromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
+                  'P5', 'm6', 'M6', 'm7', 'M7']
     }
   };
 
