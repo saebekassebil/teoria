@@ -13,17 +13,19 @@ Features
 
  - A note object (teoria.note), which understands alterations, octaves, 
  keynumber, frequency and etc. and Helmholtz notation
+ 
  - A chord object (teoria.chord), which understands everything 
  from simple major/minor chords to advanced Jazz chords (Ab#5b9, F(#11) and such)
- - Frequency to Note, takes in a frequency and translates it 
- to an object containing the corresponding note and how many 
- cents it's out of tune. Perfect for tuning applications.
- - Intervals. It's easy to find the interval between to notes,
- or find a note which is a given interval from a note.
- - Scales. It's possible to construct a scale from a teoria.note object, 
- either from the predefined scales, which by default contains the 7 modes 
+
+ - A scale object (teoria.scale), The scale object is a powerful presentation of
+ a scale, which support quite a few handy methods. A scale can either be 
+ constructed from the predefined scales, which by default contains the 7 modes 
  (Ionian, Dorian, Phrygian etc.) a major and minor pentatonic and the harmonic
- chromatic scale or from a arbitary array of intervals.
+ chromatic scale or from a arbitary array of intervals. The scale object
+ also supports solfège, which makes it perfect for tutorials on sight reading.
+
+ - An interval object (teoria.interval), which makes it easy to find the 
+ interval between to notes, or find a note which is a given interval from a note.
  
 Syntax
 ---------
@@ -46,13 +48,13 @@ a4.interval('m3'); // Output a c#4 teoria.note object
 a4.interval(g5); // Outputs: {"direction": "up", "name": "seventh", "quality": "minor"} 
     
 // Scales
-teoria.scale.list(a4, 'mixolydian', true); // Outputs: ["a", "b", "c#", "d", "e", "f#", "g"]
-a4.scale('aeolian', true);    // Outputs: ["a", "b", "c", "d", "e", "f", "g"]
-g5.scale('ionian', true);     // Outputs: ["g", "a", "b", "c", "d", "e", "f#"]
-g5.scale('dorian');    // Outputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}], an array of teoria.note objects
+a4.scale('mixolydian').simple(); // Outputs: ["a", "b", "c#", "d", "e", "f#", "g"]
+a4.scale('aeolian').simple();    // Outputs: ["a", "b", "c", "d", "e", "f", "g"]
+g5.scale('ionian').simple();     // Outputs: ["g", "a", "b", "c", "d", "e", "f#"]
+g5.scale('dorian');    // Outputs an TeoriaScale object
     
 // Frequency
-teoria.frequency.note(467); // Outputs: {"note":{...},"cents":3.1028314220028586} -> A4# a little out of tune.
+teoria.note.fromFrequency(467); // Outputs: {"note":{...},"cents":3.1028314220028586} -> A4# a little out of tune.
 a4.fq(); // Outputs 440
 g5.fq(); // Outputs 783.9908719634985
 ```
