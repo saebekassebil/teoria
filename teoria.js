@@ -695,8 +695,39 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   teoria.note.fromKey = function(key) {
-    var fq = 440 * Math.pow(2, (key - 49) / 12);
-    return teoria.frequency.note(fq).note;
+    var octave = Math.floor((key - 4) / 12);
+    var distance = key - (octave * 12) - 4;
+    var note = kNotes[kNoteIndex[Math.round(distance/2)]];
+    var name = note.name;
+    if( note.distance < distance) {
+      name += '#';
+    } else if(note.distance > distance) {
+      name += 'b';
+    }
+
+    return new TeoriaNote(name + (octave + 1));
+  };
+
+  teoria.note.fromFrequency = function(fq, concertPitch) {
+    var key, octave, distance, note, name, cents, originalFq;
+    concertPitch = concertPitch || 440;
+
+    key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
+    key = Math.round(key);
+    originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
+    cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
+    octave = Math.floor((key - 4) / 12);  // This is octave - 1
+    distance = key - (octave * 12) - 4;
+
+    note = kNotes[kNoteIndex[Math.round(distance / 2)]];
+    name = note.name;
+    if (note.distance < distance) {
+      name += '#';
+    } else if (note.distance > distance) {
+      name += 'b';
+    }
+
+    return {note: new TeoriaNote(name + (octave + 1)), cents: cents};
   };
 
   /**
@@ -710,35 +741,6 @@ var scope = (typeof exports === 'object') ? exports : window;
                             name.substr(root[0].length));
     } else {
       throw new Error("Invalid Chord. Couldn't find note name");
-    }
-  };
-
-  /**
-   * teoria.frequency
-   *
-   * Frequence functionalty
-   */
-  teoria.frequency = {
-    note: function(fq, concertPitch) {
-      concertPitch = concertPitch || 440;
-
-      var key, octave, distance, note, name, cents, originalFq;
-      key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
-      key = Math.round(key);
-      originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
-      cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
-      octave = Math.floor((key - 4) / 12); // Actually this is octave-1
-      distance = key - (octave * 12) - 4;
-
-      note = kNotes[kNoteIndex[Math.round(distance / 2)]];
-      name = note.name;
-      if (note.distance < distance) {
-        name += '#';
-      } else if (note.distance > distance) {
-        name += 'b';
-      }
-
-      return {note: new TeoriaNote(name + (octave + 1)), cents: cents};
     }
   };
 
