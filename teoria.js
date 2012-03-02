@@ -431,6 +431,15 @@ var scope = (typeof exports === 'object') ? exports : window;
       return enharmonics;
     },
 
+    solfege: function(scale) {
+      if(!(scale instanceof TeoriaScale)) {
+        throw new Error('Invalid Scale');
+      }
+    
+      var interval = scale.tonic.interval(this);
+      return kIntervalSolfege[interval.simple];
+    },
+
     /**
      * Returns the name of the value,
      * such as 'whole', 'quarter', 'sixteenth' etc.
