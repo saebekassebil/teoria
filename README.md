@@ -155,6 +155,12 @@ Example: ```teoria.note("ab'").scientific() -> "Ab4"```
 
 Example: ```teoria.note('C').enharmonics() -> [teoria.note('Dbb'), teoria.note('b#')]```
 
+#### TeoriaNote#solfege(scale)
+ - Returns the solfege step in the given scale context
+
+*scale* - An instance of ```TeoriaScale```, which is the context of the
+solfege step measuring
+
 #### TeoriaNote#durationName()
  - Returns the duration name.
 

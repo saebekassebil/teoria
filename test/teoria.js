@@ -112,6 +112,25 @@ var suite = vows.describe('Teoria Framework').addBatch({
     }
   },
 
+  'Teoria Solfege': {
+    'C in C minor': function() {
+      var note = new teoria.TeoriaNote('c');
+      assert.equal(note.solfege(teoria.scale(note, 'minor')), 'do');
+    },
+
+    'A in d major': function() {
+      var note = teoria.note('a');
+      var tonic = teoria.note('d');
+      assert.equal(note.solfege(teoria.scale(tonic, 'major')), 'so');
+    },
+
+    'F# in B major': function() {
+      var note = teoria.note('f#');
+      var tonic = teoria.note('B');
+      assert.equal(note.solfege(teoria.scale(tonic, 'major')), 'so');
+    }
+  },
+
   'Teoria Scales': {
     'Ab2': {
       topic: function() {
