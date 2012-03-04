@@ -850,12 +850,16 @@ var scope = (typeof exports === 'object') ? exports : window;
 
   // teoria.chord namespace - All chords should be instatiated
   // through this function.
-  teoria.chord = function(name) {
-    var root;
-    root = name.match(/^([a-h])(x|#|bb|b?)/i);
-    if (root && root[0]) {
-      return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()),
-                            name.substr(root[0].length));
+  teoria.chord = function(name, oSymbol) {
+    if(typeof name == 'string') {
+      var root;
+      root = name.match(/^([a-h])(x|#|bb|b?)/i);
+      if(root && root[0]) {
+        return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()),
+                              name.substr(root[0].length));
+      }
+    } else if(name instanceof TeoriaNote) {
+      return new TeoriaChord(name, oSymbol || '');
     } else {
       throw new Error("Invalid Chord. Couldn't find note name");
     }

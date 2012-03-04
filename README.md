@@ -184,11 +184,17 @@ simple chords, to super-advanced jazz chords thanks to the detailed and
 robust chord parser engine. Example values:
 ```'m'```, ```'m7'```, ```'#5b9'```, ```'9sus4``` and ```'#11b5#9'```
 
-### teoria.chord(name)
+### teoria.chord(name || note[, symbol])
  - A simple function for getting the notes, no matter octave in a chord
 
 *name* - A string containing the full chord symbol, with note name. Examples:
 ```'Ab7'```, ```'F#(#11b5)'```
+
+*note* - Instead of supplying a string containing the full chord symbol,
+one can pass a ```TeoriaNote``` object instead. The note will be considered root in
+the new chord object
+
+*symbol* - A string containing the chord symbol (exluding the note name)
 
 #### TeoriaChord.name
  - Holds the full chord symbol, inclusive the root name
