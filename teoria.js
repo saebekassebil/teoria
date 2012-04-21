@@ -272,7 +272,7 @@ var scope = (typeof exports === 'object') ? exports : window;
    * scientific notation (name+accidentals+octave). Fx:
    *    A4 - Cb3 - D#8 - Hbb - etc.
    * Or in the Helmholtz notation:
-   *    ,,C - F#'' - d - Eb - etc.
+   *    ,,C - f#'' - d - Eb - etc.
    */
   function TeoriaNote(name, duration) {
     if (typeof name !== 'string') {
