@@ -471,18 +471,23 @@ var scope = (typeof exports === 'object') ? exports : window;
     // TODO implement these...
     // Half-diminished code === 216 || code === 248
     // Diminished code === 111 || code === 176
-
     var i, length, c, code, strQuality, parsing = 'quality',
         notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
-        chordLength = 2, additionals = [];
+        chordLength = 2, additionals = [], bass, note;
 
+    // Remove whitespace, commas and parentheses
     name = name.replace(/[,\s\(\)]/g, '');
+    bass = name.split('/');
+    if(bass.length === 2) {
+      name = bass[0];
+      bass = bass[1];
+    } else {
+      bass = null;
+    }
+
     for (i = 0, length = name.length; i < length; i++) {
       c = name[i];
-
-      if (!c) {
-        break;
-      }
+      if (!c) break;
 
       code = c.charCodeAt(i);
       strQuality = ((i + 3) <= length) ? name.substr(i, 3) : null;
@@ -635,8 +640,21 @@ var scope = (typeof exports === 'object') ? exports : window;
     }
 
     notes = notes.slice(0, chordLength).concat(additionals);
+    if(bass) {
+      bass = new TeoriaNote(bass);
+      var interval = teoria.interval.between(root, bass);
+      bass.octave -= (interval.direction === 'up') ? 1 : 0;
+
+      this.notes.splice(0, 0, bass);
+    }
+
     for (i = 0; i < notes.length; i++) {
-      this.notes.push(this.root.interval(notes[i]));
+      note = this.root.interval(notes[i]);
+      if(bass && note.toString(true) === bass.toString(true)) {
+        continue;
+      }
+
+      this.notes.push(note);
     }
   }
 
