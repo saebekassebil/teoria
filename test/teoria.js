@@ -411,6 +411,21 @@ var suite = vows.describe('Teoria Framework').addBatch({
       'F#m(11b5b9)': function() {
         var notes = simpleArray(teoria.chord('F#m(11b5b9)'));
         assert.deepEqual(notes, ['f#', 'a', 'c', 'e', 'g', 'b']);
+      },
+
+      'C/e': function() {
+        var notes = simpleArray(teoria.chord('C/e'));
+        assert.deepEqual(notes, ['e', 'c', 'g']);
+      },
+
+      'A7/g': function() {
+        var notes = simpleArray(teoria.chord('A7/g'));
+        assert.deepEqual(notes, ['g', 'a', 'c#', 'e']);
+      },
+
+      'G/f#': function() {
+        var notes = simpleArray(teoria.chord('G/f#'));
+        assert.deepEqual(notes, ['f#', 'g', 'b', 'd']);
       }
     }
   }
