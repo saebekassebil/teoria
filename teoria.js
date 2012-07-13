@@ -359,6 +359,13 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
+     * Returns the note at the specified semitone distance from this note.
+     */
+    atDistance: function(semitoneDistance) {
+      return teoria.note.fromKey(this.key() + semitoneDistance);
+    },
+
+    /**
      * Sugar function for teoria.scale(note, scale)
      */
     scale: function(scale) {
@@ -775,10 +782,29 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   function TeoriaScale(tonic, scale) {
+    var scaleName;
     if (typeof scale == 'string') {
+      scaleName = scale;
       scale = teoria.scale.scales[scale];
       if (!scale) {
         throw new Error('Invalid Scale');
+      }
+    }
+    else {
+      for (var sName in teoria.scale.scales) {
+        var s = teoria.scale.scales[sName];
+        if (scale.length !== s.length)
+          continue;
+
+        for (var i = 0, length = scale.length; i < length; i++) {
+          if (scale[i] !== s[i])
+            break;
+          if (i == length - 1)
+            scaleName = sName;
+        }
+
+        if (scaleName)
+          break;
       }
     }
 
@@ -788,6 +814,7 @@ var scope = (typeof exports === 'object') ? exports : window;
 
     this.notes = [tonic];
     this.tonic = tonic;
+    this.name = scaleName;
     this.scale = scale;
 
     for (var i = 0, length = scale.length; i < length; i++) {
