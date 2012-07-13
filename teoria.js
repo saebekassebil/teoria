@@ -359,6 +359,13 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
+     * Returns the note at the specified semitone distance from this note.
+     */
+    atDistance: function(semitoneDistance) {
+      return teoria.note.fromKey(this.key() + semitoneDistance);
+    },
+
+    /**
      * Sugar function for teoria.scale(note, scale)
      */
     scale: function(scale) {
