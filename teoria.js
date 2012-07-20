@@ -775,17 +775,30 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   function TeoriaScale(tonic, scale) {
-    if (typeof scale == 'string') {
-      scale = teoria.scale.scales[scale];
-      if (!scale) {
-        throw new Error('Invalid Scale');
-      }
-    }
+    var scaleName, i;
 
     if (!(tonic instanceof TeoriaNote)) {
       throw new Error('Invalid Tonic');
     }
 
+    if (typeof scale == 'string') {
+      scaleName = scale;
+      scale = teoria.scale.scales[scale];
+      if (!scale) {
+        throw new Error('Invalid Scale');
+      }
+    } else {
+      for (i in teoria.scale.scales) {
+        if (teoria.scale.scales.hasOwnProperty(i)) {
+          if (teoria.scale.scales[i].toString() === scale.toString()) {
+            scaleName = i;
+            break;
+          }
+        }
+      }
+    }
+
+    this.name = scaleName;
     this.notes = [tonic];
     this.tonic = tonic;
     this.scale = scale;
