@@ -26,6 +26,8 @@ Features
 
  - An interval object (teoria.interval), which makes it easy to find the 
  interval between to notes, or find a note which is a given interval from a note.
+ There's also support for counting the interval span in semitones and inverting the
+ interval.
  
 Syntax
 ---------
@@ -41,10 +43,10 @@ var g5 = teoria.note("g''");  // equivalent to teoria.note("g5");
 var c3 = teoria.note.fromKey(28); // equivalent to teoria.note('c');
     
 // Intervals
-teoria.interval(a4, g5);   // Outputs: {"direction": "up", "name": "seventh", "quality": "minor"}            -> A minor sevent
-teoria.interval(a4, 'M6'); // Outputs: {"value":4,"accidental":{"value":1,"name":"#"},"name":"f","octave":5} -> F5#
-a4.interval('m3'); // Output a c#4 teoria.note object
-a4.interval(g5); // Outputs: {"direction": "up", "name": "seventh", "quality": "minor"} 
+teoria.interval(a4, g5);   // Outputs a TeoriaInterval object representing a minor seventh
+teoria.interval(a4, 'M6'); // Outputs a TeoriaNote representing F#5
+a4.interval('m3'); // Output a TeoriaNote representing C#4
+a4.interval(g5); // Outputs a TeoriaInterval object representing a minor seventh
     
 // Scales
 a4.scale('mixolydian').simple(); // Outputs: ["a", "b", "c#", "d", "e", "f#", "g"]
@@ -132,6 +134,9 @@ concert pitch which is 440hz. This is useful for older classical music.
  - A sugar function for calling teoria.interval(interval, direction)
 
 Look at the documentation for ```teoria.interval```
+
+#### TeoriaNote#transpose(interval[, direction])
+ - Like the #interval method, but changes `this` note, instead of returning a new
 
 #### TeoriaNote#chord([name])
  - Returns an instance of TeoriaChord, with root note set to this note
@@ -233,6 +238,13 @@ the new chord object
  - Returns the type of the chord: 'dyad', 'triad', 'trichord',
  'tetrad' or 'unknown'.
 
+#### TeoriaChord#interval(interval[, direction)
+ - Returns the same chord, a `interval` away
+
+#### TeoriaChord#transpose(interval[, direction])
+ - Like the `#interval` method, except it's `this` chord that gets changed instead of
+ returning a new chord.
+
 #### TeoriaChord#toString()
  - Simple usability function which is an alias for TeoriaChord.name
 
@@ -260,16 +272,19 @@ absolute intervals that defines the scale. The default supported scales are:
  - harmonicchromatic (Alias for chromatic)
 
 ### teoria.scale(tonic, scale)
- - Sugar function for constructing a new TeoriaScale object
+ - Sugar function for constructing a new `TeoriaScale` object
 
 ### TeoriaScale.notes
  - An array of ```TeoriaNote```s which is the scale's notes
+
+### TeoriaScale.name
+ - The name of the scale (if available). Type `string` or `undefined`
 
 ### TeoriaScale.tonic
  - The ```TeoriaNote``` which is the scale's tonic
 
 ### TeoriaScale#simple()
- - Returns an array of only the note's name, not the full ```TeoriaNote``` objects.
+ - Returns an `Array` of only the note's name, not the full ```TeoriaNote``` objects.
 
 ### TeoriaScale#type()
  - Returns the type of the scale, depending on the number of notes.
@@ -297,7 +312,9 @@ scale step. Example 'first', 'second', 'fourth', 'seventh'.
 ## teoria.interval(from, to[, direction])
  - A sugar function for the #from and #between methods of the same namespace.
 
-*from* - A ```TeoriaNote``` that is the root of the interval-measuring.
+*from* - Either a string, in "simple-format" or a ```TeoriaNote``` that is
+the root of the interval measuring. If a string is supplied, it's treated as
+an interval in simple format, and returns a `TeoriaInterval` object.
 
 *to* - Either a string, which is a "simple-format" interval such as 'M2' for 
 major second, and 'P5' for perfect fifth. More details on this format later.
@@ -349,4 +366,34 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) ->
 
 ```'m' = minor```, ```'M' = major```, ```'A' = augmented``` and 
 ```'d' = diminished```
+
+## TeoriaInterval(name, quality[, direction])
+ - A representation of a music interval
+
+### TeoriaInterval.interval
+ - The name of the interval
+
+### TeoriaInterval.intervalType
+ - The type of interval (mostly used internally)
+
+### TeoriaInterval.quality
+ - The quality of the interval (`'diminished'`, `'minor'`, `'perfect'`, `'major'`
+ or `'augmented'`)
+
+### TeoriaInterval.direction
+ - The direction of the interval (defaults to `'up'`)
+
+### TeoriaInterval#semitones()
+ - Returns the `number` of semitones the interval span.
+
+### TeoriaInterval#simple()
+ - Returns the number as a `string` in simple format
+
+### TeoriaInterval#invert()
+ - Returns the inverted interval as a `TeoriaInterval`
+
+### TeoriaInterval#qualityValue() - *internal*
+ - Returns the relative to default, value of the quality.
+ Fx a teoria.interval('M6'), will have a relative quality value of 1, as all the
+ intervals defaults to minor and perfect respectively.
 
