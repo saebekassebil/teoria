@@ -11,20 +11,20 @@ but doesn't *require* the other.
 Features
 ---------
 
- - A note object (teoria.note), which understands alterations, octaves, 
+ - A note object (`teoria.note`), which understands alterations, octaves,
  keynumber, frequency and etc. and Helmholtz notation
  
- - A chord object (teoria.chord), which understands everything 
+ - A chord object (`teoria.chord`), which understands everything
  from simple major/minor chords to advanced Jazz chords (Ab#5b9, F(#11) and such)
 
- - A scale object (teoria.scale), The scale object is a powerful presentation of
- a scale, which support quite a few handy methods. A scale can either be 
- constructed from the predefined scales, which by default contains the 7 modes 
+ - A scale object (`teoria.scale`), The scale object is a powerful presentation of
+ a scale, which support quite a few handy methods. A scale can either be
+ constructed from the predefined scales, which by default contains the 7 modes
  (Ionian, Dorian, Phrygian etc.) a major and minor pentatonic and the harmonic
  chromatic scale or from a arbitary array of intervals. The scale object
  also supports solfège, which makes it perfect for tutorials on sight reading.
 
- - An interval object (teoria.interval), which makes it easy to find the 
+ - An interval object (`teoria.interval`), which makes it easy to find the
  interval between to notes, or find a note which is a given interval from a note.
  There's also support for counting the interval span in semitones and inverting the
  interval.
@@ -47,13 +47,20 @@ teoria.interval(a4, g5);   // Outputs a TeoriaInterval object representing a min
 teoria.interval(a4, 'M6'); // Outputs a TeoriaNote representing F#5
 a4.interval('m3'); // Output a TeoriaNote representing C#4
 a4.interval(g5); // Outputs a TeoriaInterval object representing a minor seventh
+a4.interval(teoria.note('bb5')).invert(); // Outputs a TeoriaInterval representing a major seventh
     
 // Scales
 a4.scale('mixolydian').simple(); // Outputs: ["a", "b", "c#", "d", "e", "f#", "g"]
 a4.scale('aeolian').simple();    // Outputs: ["a", "b", "c", "d", "e", "f", "g"]
 g5.scale('ionian').simple();     // Outputs: ["g", "a", "b", "c", "d", "e", "f#"]
-g5.scale('dorian');    // Outputs an TeoriaScale object
-    
+g5.scale('dorian');    // Outputs a TeoriaScale object
+
+// Chords
+a4.chord('sus2).name; // Outputs 'Asus2'
+c3.chord('m').name; // Outputs 'Cm'
+teoria.chord('Ab#5b9'); // Outputs a TeoriaChord object, representing a Ab#5b9 chord
+g5.chord('dim') // Outputs a TeoriaChord object, representing a Gdim chord
+
 // Frequency
 teoria.note.fromFrequency(467); // Outputs: {"note":{...},"cents":3.1028314220028586} -> A4# a little out of tune.
 a4.fq(); // Outputs 440
@@ -310,7 +317,8 @@ scale step. Example 'first', 'second', 'fourth', 'seventh'.
 
 
 ## teoria.interval(from, to[, direction])
- - A sugar function for the #from and #between methods of the same namespace.
+ - A sugar function for the #from and #between methods of the same namespace and
+ for creating `TeoriaInterval` objects.
 
 *from* - Either a string, in "simple-format" or a ```TeoriaNote``` that is
 the root of the interval measuring. If a string is supplied, it's treated as
@@ -326,7 +334,7 @@ the format of this interval object, take a look at the #between method
 *direction* - The direction of the interval (only relevant when *to* is a string).
 Can be 'up' or 'down', defaults to 'up'
 
-### teoria.interval.from(from, to[, direction])
+#### teoria.interval.from(from, to[, direction])
  - Returns a note which lies a given interval away from a root note.
 
 *from* - Same as above, the ```TeoriaNote``` which is the base of the measuring
@@ -335,25 +343,18 @@ Can be 'up' or 'down', defaults to 'up'
 
 *direction* - The direction as described above.
 
-### teoria.interval.between(from, to)
+#### teoria.interval.between(from, to)
  - Returns an interval object which represents the interval between two notes.
 
 *from* and *to* are two ```TeoriaNote```s which are the notes that the
 interval is measured from. For example if 'a' and 'c' are given, the resulting
 interval object would represent a minor third.
 
-*interval object*: The interval object contains the following data:
 ```javascript
-teoria.interval.between(teoria.note("a"), teoria.note("c'")) ->
-{
-  simple: 'm3',     // The simple name of the interval
-  direction: 'up',  // The direction of the interval
-  quality: 'minor', // The quality of the interval
-  name: 'third'     // The name of the interval
-}
+teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval('m3')
 ```
 
-### teoria.interval.invert(simpleInterval)
+#### teoria.interval.invert(simpleInterval)
  - Returns the inversion of the interval provided
 
 *simpleInterval* - An interval represented in simple string form. Examples:
@@ -370,29 +371,29 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) ->
 ## TeoriaInterval(name, quality[, direction])
  - A representation of a music interval
 
-### TeoriaInterval.interval
+#### TeoriaInterval.interval
  - The name of the interval
 
-### TeoriaInterval.intervalType
+#### TeoriaInterval.intervalType
  - The type of interval (mostly used internally)
 
-### TeoriaInterval.quality
+#### TeoriaInterval.quality
  - The quality of the interval (`'diminished'`, `'minor'`, `'perfect'`, `'major'`
  or `'augmented'`)
 
-### TeoriaInterval.direction
+#### TeoriaInterval.direction
  - The direction of the interval (defaults to `'up'`)
 
-### TeoriaInterval#semitones()
+#### TeoriaInterval#semitones()
  - Returns the `number` of semitones the interval span.
 
-### TeoriaInterval#simple()
+#### TeoriaInterval#simple()
  - Returns the number as a `string` in simple format
 
-### TeoriaInterval#invert()
+#### TeoriaInterval#invert()
  - Returns the inverted interval as a `TeoriaInterval`
 
-### TeoriaInterval#qualityValue() - *internal*
+#### TeoriaInterval#qualityValue() - *internal*
  - Returns the relative to default, value of the quality.
  Fx a teoria.interval('M6'), will have a relative quality value of 1, as all the
  intervals defaults to minor and perfect respectively.
