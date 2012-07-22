@@ -155,12 +155,27 @@ var scope = (typeof exports === 'object') ? exports : window;
     'diminished': 'd'
   };
 
-  var kIntervalInversion = {
-    'P': 'P',
-    'M': 'm',
-    'm': 'M',
-    'A': 'd',
-    'd': 'A'
+  var kValidQualities = {
+    perfect: {
+      diminished: -1,
+      perfect: 0,
+      augmented: 1
+    },
+
+    minor: {
+      diminished: -1,
+      minor: 0,
+      major: 1,
+      augmented: 2
+    }
+  };
+
+  var kQualityInversion = {
+    'perfect': 'perfect',
+    'major': 'minor',
+    'minor': 'major',
+    'augmented': 'diminished',
+    'diminished': 'augmented'
   };
 
   var kAlterations = {
@@ -449,7 +464,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       }
 
       var interval = scale.tonic.interval(this);
-      return kIntervalSolfege[interval.simple];
+      return kIntervalSolfege[interval.simple()];
     },
 
     /**
@@ -704,12 +719,11 @@ var scope = (typeof exports === 'object') ? exports : window;
         has = {first: false, third: false, fifth: false};
         for (i = 0, length = this.notes.length; i < length; i++) {
           interval = this.root.interval(this.notes[i]);
-          num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
-          invert = kIntervals[num];
-          if (interval.name in has) {
-            has[interval.name] = true;
-          } else if (invert.name in has) {
-            has[invert.name] = true;
+          invert = interval.invert();
+          if (interval.interval in has) {
+            has[interval.interval] = true;
+          } else if (invert.interval in has) {
+            has[invert.interval] = true;
           }
         }
 
@@ -718,12 +732,11 @@ var scope = (typeof exports === 'object') ? exports : window;
         has = {first: false, third: false, fifth: false, seventh: false};
         for (i = 0, length = this.notes.length; i < length; i++) {
           interval = this.root.interval(this.notes[i]);
-          num = parseFloat(teoria.interval.invert(interval.simple)[1]) - 1;
-          invert = kIntervals[num];
-          if (interval.name in has) {
-            has[interval.name] = true;
-          } else if (invert.name in has) {
-            has[invert.name] = true;
+          invert = interval.invert();
+          if (interval.interval in has) {
+            has[interval.interval] = true;
+          } else if (invert.interval in has) {
+            has[invert.interval] = true;
           }
         }
 
@@ -857,12 +870,12 @@ var scope = (typeof exports === 'object') ? exports : window;
 
       if (note) {
         interval = this.tonic.interval(note);
-        return kIntervalSolfege[interval.simple];
+        return kIntervalSolfege[interval.simple()];
       } else {
         var solfegeArray = [];
         for (var i = 0, length = this.notes.length; i < length; i++) {
           interval = this.tonic.interval(this.notes[i]);
-          solfegeArray.push(kIntervalSolfege[interval.simple]);
+          solfegeArray.push(kIntervalSolfege[interval.simple()]);
         }
 
         return solfegeArray;
@@ -882,6 +895,58 @@ var scope = (typeof exports === 'object') ? exports : window;
       this.tonic = scale.tonic;
 
       return this;
+    }
+  };
+
+  function TeoriaInterval(interval, quality, direction) {
+    if (!(interval in kIntervalIndex)) {
+      throw new Error('Invalid interval type');
+    }
+
+    this.intervalType = kIntervals[kIntervalIndex[interval]];
+
+    if (!(quality in kValidQualities[this.intervalType.quality])) {
+      throw new Error('Invalid interval quality');
+    }
+
+    this.interval = interval;
+    this.quality = quality;
+    this.direction = direction === 'down' ? 'down' : 'up';
+  }
+
+  TeoriaInterval.prototype = {
+    semitones: function() {
+      return this.intervalType.size + this.qualityValue();
+    },
+
+    simple: function() {
+      return kQualityTemp[this.quality] +
+        Number(kIntervalIndex[this.interval] + 1).toString();
+    },
+
+    invert: function() {
+      var intervalNumber = kIntervalIndex[this.interval] + 1;
+
+      if (intervalNumber > 8) { // Compound intervals
+        intervalNumber = intervalNumber - 7;
+      }
+
+      if (intervalNumber !== 8 && intervalNumber !== 1) {
+        intervalNumber = 9 - intervalNumber;
+      }
+
+      return new TeoriaInterval(kIntervals[intervalNumber - 1].name,
+          kQualityInversion[this.quality]);
+    },
+
+    qualityValue: function() {
+      var defQuality = this.intervalType.quality, quality = this.quality;
+
+      return kValidQualities[defQuality][quality];
+    },
+
+    toString: function() {
+      return this.simple();
     }
   };
 
@@ -940,7 +1005,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     } else if (name instanceof TeoriaNote) {
       return new TeoriaChord(name, oSymbol || '');
     } else {
-      throw new Error("Invalid Chord. Couldn't find note name");
+      throw new Error('Invalid Chord. Couldn\'t find note name');
     }
   };
 
@@ -951,20 +1016,32 @@ var scope = (typeof exports === 'object') ? exports : window;
    * declare a interval by its string name: P8, M3, m7 etc.
    */
   teoria.interval = function(from, to, direction) {
-    if (typeof to === 'string') {
-      if (direction === 'down') {
-        to = teoria.interval.invert(to);
-      }
-      var quality = kQualityLong[to[0]];
-      var interval = parseFloat(to.substr(1));
-      if (!quality || isNaN(interval) || interval < 1) {
+    var quality, intervalNumber, interval, intervalName;
+    if (typeof from === 'string') {
+      quality = kQualityLong[from.charAt(0)];
+      intervalNumber = parseInt(from.substr(1));
+      if (!quality || isNaN(intervalNumber) || intervalNumber < 1) {
         throw new Error('Invalid string-interval format');
       }
 
-      return teoria.interval.from(from, {
-        quality: quality,
-        interval: kIntervals[interval - 1].name
-      }, direction);
+      intervalName = kIntervals[intervalNumber - 1].name;
+      return new TeoriaInterval(intervalName, quality, direction);
+    }
+    if (typeof to === 'string' && from instanceof TeoriaNote) {
+      if (direction === 'down') {
+        to = teoria.interval.invert(to);
+      }
+
+      quality = kQualityLong[to[0]];
+      intervalNumber = parseInt(to.substr(1));
+      if (!quality || isNaN(intervalNumber) || intervalNumber < 1) {
+        throw new Error('Invalid string-interval format');
+      }
+
+      intervalName = kIntervals[intervalNumber - 1].name;
+      interval = new TeoriaInterval(intervalName, quality, direction);
+
+      return teoria.interval.from(from, interval);
     } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
       return teoria.interval.between(from, to);
     } else {
@@ -975,50 +1052,38 @@ var scope = (typeof exports === 'object') ? exports : window;
   /**
    * Returns the note from a given note (from), with a given interval (to)
    */
-  teoria.interval.from = function(from, to, direction) {
-    to.direction = direction || to.direction || 'up';
-    var note, accDiff, diff, octave, index, interval, alterations, dist;
+  teoria.interval.from = function(from, to) {
+    var note, diff, octave, index, alterations, dist;
+
     index = kIntervalIndex[to.interval];
-    interval = kIntervals[index];
     if (index > 7) {
       index -= 7;
     }
 
     index = kNotes[from.name].index + index;
-    if (index > kNoteIndex.length - 1) {
+    if (index > kNoteIndex.length - 1) { // Compound interval
       index = index - kNoteIndex.length;
     }
 
     note = kNoteIndex[index];
-    alterations = kAlterations[interval.quality];
-    if (alterations.indexOf(to.quality) == -1 ||
-        alterations.indexOf(interval.quality) == -1) {
-      throw new Error('Invalid interval quality');
-    }
-    accDiff = alterations.indexOf(to.quality) -
-              alterations.indexOf(interval.quality);
-    diff = (interval.size + accDiff) - getDistance(from.name, note);
+    dist = getDistance(from.name, note);
+    diff = to.intervalType.size + to.qualityValue() - dist;
 
-    if (from.octave) {
-      dist = getDistance(from.name, note);
-      octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
-      octave += 1 + Math.floor(kIntervalIndex[to.interval] / 7);
-    }
+    octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
+    octave += 1 + Math.floor(kIntervalIndex[to.interval] / 7);
 
     diff += from.accidental.value;
     if (diff >= 10) {
       diff -= 12;
     }
 
-    if (diff > -3 && diff < 3) {
-      note += kAccidentalSign[diff];
-    }
+    note += kAccidentalSign[diff];
 
-    if (direction === 'down') {
+    if (to.direction === 'down') {
       octave--;
     }
 
-    return new TeoriaNote(note + (octave || ''));
+    return new TeoriaNote(note + octave.toString());
   };
 
   /**
@@ -1026,7 +1091,7 @@ var scope = (typeof exports === 'object') ? exports : window;
    */
   teoria.interval.between = function(from, to) {
     var fromKey = from.key(), toKey = to.key(), semitones, interval,
-        intervalInt, tmp, simpleName, quality, alteration;
+        intervalInt, tmp, quality, alteration, direction;
 
     semitones = toKey - fromKey;
     if (semitones > 24 || semitones < -25) {
@@ -1042,31 +1107,19 @@ var scope = (typeof exports === 'object') ? exports : window;
     interval = kIntervals[intervalInt];
     alteration = kAlterations[interval.quality];
     quality = alteration[Math.abs(semitones) - interval.size + 1];
-    simpleName = kQualityTemp[quality] + (intervalInt + 1);
-    return {
+    direction = semitones > 0 ? 'up' : 'down';
+
+    return new TeoriaInterval(interval.name, quality, direction);
+    /*return {
       name: interval.name,
       quality: quality,
       direction: (semitones > 0 ? 'up' : 'down'),
       simple: simpleName
-    };
+    };*/
   };
 
   teoria.interval.invert = function(sInterval) {
-    if (sInterval.length !== 2 && sInterval.length !== 3) {
-      return false;
-    }
-
-    var quality = kIntervalInversion[sInterval[0]];
-    var inverse = (sInterval.length === 2) ? parseFloat(sInterval[1]) :
-                                            parseFloat(sInterval.substr(1));
-    if (inverse > 8) {
-      inverse = inverse - 7;
-    }
-    if (inverse !== 8 && inverse !== 1) {
-      inverse = 9 - inverse;
-    }
-
-    return quality + inverse.toString();
+    return (teoria.interval(sInterval).invert());
   };
 
   // teoria.scale namespace - Scales are constructed through this function.
@@ -1109,6 +1162,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;
   teoria.TeoriaScale = TeoriaScale;
+  teoria.TeoriaInterval = TeoriaInterval;
 
   globalScope.teoria = teoria;
 })(scope);

@@ -85,23 +85,15 @@ var suite = vows.describe('Teoria Framework').addBatch({
       'The interval between C#5 and A4 is a major third': function(note) {
         var a4 = new teoria.TeoriaNote('A4');
 
-        assert.deepEqual(note.interval(a4), {
-          name: 'third',
-          quality: 'major',
-          direction: 'down',
-          simple: 'M3'
-        });
+        assert.deepEqual(note.interval(a4),
+            new teoria.TeoriaInterval('third', 'major', 'down'));
       },
 
       'The interval between C#5 and Eb6 is diminished eleventh': function(note) {
         var eb6 = new teoria.TeoriaNote('Eb6');
 
-        assert.deepEqual(note.interval(eb6), {
-          name: 'tenth',
-          quality: 'diminished',
-          direction: 'up',
-          simple: 'd10'
-        });
+        assert.deepEqual(note.interval(eb6),
+            new teoria.TeoriaInterval('tenth', 'diminished'));
       },
 
       'An diminished fifth away from C#5 is G5': function(note) {
