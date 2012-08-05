@@ -282,20 +282,21 @@ var scope = (typeof exports === 'object') ? exports : window;
    *
    * This object is the representation of a note.
    * The constructor must be called with a name,
-   * and optionally a value argument.
+   * and optionally duration and dot count arguments.
    * The first parameter (name) can be specified in either
    * scientific notation (name+accidentals+octave). Fx:
    *    A4 - Cb3 - D#8 - Hbb - etc.
    * Or in the Helmholtz notation:
    *    ,,C - f#'' - d - Eb - etc.
    */
-  function TeoriaNote(name, duration) {
+  function TeoriaNote(name, duration, dots) {
     if (typeof name !== 'string') {
       return null;
     }
 
     this.name = name;
     this.duration = duration || 4;
+    this.dots = dots || 0;
     this.accidental = {value: 0, sign: ''};
     var parser = name.match(/^([a-h])(x|#|bb|b?)(-?\d*)/i);
 
@@ -468,7 +469,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
-     * Returns the name of the value,
+     * Returns the name of the duration value,
      * such as 'whole', 'quarter', 'sixteenth' etc.
      */
     durationName: function() {
@@ -952,8 +953,8 @@ var scope = (typeof exports === 'object') ? exports : window;
 
   // teoria.note namespace - All notes should be instantiated
   // through this function.
-  teoria.note = function(name, value) {
-    return (new TeoriaNote(name, value));
+  teoria.note = function(name, duration, dots) {
+    return (new TeoriaNote(name, duration, dots));
   };
 
   teoria.note.fromKey = function(key) {
