@@ -477,6 +477,15 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
+     * Returns the duration of the note in seconds
+     * at the specified tempo.
+     */
+    durationInSeconds: function(tempo) {
+      var secs = (60 / tempo) / (this.duration / 4);
+      return secs * 2 - secs / Math.pow(2, this.dots);
+    },
+
+    /**
      * Returns the name of the note, with an optional display of octave number
      */
     toString: function(dontShow) {
