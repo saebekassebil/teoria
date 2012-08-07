@@ -38,8 +38,8 @@ For a technical library reference, look further down this document.
 ```javascript
 
 // Note creation with scientific and Helmholtz notation
-var a4 = teoria.note("a4");   // equivalent to teoria.note("a'");
-var g5 = teoria.note("g''");  // equivalent to teoria.note("g5");
+var a4 = teoria.note('a4');   // equivalent to teoria.note('a');
+var g5 = teoria.note('g\'\'');  // equivalent to teoria.note('g5');
 var c3 = teoria.note.fromKey(28); // equivalent to teoria.note('c');
     
 // Intervals
@@ -56,10 +56,10 @@ g5.scale('ionian').simple();     // Outputs: ["g", "a", "b", "c", "d", "e", "f#"
 g5.scale('dorian');    // Outputs a TeoriaScale object
 
 // Chords
-a4.chord('sus2).name; // Outputs 'Asus2'
+a4.chord('sus2').name; // Outputs 'Asus2'
 c3.chord('m').name; // Outputs 'Cm'
 teoria.chord('Ab#5b9'); // Outputs a TeoriaChord object, representing a Ab#5b9 chord
-g5.chord('dim') // Outputs a TeoriaChord object, representing a Gdim chord
+g5.chord('dim'); // Outputs a TeoriaChord object, representing a Gdim chord
 
 // Frequency
 teoria.note.fromFrequency(467); // Outputs: {"note":{...},"cents":3.1028314220028586} -> A4# a little out of tune.
