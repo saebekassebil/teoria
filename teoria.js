@@ -441,13 +441,24 @@ var scope = (typeof exports === 'object') ? exports : window;
       return enharmonics;
     },
 
-    solfege: function(scale) {
+    solfege: function(scale, showOctaves) {
       if (!(scale instanceof TeoriaScale)) {
         throw new Error('Invalid Scale');
       }
 
-      var interval = scale.tonic.interval(this);
-      return kIntervalSolfege[interval.simple()];
+      var interval = scale.tonic.interval(this), solfege, stroke, count;
+      if (interval.direction === 'down') {
+        interval = interval.invert();
+      }
+
+      if (showOctaves) {
+        count = (this.key(true) - scale.tonic.key(true)) / 7;
+        count = (count > 0) ? Math.floor(count) : -Math.floor(-count);
+        stroke = (count >= 0) ? '\'' : ',';
+      }
+
+      solfege = kIntervalSolfege[interval.simple()];
+      return (showOctaves) ? pad(solfege, stroke, Math.abs(count)) : solfege;
     },
 
     /**
@@ -845,24 +856,20 @@ var scope = (typeof exports === 'object') ? exports : window;
       }
     },
 
-    solfege: function(index) {
-      var note, interval;
+    solfege: function(index, showOctaves) {
+      var interval, i, length, solfegeArray = [];
+
+      // Return specific index in scale
       if (index) {
-        note = this.get(index);
+        return this.get(index).solfege(this, showOctaves);
       }
 
-      if (note) {
-        interval = this.tonic.interval(note);
-        return kIntervalSolfege[interval.simple()];
-      } else {
-        var solfegeArray = [];
-        for (var i = 0, length = this.notes.length; i < length; i++) {
-          interval = this.tonic.interval(this.notes[i]);
-          solfegeArray.push(kIntervalSolfege[interval.simple()]);
-        }
-
-        return solfegeArray;
+      // Return an array of solfege syllables
+      for (i = 0, length = this.notes.length; i < length; i++) {
+        solfegeArray.push(this.notes[i].solfege(this, showOctaves));
       }
+
+      return solfegeArray;
     },
 
     interval: function(interval, direction) {

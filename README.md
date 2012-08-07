@@ -167,11 +167,14 @@ Example: ```teoria.note("ab'").scientific() -> "Ab4"```
 
 Example: ```teoria.note('C').enharmonics() -> [teoria.note('Dbb'), teoria.note('b#')]```
 
-#### TeoriaNote#solfege(scale)
+#### TeoriaNote#solfege(scale, showOctaves)
  - Returns the solfege step in the given scale context
 
 *scale* - An instance of ```TeoriaScale```, which is the context of the
 solfege step measuring
+
+*showOctaves* - A boolean. If set to true, a "Helmholtz-like" notation will be
+used if there's bigger intervals than an octave
 
 #### TeoriaNote#durationName()
  - Returns the duration name.
@@ -310,10 +313,12 @@ absolute intervals that defines the scale. The default supported scales are:
 *index* - Can be a number referring to the scale step, or the name (string) og the
 scale step. Example 'first', 'second', 'fourth', 'seventh'.
 
-### TeoriaScale#solfege(index)
+### TeoriaScale#solfege(index, showOctaves)
  - Returns the solfege name of the given scale step
 
 *index* Same as ```TeoriaScale#get```
+
+*showOctaves* - A boolean meaning the same as `showOctaves` in TeoriaNote#solfege
 
 
 ## teoria.interval(from, to[, direction])
