@@ -77,7 +77,7 @@ Documentation
 *name* - The name argument is the note name as a string. The note can both
 be expressed in scientific and Helmholtz notation.
 Some examples of valid note names:
-```Eb4```, ```,,C#```, ```C4```, ```d#''```, ```Ab2```
+```Eb4```, ```C#,,```, ```C4```, ```d#''```, ```Ab2```
 
 *duration* - The duration argument is optional, and not much used in the library.
 If supplied, it should be number corresponding to a note duration, such as:

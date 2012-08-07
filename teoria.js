@@ -293,7 +293,7 @@ var scope = (typeof exports === 'object') ? exports : window;
    * scientific notation (name+accidentals+octave). Fx:
    *    A4 - Cb3 - D#8 - Hbb - etc.
    * Or in the Helmholtz notation:
-   *    ,,C - f#'' - d - Eb - etc.
+   *    C,, - f#'' - d - Eb - etc.
    */
   function TeoriaNote(name, duration) {
     if (typeof name !== 'string') {
@@ -426,19 +426,16 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
-     * Returns the Helmholtz notation form of the note (fx ,,C d' F# g#'')
+     * Returns the Helmholtz notation form of the note (fx C,, d' F# g#'')
      */
     helmholtz: function() {
       var name = (this.octave < 3) ? this.name.toUpperCase() :
-                                    this.name.toLowerCase();
-      var padding;
-      if (this.octave <= 2) {
-        padding = pad('', ',', 2 - this.octave);
-        return padding + name + this.accidental.sign;
-      } else {
-        padding = pad('', '\'', this.octave - 3);
-        return name + this.accidental.sign + padding;
-      }
+                                     this.name.toLowerCase();
+      var paddingChar = (this.octave < 3) ? ',' : '\'';
+      var paddingCount = (this.octave < 2) ? 2 - this.octave : this.octave - 3;
+
+      pad(name + this.accidental.sign, paddingChar, paddingCount);
+      return pad(name + this.accidental.sign, paddingChar, paddingCount);
     },
 
     /**
