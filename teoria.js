@@ -99,34 +99,6 @@ var scope = (typeof exports === 'object') ? exports : window;
     name: 'octave',
     quality: 'perfect',
     size: 12
-  }, {
-    name: 'ninth',
-    quality: 'minor',
-    size: 13
-  }, {
-    name: 'tenth',
-    quality: 'minor',
-    size: 15
-  }, {
-    name: 'eleventh',
-    quality: 'perfect',
-    size: 17
-  }, {
-    name: 'twelfth',
-    quality: 'perfect',
-    size: 19
-  }, {
-    name: 'thirteenth',
-    quality: 'minor',
-    size: 20
-  }, {
-    name: 'fourteenth',
-    quality: 'minor',
-    size: 22
-  }, {
-    name: 'fifteenth',
-    quality: 'perfect',
-    size: 24
   }];
 
   var kIntervalIndex = {
@@ -909,55 +881,82 @@ var scope = (typeof exports === 'object') ? exports : window;
     }
   };
 
-  function TeoriaInterval(interval, quality, direction) {
-    if (!(interval in kIntervalIndex)) {
-      throw new Error('Invalid interval type');
-    }
+  function TeoriaInterval(intervalNum, quality, direction) {
+    var simple = (intervalNum >= 8 && intervalNum % 7 == 1) ?
+          intervalNum % 7 * 8 : ((intervalNum - 1) % 7) + 1;
+    var compoundOctaves = Math.ceil((intervalNum - simple) / 8);
+    var simpleIntervalType = kIntervals[simple - 1];
 
-    this.intervalType = kIntervals[kIntervalIndex[interval]];
 
-    if (!(quality in kValidQualities[this.intervalType.quality])) {
+    if (!(quality in kValidQualities[simpleIntervalType.quality])) {
       throw new Error('Invalid interval quality');
     }
 
-    this.interval = interval;
+    this.interval = intervalNum;
     this.quality = quality;
     this.direction = direction === 'down' ? 'down' : 'up';
+    this.simpleInterval = simple;
+    this.simpleIntervalType = simpleIntervalType;
+    this.compoundOctaves = compoundOctaves;
   }
 
   TeoriaInterval.prototype = {
     semitones: function() {
-      return this.intervalType.size + this.qualityValue();
+      return this.simpleIntervalType.size + this.qualityValue() +
+              this.compoundOctaves * 12;
     },
 
     simple: function() {
+      return kQualityTemp[this.quality] + this.simpleInterval.toString();
+    },
+
+    compound: function() {
       return kQualityTemp[this.quality] +
-        Number(kIntervalIndex[this.interval] + 1).toString();
+        (this.simpleInterval + this.compoundOctaves * 7).toString();
+    },
+
+    isCompound: function() {
+      return this.compoundOctaves > 0;
     },
 
     invert: function() {
-      var intervalNumber = kIntervalIndex[this.interval] + 1;
-
-      if (intervalNumber > 8) { // Compound intervals
-        intervalNumber = intervalNumber - 7;
-      }
+      var intervalNumber = this.simpleInterval;
 
       if (intervalNumber !== 8 && intervalNumber !== 1) {
         intervalNumber = 9 - intervalNumber;
       }
 
-      return new TeoriaInterval(kIntervals[intervalNumber - 1].name,
-          kQualityInversion[this.quality]);
+      return new TeoriaInterval(intervalNumber,
+                                kQualityInversion[this.quality]);
     },
 
     qualityValue: function() {
-      var defQuality = this.intervalType.quality, quality = this.quality;
+      var defQuality = this.simpleIntervalType.quality, quality = this.quality;
 
       return kValidQualities[defQuality][quality];
     },
 
+    equal: function(interval) {
+      return this.interval === interval.interval &&
+             this.quality === interval.quality;
+    },
+
+    greater: function(interval) {
+      var thisSemitones = this.semitones();
+      var thatSemitones = interval.semitones();
+
+      // If equal in absolute size, measure which interval is bigger
+      // For example P4 is bigger than A3
+      return (thisSemitones === thatSemitones) ?
+        (this.interval > interval.interval) : (thisSemitones > thatSemitones);
+    },
+
+    smaller: function(interval) {
+      return !this.equal(interval) && !this.greater(interval);
+    },
+
     toString: function() {
-      return this.simple();
+      return (this.compoundOctaves > 0) ? this.compound() : this.simple();
     }
   };
 
@@ -1028,6 +1027,8 @@ var scope = (typeof exports === 'object') ? exports : window;
    */
   teoria.interval = function(from, to, direction) {
     var quality, intervalNumber, interval, intervalName;
+
+    // Construct a TeoriaInterval object from string representation
     if (typeof from === 'string') {
       quality = kQualityLong[from.charAt(0)];
       intervalNumber = parseInt(from.substr(1));
@@ -1035,9 +1036,9 @@ var scope = (typeof exports === 'object') ? exports : window;
         throw new Error('Invalid string-interval format');
       }
 
-      intervalName = kIntervals[intervalNumber - 1].name;
-      return new TeoriaInterval(intervalName, quality, direction);
+      return new TeoriaInterval(intervalNumber, quality, direction);
     }
+
     if (typeof to === 'string' && from instanceof TeoriaNote) {
       if (direction === 'down') {
         to = teoria.interval.invert(to);
@@ -1049,8 +1050,7 @@ var scope = (typeof exports === 'object') ? exports : window;
         throw new Error('Invalid string-interval format');
       }
 
-      intervalName = kIntervals[intervalNumber - 1].name;
-      interval = new TeoriaInterval(intervalName, quality, direction);
+      interval = new TeoriaInterval(intervalNumber, quality, direction);
 
       return teoria.interval.from(from, interval);
     } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
@@ -1066,22 +1066,20 @@ var scope = (typeof exports === 'object') ? exports : window;
   teoria.interval.from = function(from, to) {
     var note, diff, octave, index, alterations, dist;
 
-    index = kIntervalIndex[to.interval];
-    if (index > 7) {
-      index -= 7;
-    }
-
+    index = to.simpleInterval - 1;
     index = kNotes[from.name].index + index;
-    if (index > kNoteIndex.length - 1) { // Compound interval
+
+    if (index > kNoteIndex.length - 1) {
       index = index - kNoteIndex.length;
     }
 
     note = kNoteIndex[index];
     dist = getDistance(from.name, note);
-    diff = to.intervalType.size + to.qualityValue() - dist;
+    diff = to.simpleIntervalType.size + to.qualityValue() - dist;
 
     octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
-    octave += 1 + Math.floor(kIntervalIndex[to.interval] / 7);
+    octave += 1 + Math.floor((to.simpleInterval - 1) / 7);
+    octave += to.compoundOctaves;
 
     diff += from.accidental.value;
     if (diff >= 10) {
@@ -1102,15 +1100,14 @@ var scope = (typeof exports === 'object') ? exports : window;
    */
   teoria.interval.between = function(from, to) {
     var fromKey = from.key(), toKey = to.key(), semitones, interval,
-        intervalInt, tmp, quality, alteration, direction = 'up';
+        intervalInt, tmp, quality, alteration, direction = 'up',
+        simpleInterval;
 
     semitones = toKey - fromKey;
     intervalInt = kNotes[to.name].index - kNotes[from.name].index +
                   (7 * (to.octave - from.octave));
 
-    if (semitones > 24 || semitones < -25) {
-      throw new Error('Interval is bigger than an augmented fifteenth');
-    } else if (semitones < 0 || intervalInt < 0) {
+    if (semitones < 0 || intervalInt < 0) {
       intervalInt = -intervalInt;
       direction = 'down';
       tmp = from;
@@ -1118,11 +1115,15 @@ var scope = (typeof exports === 'object') ? exports : window;
       to = tmp;
     }
 
-    interval = kIntervals[intervalInt];
-    alteration = kAlterations[interval.quality];
-    quality = alteration[Math.abs(semitones) - interval.size + 1];
+    intervalInt += 1;
+    simpleInterval = (intervalInt >= 8 && intervalInt % 7 == 1) ?
+          intervalInt % 7 * 8 : ((intervalInt - 1) % 7) + 1;
 
-    return new TeoriaInterval(interval.name, quality, direction);
+    interval = kIntervals[simpleInterval - 1];
+    alteration = kAlterations[interval.quality];
+    quality = alteration[(Math.abs(semitones) - interval.size + 1) % 12];
+
+    return new TeoriaInterval(intervalInt, quality, direction);
   };
 
   teoria.interval.invert = function(sInterval) {

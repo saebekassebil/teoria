@@ -368,13 +368,13 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval(
 ```'m' = minor```, ```'M' = major```, ```'A' = augmented``` and 
 ```'d' = diminished```
 
-## TeoriaInterval(name, quality[, direction])
+## TeoriaInterval(intervalNumber, quality[, direction])
  - A representation of a music interval
 
 #### TeoriaInterval.interval
- - The name of the interval
+ - The interval number (A ninth = 9, A seventh = 7, fifteenth = 15)
 
-#### TeoriaInterval.intervalType
+#### TeoriaInterval.simpleIntervalType
  - The type of interval (mostly used internally)
 
 #### TeoriaInterval.quality
@@ -388,7 +388,34 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval(
  - Returns the `number` of semitones the interval span.
 
 #### TeoriaInterval#simple()
- - Returns the number as a `string` in simple format
+ - Returns the simple part of the interval (as opposed to #compound). Example:
+
+```javascript
+teoria.interval('M17').simple() === 'M3'
+teoria.interval('m23').simple() === 'm2'
+teoria.interval('P5').simple() === 'P5'
+```
+
+#### TeoriaInterval#compound()
+ - Returns the whole interval, compound or not.
+
+```javascript
+teoria.interval('M17').compound() === 'M17'
+teoria.interval('m23').compound() === 'm23'
+teoria.interval('P5').compound() === 'P5'
+```
+
+#### TeoriaInterval#isCompound()
+ - Returns a boolean value, showing if the interval is a compound interval
+
+#### TeoriaInterval#equal(interval)
+ - Returns true if the supplied `interval` is equal to this interval
+
+#### TeoriaInterval#greater(interval)
+ - Returns true if the supplied `interval` is greater than this interval
+
+#### TeoriaInterval#smaller(interval)
+ - Returns true if the supplied `interval` is smaller than this interval
 
 #### TeoriaInterval#invert()
  - Returns the inverted interval as a `TeoriaInterval`

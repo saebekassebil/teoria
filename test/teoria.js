@@ -86,14 +86,14 @@ var suite = vows.describe('Teoria Framework').addBatch({
         var a4 = new teoria.TeoriaNote('A4');
 
         assert.deepEqual(note.interval(a4),
-            new teoria.TeoriaInterval('third', 'major', 'down'));
+            new teoria.TeoriaInterval(3, 'major', 'down'));
       },
 
-      'The interval between C#5 and Eb6 is diminished eleventh': function(note) {
+      'The interval between C#5 and Eb6 is diminished tenth': function(note) {
         var eb6 = new teoria.TeoriaNote('Eb6');
 
         assert.deepEqual(note.interval(eb6),
-            new teoria.TeoriaInterval('tenth', 'diminished'));
+            new teoria.TeoriaInterval(10, 'diminished'));
       },
 
       'An diminished fifth away from C#5 is G5': function(note) {
@@ -107,7 +107,7 @@ var suite = vows.describe('Teoria Framework').addBatch({
         var db4 = teoria.note('db4');
 
         assert.deepEqual(cis4.interval(db4),
-            new teoria.TeoriaInterval('second', 'diminished'));
+            new teoria.TeoriaInterval(2, 'diminished'));
       }
     }
   },
@@ -316,6 +316,40 @@ var suite = vows.describe('Teoria Framework').addBatch({
 
       'Invert A5 is d4': function() {
         assert.equal(teoria.interval.invert('A5'), 'd4');
+      }
+    },
+
+    'Compound Intervals': {
+      'A major seventeenth is a compound interval': function() {
+        assert.equal(teoria.interval('M17').isCompound(), true);
+      },
+
+      'A major seventeenth\'s simple part is a major third': function() {
+        assert.equal(teoria.interval('M17').simple(), 'M3');
+      },
+
+      'A 22nd has two compound octaves': function() {
+        assert.equal(teoria.interval('P22').compoundOctaves, 2);
+      },
+
+      'A major seventh is greater than a minor seventh': function() {
+        assert.equal(teoria.interval('M7').greater(teoria.interval('m7')), true);
+      },
+
+      'An augmented octave is smaller than a major ninth': function() {
+        assert.equal(teoria.interval('A8').smaller(teoria.interval('M9')), true);
+      },
+
+      'A major third is equal to another major third': function() {
+        assert.equal(teoria.interval('M3').equal(teoria.interval('M3')), true);
+      },
+
+      'An augmented fifth is not equal to a minor sixth': function() {
+        assert.equal(teoria.interval('P5').equal(teoria.interval('m6')), false);
+      },
+
+      'The simple part of a major 23th is a major second': function() {
+        assert.equal(teoria.interval('M23').simple(), 'M2');
       }
     }
   },
