@@ -192,36 +192,36 @@ var suite = vows.describe('Teoria Framework').addBatch({
 
   'Teoria Intervals': {
     topic: function() {
-      return new teoria.TeoriaNote(',F#');
+      return new teoria.TeoriaNote('F#,');
     },
 
     'Relative Intervals': {
       'Diminished second': function(note) {
-        assert.deepEqual(note.interval('d2'), teoria.note(',Gb'));
+        assert.deepEqual(note.interval('d2'), teoria.note('Gb,'));
       },
 
       'Minor second': function(note) {
-        assert.deepEqual(note.interval('m2'), teoria.note(',G'));
+        assert.deepEqual(note.interval('m2'), teoria.note('G,'));
       },
 
       'Major second': function(note) {
-        assert.deepEqual(note.interval('M2'), teoria.note(',G#'));
+        assert.deepEqual(note.interval('M2'), teoria.note('G#,'));
       },
 
       'Minor third': function(note) {
-        assert.deepEqual(note.interval('m3'), teoria.note(',A'));
+        assert.deepEqual(note.interval('m3'), teoria.note('A,'));
       },
 
       'Major third': function(note) {
-        assert.deepEqual(note.interval('M3'), teoria.note(',A#'));
+        assert.deepEqual(note.interval('M3'), teoria.note('A#,'));
       },
 
       'Perfect fourth': function(note) {
-        assert.deepEqual(note.interval('P4'), teoria.note(',B'));
+        assert.deepEqual(note.interval('P4'), teoria.note('B,'));
       },
 
       'Augmented fourth': function(note) {
-        assert.deepEqual(note.interval('A4'), teoria.note(',B#'));
+        assert.deepEqual(note.interval('A4'), teoria.note('B#,'));
       },
 
       'Perfect fifth': function(note) {

@@ -303,54 +303,62 @@ var scope = (typeof exports === 'object') ? exports : window;
     this.name = name;
     this.duration = duration || 4;
     this.accidental = {value: 0, sign: ''};
-    var parser = name.match(/^([a-h])(x|#|bb|b?)(-?\d*)/i);
+    var scientific = /^([a-h])(x|#|bb|b?)(-?\d*)/i;
+    var helmholtz = /^([a-h])(x|#|bb|b?)([,\']*)$/i;
+    var accidentalSign, accidentalValue, noteName, octave;
 
+    // Start trying to parse scientific notation
+    var parser = name.match(scientific);
     if (parser && name === parser[0] && parser[3].length !== 0) { // Scientific
-      this.name = parser[1].toLowerCase();
-      this.octave = parseFloat(parser[3]);
+      noteName = parser[1].toLowerCase();
+      octave = parseInt(parser[3], 10);
 
-      if (parser[2].length !== 0) {
-        this.accidental.sign = parser[2].toLowerCase();
-        this.accidental.value = kAccidentalValue[parser[2]];
+      if (parser[2].length > 0) {
+        accidentalSign = parser[2].toLowerCase();
+        accidentalValue = kAccidentalValue[parser[2]];
       }
     } else { // Helmholtz Notation
       name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
-      var info = name.match(/^(,*)([a-h])(x|#|bb|b?)([,\']*)$/i);
-      if (!info || info.length !== 5 || name !== info[0]) {
+
+      parser = name.match(helmholtz);
+      if (!parser || name !== parser[0]) {
         throw new Error('Invalid note format');
-      } else if (info[1] === '' && info[4] === '') { // Only note name
-        this.octave = (info[2] === info[2].toLowerCase()) ? 3 : 2;
-      } else if (info[1] !== '' && info[4] === '') { // Pre
-        if (info[2] === info[2].toLowerCase()) { // If lower-case
-          throw new Error('Format must respect the Helmholtz notation.');
-        }
+      }
 
-        this.octave = 2 - info[1].length;
-      } else if (info[1] === '' && info[4] !== '') { // Pro
-        if (info[4].match(/^'+$/)) { // Up
-          if (info[2] === info[2].toUpperCase()) { // If upper-case
+      noteName = parser[1];
+      octave = parser[3];
+      if (parser[2].length > 0) {
+        accidentalSign = parser[2].toLowerCase();
+        accidentalValue = kAccidentalValue[parser[2]];
+      }
+
+      if (octave.length === 0) { // no octave symbols
+        octave = (noteName === noteName.toLowerCase()) ? 3 : 2;
+      } else { // Pro
+        if (octave.match(/^'+$/)) { // Up
+          if (noteName === noteName.toUpperCase()) { // If upper-case
             throw new Error('Format must respect the Helmholtz notation');
           }
 
-          this.octave = 3 + info[4].length;
-        } else if (info[4].match(/^,+$/)) {
-          if (info[2] === info[2].toLowerCase()) { // If lower-case
+          octave = 3 + octave.length;
+        } else if (octave.match(/^,+$/)) {
+          if (noteName === noteName.toLowerCase()) { // If lower-case
             throw new Error('Format must respect the Helmholtz notation');
           }
 
-          this.octave = 2 - info[4].length;
+          octave = 2 - octave.length;
         } else {
           throw new Error('Invalid characters after note name.');
         }
-      } else {
-        throw new Error('Invalid note format');
       }
+    }
 
-      this.name = info[2].toLowerCase();
-      if (info[3].length !== 0) {
-        this.accidental.sign = info[3].toLowerCase();
-        this.accidental.value = kAccidentalValue[info[3]];
-      }
+    this.name = noteName.toLowerCase();
+    this.octave = octave;
+
+    if (accidentalSign) {
+      this.accidental.value = accidentalValue;
+      this.accidental.sign = accidentalSign;
     }
   }
 
