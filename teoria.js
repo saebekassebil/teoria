@@ -230,30 +230,36 @@ var scope = (typeof exports === 'object') ? exports : window;
     'thirteenth': '13'
   };
 
-  // Moveable do solfege syllables - Sato Method
+  // Adjusted Shearer syllables - Chromatic solfege system
   var kIntervalSolfege = {
     'd1': 'de',
     'P1': 'do',
     'A1': 'di',
+    'd2': 'raw',
     'm2': 'ra',
     'M2': 're',
     'A2': 'ri',
+    'd3': 'maw',
     'm3': 'me',
     'M3': 'mi',
-    'A3': 'ma',
+    'A3': 'mai',
     'd4': 'fe',
     'P4': 'fa',
     'A4': 'fi',
     'd5': 'se',
     'P5': 'so',
     'A5': 'si',
+    'd6': 'law',
     'm6': 'le',
     'M6': 'la',
     'A6': 'li',
+    'd7': 'taw',
     'm7': 'te',
     'M7': 'ti',
-    'A7': 'to',
-    'P8': 'do'
+    'A7': 'tai',
+    'd8': 'de',
+    'P8': 'do',
+    'A8': 'di'
   };
   /**
    * getDistance, returns the distance in semitones between two notes
@@ -1094,28 +1100,24 @@ var scope = (typeof exports === 'object') ? exports : window;
         intervalInt, tmp, quality, alteration, direction;
 
     semitones = toKey - fromKey;
+    intervalInt = kNotes[to.name].index - kNotes[from.name].index +
+                  (7 * (to.octave - from.octave));
+
     if (semitones > 24 || semitones < -25) {
       throw new Error('Interval is bigger than an augmented fifteenth');
-    } else if (semitones < 0) {
+    } else if (semitones < 0 || intervalInt < 0) {
+      intervalInt = -intervalInt;
       tmp = from;
       from = to;
       to = tmp;
     }
 
-    intervalInt = kNotes[to.name].index - kNotes[from.name].index +
-                  (7 * (to.octave - from.octave));
     interval = kIntervals[intervalInt];
     alteration = kAlterations[interval.quality];
     quality = alteration[Math.abs(semitones) - interval.size + 1];
     direction = semitones > 0 ? 'up' : 'down';
 
     return new TeoriaInterval(interval.name, quality, direction);
-    /*return {
-      name: interval.name,
-      quality: quality,
-      direction: (semitones > 0 ? 'up' : 'down'),
-      simple: simpleName
-    };*/
   };
 
   teoria.interval.invert = function(sInterval) {
