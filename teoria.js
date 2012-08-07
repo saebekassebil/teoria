@@ -1097,7 +1097,7 @@ var scope = (typeof exports === 'object') ? exports : window;
    */
   teoria.interval.between = function(from, to) {
     var fromKey = from.key(), toKey = to.key(), semitones, interval,
-        intervalInt, tmp, quality, alteration, direction;
+        intervalInt, tmp, quality, alteration, direction = 'up';
 
     semitones = toKey - fromKey;
     intervalInt = kNotes[to.name].index - kNotes[from.name].index +
@@ -1107,6 +1107,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       throw new Error('Interval is bigger than an augmented fifteenth');
     } else if (semitones < 0 || intervalInt < 0) {
       intervalInt = -intervalInt;
+      direction = 'down';
       tmp = from;
       from = to;
       to = tmp;
@@ -1115,7 +1116,6 @@ var scope = (typeof exports === 'object') ? exports : window;
     interval = kIntervals[intervalInt];
     alteration = kAlterations[interval.quality];
     quality = alteration[Math.abs(semitones) - interval.size + 1];
-    direction = semitones > 0 ? 'up' : 'down';
 
     return new TeoriaInterval(interval.name, quality, direction);
   };

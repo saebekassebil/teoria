@@ -100,6 +100,14 @@ var suite = vows.describe('Teoria Framework').addBatch({
         var g5 = new teoria.TeoriaNote('G5');
 
         assert.deepEqual(note.interval('d5'), g5);
+      },
+
+      'The interval between C#4 and Db4 is a diminished second': function(note) {
+        var cis4 = teoria.note('c#4');
+        var db4 = teoria.note('db4');
+
+        assert.deepEqual(cis4.interval(db4),
+            new teoria.TeoriaInterval('second', 'diminished'));
       }
     }
   },
@@ -188,6 +196,10 @@ var suite = vows.describe('Teoria Framework').addBatch({
     },
 
     'Relative Intervals': {
+      'Diminished second': function(note) {
+        assert.deepEqual(note.interval('d2'), teoria.note(',Gb'));
+      },
+
       'Minor second': function(note) {
         assert.deepEqual(note.interval('m2'), teoria.note(',G'));
       },
