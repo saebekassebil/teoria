@@ -196,6 +196,10 @@ var suite = vows.describe('Teoria Framework').addBatch({
     },
 
     'Relative Intervals': {
+      'Doubly diminished second': function(note) {
+        assert.deepEqual(note.interval('dd2'), teoria.note('Gbb,'));
+      },
+
       'Diminished second': function(note) {
         assert.deepEqual(note.interval('d2'), teoria.note('Gb,'));
       },
@@ -208,12 +212,36 @@ var suite = vows.describe('Teoria Framework').addBatch({
         assert.deepEqual(note.interval('M2'), teoria.note('G#,'));
       },
 
+      'Augmented second': function(note) {
+        assert.deepEqual(note.interval('A2'), teoria.note('Gx,'));
+      },
+
+      'Doubly diminished third': function(note) {
+        assert.deepEqual(note.interval('dd3'), teoria.note('Abb,'));
+      },
+
+      'Diminished third': function(note) {
+        assert.deepEqual(note.interval('d3'), teoria.note('Ab,'));
+      },
+
       'Minor third': function(note) {
         assert.deepEqual(note.interval('m3'), teoria.note('A,'));
       },
 
       'Major third': function(note) {
         assert.deepEqual(note.interval('M3'), teoria.note('A#,'));
+      },
+
+      'Augmented third': function(note) {
+        assert.deepEqual(note.interval('A3'), teoria.note('Ax,'));
+      },
+
+      'Doubly diminished fourth': function(note) {
+        assert.deepEqual(note.interval('dd4'), teoria.note('Bbb,'));
+      },
+
+      'Diminished fourth': function(note) {
+        assert.deepEqual(note.interval('d4'), teoria.note('Bb,'));
       },
 
       'Perfect fourth': function(note) {
@@ -224,8 +252,32 @@ var suite = vows.describe('Teoria Framework').addBatch({
         assert.deepEqual(note.interval('A4'), teoria.note('B#,'));
       },
 
+      'Doubly augmented fourth': function(note) {
+        assert.deepEqual(note.interval('AA4'), teoria.note('Bx,'));
+      },
+
+      'Doubly diminished fifth': function(note) {
+        assert.deepEqual(note.interval('dd5'), teoria.note('Cb'));
+      },
+
+      'Diminished fifth': function(note) {
+        assert.deepEqual(note.interval('d5'), teoria.note('C'));
+      },
+
       'Perfect fifth': function(note) {
         assert.deepEqual(note.interval('P5'), teoria.note('C#'));
+      },
+
+      'Augmented fifth': function(note) {
+        assert.deepEqual(note.interval('A5'), teoria.note('Cx'));
+      },
+
+      'Doubly diminished sixth': function(note) {
+        assert.deepEqual(note.interval('dd6'), teoria.note('Dbb'));
+      },
+
+      'Diminished sixth': function(note) {
+        assert.deepEqual(note.interval('d6'), teoria.note('Db'));
       },
 
       'Minor sixth': function(note) {
@@ -236,6 +288,18 @@ var suite = vows.describe('Teoria Framework').addBatch({
         assert.deepEqual(note.interval('M6'), teoria.note('D#'));
       },
 
+      'Augmented sixth': function(note) {
+        assert.deepEqual(note.interval('A6'), teoria.note('Dx'));
+      },
+
+      'Doubly diminished seventh': function(note) {
+        assert.deepEqual(note.interval('dd7'), teoria.note('Ebb'));
+      },
+
+      'Diminished seventh': function(note) {
+        assert.deepEqual(note.interval('d7'), teoria.note('Eb'));
+      },
+
       'Minor seventh': function(note) {
         assert.deepEqual(note.interval('m7'), teoria.note('E'));
       },
@@ -244,8 +308,24 @@ var suite = vows.describe('Teoria Framework').addBatch({
         assert.deepEqual(note.interval('M7'), teoria.note('E#'));
       },
 
+      'Augmented seventh': function(note) {
+        assert.deepEqual(note.interval('A7'), teoria.note('Ex'));
+      },
+
+      'Doubly diminished octave': function(note) {
+        assert.deepEqual(note.interval('dd8'), teoria.note('Fb'));
+      },
+
+      'Diminished octave': function(note) {
+        assert.deepEqual(note.interval('d8'), teoria.note('F'));
+      },
+
       'Perfect octave': function(note) {
         assert.deepEqual(note.interval('P8'), teoria.note('F#'));
+      },
+
+      'Augmented octave': function(note) {
+        assert.deepEqual(note.interval('A8'), teoria.note('Fx'));
       },
 
       'Minor ninth': function(note) {

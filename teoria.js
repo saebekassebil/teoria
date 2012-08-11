@@ -113,7 +113,9 @@ var scope = (typeof exports === 'object') ? exports : window;
     'M': 'major',
     'm': 'minor',
     'A': 'augmented',
+    'AA': 'doubly augmented',
     'd': 'diminished',
+    'dd': 'doubly diminished',
 
     'aug': 'augmented',
     'dim': 'diminished'
@@ -124,21 +126,27 @@ var scope = (typeof exports === 'object') ? exports : window;
     'major': 'M',
     'minor': 'm',
     'augmented': 'A',
-    'diminished': 'd'
+    'doubly augmented': 'AA',
+    'diminished': 'd',
+    'doubly diminished': 'dd'
   };
 
   var kValidQualities = {
     perfect: {
+      'doubly diminished': -2,
       diminished: -1,
       perfect: 0,
-      augmented: 1
+      augmented: 1,
+      'doubly augmented': 2
     },
 
     minor: {
+      'doubly diminished': -2,
       diminished: -1,
       minor: 0,
       major: 1,
-      augmented: 2
+      augmented: 2,
+      'doubly augmented': 3
     }
   };
 
@@ -147,12 +155,17 @@ var scope = (typeof exports === 'object') ? exports : window;
     'major': 'minor',
     'minor': 'major',
     'augmented': 'diminished',
-    'diminished': 'augmented'
+    'doubly augmented': 'doubly diminished',
+    'diminished': 'augmented',
+    'doubly diminished': 'doubly augmented'
   };
 
   var kAlterations = {
-    perfect: ['diminished', 'perfect', 'augmented'],
-    minor: ['diminished', 'minor', 'major', 'augmented']
+    perfect: ['doubly diminished', 'diminished', 'perfect',
+              'augmented', 'doubly augmented'],
+
+    minor: ['doubly diminished', 'diminished', 'minor',
+            'major', 'augmented', 'doubly augmented']
   };
 
   var kChords = {
@@ -203,35 +216,52 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   // Adjusted Shearer syllables - Chromatic solfege system
+  // Some intervals are not provided for. These include:
+  // dd2 - Doubly diminished second
+  // dd3 - Doubly diminished third
+  // AA3 - Doubly augmented third
+  // dd6 - Doubly diminished sixth
+  // dd7 - Doubly diminished seventh
+  // AA7 - Doubly augmented seventh
   var kIntervalSolfege = {
+    'dd1': 'daw',
     'd1': 'de',
     'P1': 'do',
     'A1': 'di',
+    'AA1': 'dai',
     'd2': 'raw',
     'm2': 'ra',
     'M2': 're',
     'A2': 'ri',
+    'AA2': 'rai',
     'd3': 'maw',
     'm3': 'me',
     'M3': 'mi',
     'A3': 'mai',
+    'dd4': 'faw',
     'd4': 'fe',
     'P4': 'fa',
     'A4': 'fi',
+    'AA4': 'fai',
+    'dd5': 'saw',
     'd5': 'se',
     'P5': 'so',
     'A5': 'si',
+    'AA5': 'sai',
     'd6': 'law',
     'm6': 'le',
     'M6': 'la',
     'A6': 'li',
+    'AA6': 'lai',
     'd7': 'taw',
     'm7': 'te',
     'M7': 'ti',
     'A7': 'tai',
+    'dd8': 'daw',
     'd8': 'de',
     'P8': 'do',
-    'A8': 'di'
+    'A8': 'di',
+    'AA8': 'dai'
   };
   /**
    * getDistance, returns the distance in semitones between two notes
@@ -1033,15 +1063,18 @@ var scope = (typeof exports === 'object') ? exports : window;
    * declare a interval by its string name: P8, M3, m7 etc.
    */
   teoria.interval = function(from, to, direction) {
-    var quality, intervalNumber, interval, intervalName;
+    var quality, intervalNumber, interval, intervalName,
+        pattern = /^(AA|A|P|M|m|d|dd)(\d+)$/;
 
     // Construct a TeoriaInterval object from string representation
     if (typeof from === 'string') {
-      quality = kQualityLong[from.charAt(0)];
-      intervalNumber = parseInt(from.substr(1));
-      if (!quality || isNaN(intervalNumber) || intervalNumber < 1) {
+      pattern = from.match(pattern);
+      if (!pattern) {
         throw new Error('Invalid string-interval format');
       }
+
+      quality = kQualityLong[pattern[1]];
+      intervalNumber = parseInt(pattern[2]);
 
       return new TeoriaInterval(intervalNumber, quality, direction);
     }
@@ -1051,11 +1084,13 @@ var scope = (typeof exports === 'object') ? exports : window;
         to = teoria.interval.invert(to);
       }
 
-      quality = kQualityLong[to[0]];
-      intervalNumber = parseInt(to.substr(1));
-      if (!quality || isNaN(intervalNumber) || intervalNumber < 1) {
+      pattern = to.match(pattern);
+      if (!pattern) {
         throw new Error('Invalid string-interval format');
       }
+
+      quality = kQualityLong[pattern[1]];
+      intervalNumber = parseInt(pattern[2]);
 
       interval = new TeoriaInterval(intervalNumber, quality, direction);
 
@@ -1128,7 +1163,7 @@ var scope = (typeof exports === 'object') ? exports : window;
 
     interval = kIntervals[simpleInterval - 1];
     alteration = kAlterations[interval.quality];
-    quality = alteration[(Math.abs(semitones) - interval.size + 1) % 12];
+    quality = alteration[(Math.abs(semitones) - interval.size + 2) % 12];
 
     return new TeoriaInterval(intervalInt, quality, direction);
   };
