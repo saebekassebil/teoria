@@ -453,7 +453,7 @@ var scope = (typeof exports === 'object') ? exports : window;
 
       if (showOctaves) {
         count = (this.key(true) - scale.tonic.key(true)) / 7;
-        count = (count > 0) ? Math.floor(count) : -Math.floor(-count);
+        count = (count >= 0) ? Math.floor(count) : -(Math.floor(-count) + 1);
         stroke = (count >= 0) ? '\'' : ',';
       }
 
