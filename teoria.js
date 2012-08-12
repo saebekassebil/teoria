@@ -1169,7 +1169,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   teoria.interval.invert = function(sInterval) {
-    return (teoria.interval(sInterval).invert());
+    return teoria.interval(sInterval).invert().toString();
   };
 
   // teoria.scale namespace - Scales are constructed through this function.
