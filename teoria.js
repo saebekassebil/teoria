@@ -693,7 +693,7 @@ var scope = (typeof exports === 'object') ? exports : window;
 
     notes = notes.slice(0, chordLength).concat(additionals);
     if (bass) {
-      bass = new TeoriaNote(bass);
+      bass = teoria.note(bass);
       var interval = teoria.interval.between(root, bass);
       bass.octave -= (interval.direction === 'up') ? 1 : 0;
 
@@ -1000,7 +1000,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   // teoria.note namespace - All notes should be instantiated
   // through this function.
   teoria.note = function(name, value) {
-    return (new TeoriaNote(name, value));
+    return new TeoriaNote(name, value);
   };
 
   teoria.note.fromKey = function(key) {
@@ -1014,7 +1014,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       name += 'b';
     }
 
-    return new TeoriaNote(name + (octave + 1));
+    return teoria.note(name + (octave + 1).toString(10));
   };
 
   teoria.note.fromFrequency = function(fq, concertPitch) {
@@ -1036,7 +1036,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       name += 'b';
     }
 
-    return {note: new TeoriaNote(name + (octave + 1)), cents: cents};
+    return {note: teoria.note(name + (octave + 1).toString(10)), cents: cents};
   };
 
   // teoria.chord namespace - All chords should be instantiated
@@ -1046,7 +1046,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       var root;
       root = name.match(/^([a-h])(x|#|bb|b?)/i);
       if (root && root[0]) {
-        return new TeoriaChord(new TeoriaNote(root[0].toLowerCase()),
+        return new TeoriaChord(teoria.note(root[0].toLowerCase()),
                               name.substr(root[0].length));
       }
     } else if (name instanceof TeoriaNote) {
@@ -1134,7 +1134,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       octave--;
     }
 
-    return new TeoriaNote(note + octave.toString());
+    return teoria.note(note + octave.toString(10));
   };
 
   /**
@@ -1175,7 +1175,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   // teoria.scale namespace - Scales are constructed through this function.
   teoria.scale = function(tonic, scale) {
     if (!(tonic instanceof TeoriaNote)) {
-      tonic = new TeoriaNote(tonic);
+      tonic = teoria.note(tonic);
     }
 
     return new TeoriaScale(tonic, scale);
