@@ -289,14 +289,13 @@ var scope = (typeof exports === 'object') ? exports : window;
    * Or in the Helmholtz notation:
    *    ,,C - f#'' - d - Eb - etc.
    */
-  function TeoriaNote(name, duration, dots) {
+  function TeoriaNote(name, duration) {
     if (typeof name !== 'string') {
       return null;
     }
 
     this.name = name;
-    this.duration = duration || 4;
-    this.dots = dots || 0;
+    this.duration = {value: duration.value || 4, dots: duration.dots || 0};
     this.accidental = {value: 0, sign: ''};
     var parser = name.match(/^([a-h])(x|#|bb|b?)(-?\d*)/i);
 
@@ -473,16 +472,18 @@ var scope = (typeof exports === 'object') ? exports : window;
      * such as 'whole', 'quarter', 'sixteenth' etc.
      */
     durationName: function() {
-      return kDurations[this.duration];
+      return kDurations[this.duration.value];
     },
 
     /**
-     * Returns the duration of the note in seconds
-     * at the specified tempo.
+     * Returns the duration of the note in seconds.
+     * The first argument is the tempo in beats per
+     * minute, the second is the beat unit (i.e. the
+     * lower numeral in a time signature).
      */
-    durationInSeconds: function(tempo) {
-      var secs = (60 / tempo) / (this.duration / 4);
-      return secs * 2 - secs / Math.pow(2, this.dots);
+    durationInSeconds: function(bpm, beatUnit) {
+      var secs = (60 / bpm) / (this.duration.value / 4) / (beatUnit / 4);
+      return secs * 2 - secs / Math.pow(2, this.duration.dots);
     },
 
     /**
@@ -962,8 +963,8 @@ var scope = (typeof exports === 'object') ? exports : window;
 
   // teoria.note namespace - All notes should be instantiated
   // through this function.
-  teoria.note = function(name, duration, dots) {
-    return (new TeoriaNote(name, duration, dots));
+  teoria.note = function(name, duration) {
+    return (new TeoriaNote(name, duration));
   };
 
   teoria.note.fromKey = function(key) {
