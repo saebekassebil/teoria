@@ -290,7 +290,7 @@ var scope = (typeof exports === 'object') ? exports : window;
    *
    * This object is the representation of a note.
    * The constructor must be called with a name,
-   * and optionally a value argument.
+   * and optionally duration and dot count arguments.
    * The first parameter (name) can be specified in either
    * scientific notation (name+accidentals+octave). Fx:
    *    A4 - Cb3 - D#8 - Hbb - etc.
@@ -303,7 +303,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     }
 
     this.name = name;
-    this.duration = duration || 4;
+    this.duration = {value: duration.value || 4, dots: duration.dots || 0};
     this.accidental = {value: 0, sign: ''};
     var scientific = /^([a-h])(x|#|bb|b?)(-?\d*)/i;
     var helmholtz = /^([a-h])(x|#|bb|b?)([,\']*)$/i;
@@ -492,11 +492,22 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
-     * Returns the name of the value,
+     * Returns the name of the duration value,
      * such as 'whole', 'quarter', 'sixteenth' etc.
      */
     durationName: function() {
-      return kDurations[this.duration];
+      return kDurations[this.duration.value];
+    },
+
+    /**
+     * Returns the duration of the note in seconds.
+     * The first argument is the tempo in beats per
+     * minute, the second is the beat unit (i.e. the
+     * lower numeral in a time signature).
+     */
+    durationInSeconds: function(bpm, beatUnit) {
+      var secs = (60 / bpm) / (this.duration.value / 4) / (beatUnit / 4);
+      return secs * 2 - secs / Math.pow(2, this.duration.dots);
     },
 
     /**
@@ -999,8 +1010,8 @@ var scope = (typeof exports === 'object') ? exports : window;
 
   // teoria.note namespace - All notes should be instantiated
   // through this function.
-  teoria.note = function(name, value) {
-    return (new TeoriaNote(name, value));
+  teoria.note = function(name, duration) {
+    return (new TeoriaNote(name, duration));
   };
 
   teoria.note.fromKey = function(key) {
