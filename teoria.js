@@ -503,6 +503,17 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
+     * Returns the duration of the note (including dots)
+     * in seconds. The first argument is the tempo in beats
+     * per minute, the second is the beat unit (i.e. the
+     * lower numeral in a time signature).
+     */
+    durationInSeconds: function(bpm, beatUnit) {
+      var secs = (60 / bpm) / (this.duration.value / 4) / (beatUnit / 4);
+      return secs * 2 - secs / Math.pow(2, this.duration.dots);
+    },
+
+    /**
      * Returns the name of the note, with an optional display of octave number
      */
     toString: function(dontShow) {
