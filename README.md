@@ -79,9 +79,12 @@ be expressed in scientific and Helmholtz notation.
 Some examples of valid note names:
 ```Eb4```, ```C#,,```, ```C4```, ```d#''```, ```Ab2```
 
-*duration* - The duration argument is optional, and not much used in the library.
-If supplied, it should be number corresponding to a note duration, such as:
+*duration* - The duration argument is an optional `object` argument.
+The object has two also optional parameters:
+ - `value` - A `number` corresponding to the value of the duration, such that:
 ```1 = whole```, ```2 = half (minim)```, ```4 = quarter```, ```8 = eight```
+
+ - `dots` - The number of dots attached to the note. Defaults to 0.
 
 ### teoria.note (TeoriaNote)
 
@@ -166,6 +169,10 @@ Example: ```teoria.note("ab'").scientific() -> "Ab4"```
  - Returns all notes that are enharmonic with the note
 
 Example: ```teoria.note('C').enharmonics() -> [teoria.note('Dbb'), teoria.note('b#')]```
+
+#### TeoriaNote#durationInSeconds(bpm, beatUnit)
+ - Returns the duration of the note, given a tempo (in bpm) and a beat unit
+ (the lower numeral of the time signature)
 
 #### TeoriaNote#solfege(scale, showOctaves)
  - Returns the solfege step in the given scale context

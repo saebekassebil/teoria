@@ -305,6 +305,8 @@ var scope = (typeof exports === 'object') ? exports : window;
       return null;
     }
 
+    duration = duration || {};
+
     this.name = name;
     this.duration = {value: duration.value || 4, dots: duration.dots || 0};
     this.accidental = {value: 0, sign: ''};
@@ -1014,7 +1016,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   // teoria.note namespace - All notes should be instantiated
   // through this function.
   teoria.note = function(name, duration) {
-    return new TeoriaNote(name, duration || {});
+    return new TeoriaNote(name, duration);
   };
 
   teoria.note.fromKey = function(key) {
