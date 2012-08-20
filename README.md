@@ -189,6 +189,15 @@ used if there's bigger intervals than an octave
 Example: ```teoria.note('A', 8).durationName() -> 'eighth'```, 
 ```teoria.note('C', 16).durationName() -> 'sixteenth'```
 
+#### TeoriaNote#scaleDegree(scale)
+ - Returns this note's degree in a given scale (TeoriaScale). For example a 
+ `D` in a C major scale will return "2" as it is the second degree of that scale.
+ If however the note *isn't* a part of the scale, the degree returned will be
+ `0`, meaning that the degree doesn't exists. This allows this method to be both
+ a scale degree index finder *and* a "isNoteInScale" method.
+
+*scale* - An instance of `TeoriaScale` which is the context of the degree measuring
+
 #### TeoriaNote#toString([dontShow])
  - Usability function for returning the note as a string
 
