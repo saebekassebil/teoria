@@ -516,6 +516,24 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     /**
+     * Returns the degree of this note in a given scale
+     * If the scale doesn't contain this note, the scale degree
+     * will be returned as 0 allowing for expressions such as:
+     * if(teoria.note('a').scaleDegree(teoria.scale('a', 'major'))) {
+     *   ...
+     * }
+     *
+     * as 0 evaluates to false in boolean context
+     **/
+    scaleDegree: function(scale) {
+      var interval = scale.tonic.interval(this);
+      interval = (interval.direction === 'down' ||
+                  interval.simpleInterval === 8) ? interval.invert() : interval;
+
+      return scale.scale.indexOf(interval.simple()) + 1;
+    },
+
+    /**
      * Returns the name of the note, with an optional display of octave number
      */
     toString: function(dontShow) {
@@ -852,7 +870,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     }
 
     this.name = scaleName;
-    this.notes = [tonic];
+    this.notes = [];
     this.tonic = tonic;
     this.scale = scale;
 
@@ -975,9 +993,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     invert: function() {
       var intervalNumber = this.simpleInterval;
 
-      if (intervalNumber !== 8 && intervalNumber !== 1) {
-        intervalNumber = 9 - intervalNumber;
-      }
+      intervalNumber = 9 - intervalNumber;
 
       return new TeoriaInterval(intervalNumber,
                                 kQualityInversion[this.quality]);
@@ -1200,28 +1216,27 @@ var scope = (typeof exports === 'object') ? exports : window;
   /**
    * A list of scales, used internally by the TeoriaScale object.
    * Scales are written in absolute interval format.
-   * Notice that the root note (tonic) is not listed.
    */
   teoria.scale.scales = {
     // Modal Scales
-    major: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    ionian: ['M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    dorian: ['M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
-    phrygian: ['m2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    lydian: ['M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
-    mixolydian: ['M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
-    minor: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    aeolian: ['M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    locrian: ['m2', 'm3', 'P4', 'd5', 'm6', 'm7'],
+    major: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+    ionian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+    dorian: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
+    phrygian: ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    lydian: ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
+    mixolydian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
+    minor: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    aeolian: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    locrian: ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
 
     // Pentatonic
-    majorpentatonic: ['M2', 'M3', 'P5', 'M6'],
-    minorpentatonic: ['m3', 'P4', 'P5', 'm7'],
+    majorpentatonic: ['P1', 'M2', 'M3', 'P5', 'M6'],
+    minorpentatonic: ['P1', 'm3', 'P4', 'P5', 'm7'],
 
     // Chromatic
-    chromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
+    chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
                 'P5', 'm6', 'M6', 'm7', 'M7'],
-    harmonicchromatic: ['m2', 'M2', 'm3', 'M3', 'P4', 'A4',
+    harmonicchromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
                 'P5', 'm6', 'M6', 'm7', 'M7']
   };
 

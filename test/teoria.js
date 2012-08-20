@@ -443,6 +443,38 @@ var suite = vows.describe('Teoria Framework').addBatch({
       }
     },
 
+    'Scale Degrees': {
+      'Eb is scale degree 1 (tonic) in an Eb minor scale': function() {
+        var note = teoria.note('eb');
+        assert.equal(note.scaleDegree(teoria.scale('eb', 'major')), 1);
+      },
+
+      'E is scale degree 3 in a C# dorian': function() {
+        var note = teoria.note('e');
+        assert.equal(note.scaleDegree(teoria.scale('c#', 'dorian')), 3);
+      },
+
+      'C is scale degree 0 in a D major scale (not in scale)': function() {
+        var note = teoria.note('c');
+        assert.equal(note.scaleDegree(teoria.scale('d', 'major')), 0);
+      },
+
+      'Bb is scale degree 7 in a C minor': function() {
+        var note = teoria.note('bb');
+        assert.equal(note.scaleDegree(teoria.scale('c', 'minor')), 7);
+      },
+      
+      'Db is scale degree 4 in an Ab major scale': function() {
+        var note = teoria.note('db');
+        assert.equal(note.scaleDegree(teoria.scale('ab', 'major')), 4);
+      },
+
+      'A# is scale degree 0 in a G minor scale': function() {
+        var note = teoria.note('a#');
+        assert.equal(note.scaleDegree(teoria.scale('g', 'minor')), 0);
+      }
+    },
+
     'Compound Intervals': {
       'A major seventeenth is a compound interval': function() {
         assert.equal(teoria.interval('M17').isCompound(), true);
