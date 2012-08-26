@@ -112,7 +112,9 @@ var scope = (typeof exports === 'object') ? exports : window;
     'P': 'perfect',
     'M': 'major',
     'm': 'minor',
+    '-': 'minor',
     'A': 'augmented',
+    '+': 'augmented',
     'AA': 'doubly augmented',
     'd': 'diminished',
     'dd': 'doubly diminished',
@@ -620,12 +622,17 @@ var scope = (typeof exports === 'object') ? exports : window;
           } else if (alterations[0].length !== 0) {
             throw new Error('Invalid token: \'' + alterations[0] + '\'');
           }
+
           for (var a = 1, aLength = alterations.length; a < aLength; a++) {
             next = (aLength > a + 1) ? alterations[a + 1] : null;
             switch (alterations[a]) {
             case 'maj':
               if (chordLength < 3) {
                 chordLength = 3;
+              }
+
+              if (next === '7') {
+                a++;
               }
 
               notes[2] = 'M7';
@@ -666,6 +673,10 @@ var scope = (typeof exports === 'object') ? exports : window;
               break;
 
             default:
+              if (alterations[a].length === 0) {
+                break;
+              }
+
               var token = parseFloat(alterations[a]), quality,
                   interval = parseFloat(alterations[a]), intPos;
               if (isNaN(token) ||
@@ -685,12 +696,19 @@ var scope = (typeof exports === 'object') ? exports : window;
                 if (chordLength < 3) {
                   chordLength = 3;
                 }
+
                 continue;
               }
 
               intPos = (interval - 1) / 2 - 1;
               if (chordLength < intPos + 1) {
                 chordLength = intPos + 1;
+              }
+
+              if (interval < 5 || interval === 7 ||
+                  intPos !== Math.round(intPos)) {
+                throw new Error('Invalid interval alteration: ' +
+                    interval.toString(10));
               }
 
               quality = notes[intPos][0];
@@ -711,6 +729,7 @@ var scope = (typeof exports === 'object') ? exports : window;
                   quality = 'd';
                 }
               }
+
               notes[intPos] = quality + notes[intPos].substr(1);
               break;
             }
