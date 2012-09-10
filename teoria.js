@@ -789,40 +789,41 @@ var scope = (typeof exports === 'object') ? exports : window;
     },
 
     chordType: function() { // In need of better name
-      var is = true, interval, has, invert, num, i, length;
-      if (this.notes.length === 2) {
+      var length = this.notes.length, interval, has, invert, num, i, name;
+
+      if (length === 2) {
         return 'dyad';
-      } else if (this.notes.length === 3) {
+      } else if (length === 3) {
         has = {first: false, third: false, fifth: false};
-        for (i = 0, length = this.notes.length; i < length; i++) {
+        for (i = 0; i < length; i++) {
           interval = this.root.interval(this.notes[i]);
           invert = interval.invert();
-          if (interval.interval in has) {
-            has[interval.interval] = true;
-          } else if (invert.interval in has) {
-            has[invert.interval] = true;
+          if (interval.simpleIntervalType.name in has) {
+            has[interval.simpleIntervalType.name] = true;
+          } else if (invert.simpleIntervalType.name in has) {
+            has[invert.simpleIntervalType.name] = true;
           }
         }
 
-        return (has.first && has.third && has.fifth) ? 'triad' : 'trichord';
-      } else if (this.notes.length === 4) {
+        name = (has.first && has.third && has.fifth) ? 'triad' : 'trichord';
+      } else if (length === 4) {
         has = {first: false, third: false, fifth: false, seventh: false};
-        for (i = 0, length = this.notes.length; i < length; i++) {
+        for (i = 0; i < length; i++) {
           interval = this.root.interval(this.notes[i]);
           invert = interval.invert();
-          if (interval.interval in has) {
-            has[interval.interval] = true;
-          } else if (invert.interval in has) {
-            has[invert.interval] = true;
+          if (interval.simpleIntervalType.name in has) {
+            has[interval.simpleIntervalType.name] = true;
+          } else if (invert.simpleIntervalType.name in has) {
+            has[invert.simpleIntervalType.name] = true;
           }
         }
 
         if (has.first && has.third && has.fifth && has.seventh) {
-          return 'tetrad';
+          name = 'tetrad';
         }
       }
 
-      return 'unknown';
+      return name || 'unknown';
     },
 
     get: function(interval) {
