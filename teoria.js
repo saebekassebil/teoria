@@ -751,8 +751,8 @@ var scope = (typeof exports === 'object') ? exports : window;
     notes = notes.slice(0, chordLength).concat(additionals);
     if (bass) {
       bass = teoria.note(bass);
-      var interval = teoria.interval.between(root, bass);
-      bass.octave -= (interval.direction === 'up') ? 1 : 0;
+      var bassInterval = teoria.interval.between(root, bass);
+      bass.octave -= (bassInterval.direction === 'up') ? 1 : 0;
 
       this.notes.splice(0, 0, bass);
     }
@@ -870,7 +870,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   function TeoriaScale(tonic, scale) {
-    var scaleName, i;
+    var scaleName, i, length;
 
     if (!(tonic instanceof TeoriaNote)) {
       throw new Error('Invalid Tonic');
@@ -898,7 +898,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     this.tonic = tonic;
     this.scale = scale;
 
-    for (var i = 0, length = scale.length; i < length; i++) {
+    for (i = 0, length = scale.length; i < length; i++) {
       this.notes.push(teoria.interval(tonic, scale[i]));
     }
   }
@@ -1130,7 +1130,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       }
 
       quality = kQualityLong[pattern[1]];
-      intervalNumber = parseInt(pattern[2]);
+      intervalNumber = parseInt(pattern[2], 10);
 
       return new TeoriaInterval(intervalNumber, quality, direction);
     }
@@ -1146,7 +1146,7 @@ var scope = (typeof exports === 'object') ? exports : window;
       }
 
       quality = kQualityLong[pattern[1]];
-      intervalNumber = parseInt(pattern[2]);
+      intervalNumber = parseInt(pattern[2], 10);
 
       interval = new TeoriaInterval(intervalNumber, quality, direction);
 
@@ -1235,7 +1235,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     }
 
     return new TeoriaScale(tonic, scale);
-  }
+  };
 
   /**
    * A list of scales, used internally by the TeoriaScale object.
