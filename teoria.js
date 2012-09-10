@@ -606,6 +606,10 @@ var scope = (typeof exports === 'object') ? exports : window;
                                             parseFloat(c);
           if (!isNaN(c)) {
             chordLength = (c - 1) / 2;
+            if (chordLength !== Math.round(chordLength)) {
+              throw new Error('Invalid interval extension: ' + c.toString(10));
+            }
+
             i += String(c).length - 1;
           } else {
             i -= 1;
