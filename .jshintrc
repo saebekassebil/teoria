@@ -1,4 +1,11 @@
 {
+  "predef": [
+    "TeoriaNote",
+    "TeoriaInterval",
+    "TeoriaChord",
+    "TeoriaScale"
+  ],
+
   "maxlen":   80,
   "browser":  true,
   "devel":    true,
