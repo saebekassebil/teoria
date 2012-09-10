@@ -1,0 +1,16 @@
+{
+  "name": "teoria",
+  "version": "0.1.0",
+  "description": "Music theory for JavaScript",
+  "homepage": "https://github.com/saebekassebil/teoria',
+  "author": {
+    "name": "Jakob Miland <saebekassebil>",
+    "email": "saebekassebil@gmail.com",
+    "url": "https://github.com/saebekassebil"
+  },
+
+  "devDependencies": {
+    "mingler": ">=0.1.3",
+    "jshint": ">=0.9.0"
+  }
+}
