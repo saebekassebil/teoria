@@ -1,0 +1,27 @@
+{
+  "predef": [
+    "TeoriaNote",
+    "TeoriaInterval",
+    "TeoriaChord",
+    "TeoriaScale",
+    "teoria"
+  ],
+
+  "maxlen":   80,
+  "browser":  true,
+  "devel":    true,
+  "curly":    true,
+  "es5":      true,
+  "newcap":   true,
+  "noempty":  true,
+  "nonew":    true,
+  "onevar":   false,
+  "plusplus": false,
+  "trailing": true,
+  "eqeqeq": true,
+  "forin": true,
+  "latedef": true,
+  "undef": true,
+  "evil": false,
+  "unused": true
+}
