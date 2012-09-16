@@ -162,7 +162,7 @@ TeoriaNote.prototype = {
    * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
    */
   scientific: function() {
-    var octave = (typeof this.octave == 'number') ? this.octave : '';
+    var octave = (typeof this.octave === 'number') ? this.octave : '';
     return this.name.toUpperCase() + this.accidental.sign + octave;
   },
 

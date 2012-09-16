@@ -29,7 +29,9 @@ function TeoriaChord(root, name) {
 
   for (i = 0, length = name.length; i < length; i++) {
     c = name[i];
-    if (!c) break;
+    if (!c) {
+      break;
+    }
 
     code = c.charCodeAt(i);
     strQuality = ((i + 3) <= length) ? name.substr(i, 3) : null;
@@ -138,7 +140,7 @@ function TeoriaChord(root, name) {
             var token = parseFloat(alterations[a]), quality,
                 interval = parseFloat(alterations[a]), intPos;
             if (isNaN(token) ||
-                String(token).length != alterations[a].length) {
+                String(token).length !== alterations[a].length) {
               throw new Error('Invalid token: \'' + alterations[a] + '\'');
             }
 
@@ -171,19 +173,19 @@ function TeoriaChord(root, name) {
 
             quality = notes[intPos][0];
             if (sharp) {
-              if (quality == 'd') {
+              if (quality === 'd') {
                 quality = 'm';
-              } else if (quality == 'm') {
+              } else if (quality === 'm') {
                 quality = 'M';
-              } else if (quality == 'M' || quality == 'P') {
+              } else if (quality === 'M' || quality === 'P') {
                 quality = 'A';
               }
             } else if (flat) {
-              if (quality == 'A') {
+              if (quality === 'A') {
                 quality = 'M';
-              } else if (quality == 'M') {
+              } else if (quality === 'M') {
                 quality = 'm';
-              } else if (quality == 'm' || quality == 'P') {
+              } else if (quality === 'm' || quality === 'P') {
                 quality = 'd';
               }
             }
@@ -234,8 +236,8 @@ TeoriaChord.prototype = {
 
   parallel: function(additional) {
     additional = additional || '';
-    if (this.chordType() != 'triad' || this.quality == 'diminished' ||
-        this.quality == 'augmented') {
+    if (this.chordType() !== 'triad' || this.quality === 'diminished' ||
+        this.quality === 'augmented') {
       throw new Error('Only major/minor triads have parallel chords');
     }
 
@@ -247,7 +249,7 @@ TeoriaChord.prototype = {
   },
 
   chordType: function() { // In need of better name
-    var length = this.notes.length, interval, has, invert, num, i, name;
+    var length = this.notes.length, interval, has, invert, i, name;
 
     if (length === 2) {
       return 'dyad';
@@ -285,12 +287,12 @@ TeoriaChord.prototype = {
   },
 
   get: function(interval) {
-    if (typeof interval == 'string' && interval in kStepNumber) {
+    if (typeof interval === 'string' && interval in kStepNumber) {
       var quality = kIntervals[kIntervalIndex[interval]].quality;
       quality = (quality === 'perfect') ? 'P' : 'M';
       interval = this.root.interval(quality + kStepNumber[interval]);
       for (var i = 0, length = this.notes.length; i < length; i++) {
-        if (this.notes[i].name == interval.name) {
+        if (this.notes[i].name === interval.name) {
           return this.notes[i];
         }
       }
