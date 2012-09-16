@@ -5,3 +5,7 @@ node_modules/
 # Playground / Testing Files #
 ##############################
 index.html
+
+# Build files #
+###############
+dist/
