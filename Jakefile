@@ -1,3 +1,7 @@
+/*jshint node:true */
+/*global desc:true task:true complete:true*/
+'use strict';
+
 var path    = require('path'),
     fs      = require('fs'),
     mingler = require('mingler'),
@@ -24,7 +28,7 @@ var logcolors = {
 
 // Utility function which respects the 'silent' setting
 function log(text, type, acolor, nolabel) {
-  type = (type in console && typeof console[type] == 'function') ? type : 'info';
+  type = (typeof console[type] === 'function') ? type : 'info';
 
   if(!settings.silent) {
     if(!nolabel) {
@@ -34,8 +38,8 @@ function log(text, type, acolor, nolabel) {
     }
 
     if(settings.colors && colors) {
-      color = logcolors[acolor || type] || 'grey';
-      console[type](text[color]);
+      acolor = logcolors[acolor || type] || 'grey';
+      console[type](text[acolor]);
     } else {
       console[type](text);
     }
@@ -58,7 +62,7 @@ var kFileList = [
   'Jakefile'
 ];
 
-// Default task - build
+// Default task - lint and build
 desc('Default task both lints and build the entire project');
 task({'default': ['lint', 'build']}, function(){});
 
@@ -78,7 +82,7 @@ task('build', function() {
 
   if (!existsSync(kDistDir)) {
     log('Creating ' + kDistDir + ' directory');
-    fs.mkdirSync(kDistDir, 0777);
+    fs.mkdirSync(kDistDir, 0x01FF); // With 0777 mode
   }
 
   // Change to /src dir
@@ -91,8 +95,8 @@ task('build', function() {
       try {
         ugly = require('uglify-js');
       } catch(e) {
-        return log('uglify-js module doesn\'t appear to be installed. Use:'
-                  + '`npm install uglify-js`', 'error');
+        return log('uglify-js module doesn\'t appear to be installed. Use:' +
+          '`npm install uglify-js`', 'error');
       }
 
       log('Minifying');
@@ -132,8 +136,8 @@ task('build', function() {
   mingler.on('concatenate', function(feedback) {
     log("Concatenating: " + feedback.filename, 'info', 'grey');
   });
-  
-  mingler.mingle(kMainFile, function(concatenation) {
+
+  mingler.mingle(kMainFile, function() {
     process.chdir('../');
   });
 }, {async: true});
@@ -141,7 +145,7 @@ task('build', function() {
 // Lints the files according to .jshintrc
 desc('Lint all files according to coding standards');
 task('lint', function() {
-  var jshint, config, errors, errorfilecount, content, results;
+  var jshint, config, errors, errorfilecount, content;
   try {
     jshint = require('jshint');
   } catch(e) {
@@ -181,13 +185,13 @@ task('lint', function() {
 
   // Show errors
   errors.forEach(function(error) {
-    log(error.file + ': line ' + error.error.line 
-        + ', col ' + error.error.character + ', ' + error.error.reason, 
+    log(error.file + ': line ' + error.error.line +
+        ', col ' + error.error.character + ', ' + error.error.reason,
         'error', 'grey', true);
   });
 
   // Show lint status
-  if(errors.length == 0) {
+  if(errors.length === 0) {
     log('Lint passed', 'info');
   } else {
     log('Lint failed!', 'error');

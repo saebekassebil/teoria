@@ -3,7 +3,8 @@
     "TeoriaNote",
     "TeoriaInterval",
     "TeoriaChord",
-    "TeoriaScale"
+    "TeoriaScale",
+    "teoria"
   ],
 
   "maxlen":   80,
