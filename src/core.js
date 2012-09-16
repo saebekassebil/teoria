@@ -1,3 +1,6 @@
+/*jshint unused:false */
+/*global exports:true */
+
 /**
  * Teoria.js - Music Theory for JavaScript
  *
@@ -336,7 +339,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   // teoria.chord namespace - All chords should be instantiated
   // through this function.
   teoria.chord = function(name, oSymbol) {
-    if (typeof name == 'string') {
+    if (typeof name === 'string') {
       var root;
       root = name.match(/^([a-h])(x|#|bb|b?)/i);
       if (root && root[0]) {
@@ -357,8 +360,7 @@ var scope = (typeof exports === 'object') ? exports : window;
    * declare a interval by its string name: P8, M3, m7 etc.
    */
   teoria.interval = function(from, to, direction) {
-    var quality, intervalNumber, interval, intervalName,
-        pattern = /^(AA|A|P|M|m|d|dd)(\d+)$/;
+    var quality, intervalNumber, interval, pattern = /^(AA|A|P|M|m|d|dd)(\d+)$/;
 
     // Construct a TeoriaInterval object from string representation
     if (typeof from === 'string') {
@@ -400,7 +402,7 @@ var scope = (typeof exports === 'object') ? exports : window;
    * Returns the note from a given note (from), with a given interval (to)
    */
   teoria.interval.from = function(from, to) {
-    var note, diff, octave, index, alterations, dist;
+    var note, diff, octave, index, dist;
 
     index = to.simpleInterval - 1;
     index = kNotes[from.name].index + index;
@@ -452,7 +454,7 @@ var scope = (typeof exports === 'object') ? exports : window;
     }
 
     intervalInt += 1;
-    simpleInterval = (intervalInt >= 8 && intervalInt % 7 == 1) ?
+    simpleInterval = (intervalInt >= 8 && intervalInt % 7 === 1) ?
           intervalInt % 7 * 8 : ((intervalInt - 1) % 7) + 1;
 
     interval = kIntervals[simpleInterval - 1];

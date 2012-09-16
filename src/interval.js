@@ -1,5 +1,5 @@
 function TeoriaInterval(intervalNum, quality, direction) {
-  var simple = (intervalNum >= 8 && intervalNum % 7 == 1) ?
+  var simple = (intervalNum >= 8 && intervalNum % 7 === 1) ?
         intervalNum % 7 * 8 : ((intervalNum - 1) % 7) + 1;
   var compoundOctaves = Math.ceil((intervalNum - simple) / 8);
   var simpleIntervalType = kIntervals[simple - 1];

@@ -4,7 +4,27 @@
     "TeoriaInterval",
     "TeoriaChord",
     "TeoriaScale",
-    "teoria"
+    "teoria",
+
+    "kNotes",
+    "kNoteIndex",
+    "kDurations",
+    "kIntervals",
+    "kIntervalIndex",
+    "kQualityLong",
+    "kQualityTemp",
+    "kValidQualities",
+    "kQualityInversion",
+    "kAlterations",
+    "kChords",
+    "kChordShort",
+    "kAccidentalSign",
+    "kAccidentalValue",
+    "kStepNumber",
+    "kIntervalSolfege",
+
+    "getDistance",
+    "pad"
   ],
 
   "maxlen":   80,

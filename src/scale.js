@@ -5,7 +5,7 @@ function TeoriaScale(tonic, scale) {
     throw new Error('Invalid Tonic');
   }
 
-  if (typeof scale == 'string') {
+  if (typeof scale === 'string') {
     scaleName = scale;
     scale = teoria.scale.scales[scale];
     if (!scale) {
@@ -45,19 +45,19 @@ TeoriaScale.prototype = {
 
   type: function() {
     var name = null, length = this.notes.length;
-    if (length == 2) {
+    if (length === 2) {
       name = 'ditonic';
-    } else if (length == 3) {
+    } else if (length === 3) {
       name = 'tritonic';
-    } else if (length == 4) {
+    } else if (length === 4) {
       name = 'tetratonic';
-    } else if (length == 5) {
+    } else if (length === 5) {
       name = 'pentatonic';
-    } else if (length == 6) {
+    } else if (length === 6) {
       name = 'hexatonic';
-    } else if (length == 7) {
+    } else if (length === 7) {
       name = 'heptatonic';
-    } else if (length == 8) {
+    } else if (length === 8) {
       name = 'octatonic';
     }
 
@@ -65,16 +65,16 @@ TeoriaScale.prototype = {
   },
 
   get: function(i) {
-    if (typeof i == 'number') {
+    if (typeof i === 'number') {
       return (i > 0 && i <= this.notes.length) ? this.notes[i - 1] : null;
-    } else if (typeof i == 'string' && i in kStepNumber) {
+    } else if (typeof i === 'string' && i in kStepNumber) {
       i = parseFloat(kStepNumber[i]);
       return (i > 0 && i <= this.notes.length) ? this.notes[i - 1] : null;
     }
   },
 
   solfege: function(index, showOctaves) {
-    var interval, i, length, solfegeArray = [];
+    var i, length, solfegeArray = [];
 
     // Return specific index in scale
     if (index) {
