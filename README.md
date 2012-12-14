@@ -65,6 +65,9 @@ g5.chord('dim'); // Outputs a TeoriaChord object, representing a Gdim chord
 teoria.note.fromFrequency(467); // Outputs: {"note":{...},"cents":3.1028314220028586} -> A4# a little out of tune.
 a4.fq(); // Outputs 440
 g5.fq(); // Outputs 783.9908719634985
+
+// teoria allows for crazy chaining
+teoria.note('a').scale('lydian').interval('M2').get('third').chord('maj9').toString() // -> 'D#maj9'
 ```
 
 Documentation
