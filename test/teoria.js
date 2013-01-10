@@ -1,7 +1,7 @@
 var vows = require('vows'),
     spec = require("vows/lib/vows/reporters/spec"),
     assert = require('assert'),
-    teoria = require('../teoria.js').teoria;
+    teoria = require('../dist/teoria.js').teoria;
 
 // Utility function(s)
 function simpleArray(chord) {

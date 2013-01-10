@@ -5,6 +5,7 @@
 var path    = require('path'),
     fs      = require('fs'),
     mingler = require('mingler'),
+    vows    = require('vows'),
     existsSync = 'existsSync' in fs ? fs.existsSync : path.existsSync,
     colors;
 
@@ -140,6 +141,13 @@ task('build', function() {
   mingler.mingle(kMainFile, function() {
     process.chdir('../');
   });
+}, {async: true});
+
+desc('Builds the project and unit tests it');
+task('test', ['build'], function() {
+  jake.exec('node test/teoria.js', function() {
+    complete();
+  }, {printStdout: true});
 }, {async: true});
 
 // Lints the files according to .jshintrc
