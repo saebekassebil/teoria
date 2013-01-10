@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="./teoria.js"></script>
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      body {
+        font-size: 10pt;
+        color: #556270;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      h1 {
+        font-weight: 300;
+      }
+
+      #plotframe {
+        box-shadow: rgb(153, 153, 153) 0px 0px 5px inset;
+        -webkit-box-shadow: rgb(153, 153, 153) 0px 0px 5px inset;
+        margin-bottom: 20px;
+      }
+
+      #container {
+        width: 750px;
+        margin: 20px auto;
+        text-align: center;
+      }
+
+      #chordinput {
+        border: 1px solid #ccc;
+        border-left: 5px solid #1693a5;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      #description {
+        font-size: 9pt;
+        font-weight: 300;
+      }
+
+      #panel {
+        font-size: 8pt;
+        font-weight: 100;
+        color: #556270;
+        list-style-type: none;
+        margin-bottom: 20px;
+      }
+
+      #panel li {
+        display: inline;
+        padding-left: 10px;
+        margin-right: 15px;
+      }
+
+      #panel li:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="https://github.com/saebekassebil/teoria"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <div id="container">
+      <h1>teoria.js</h1>
+      <div id="plotframe">
+        <svg width="750px" height="300px" overflow="hidden" id="plot"></svg>
+      </div>
+      <ul id="panel"></ul>
+      <input id="chordinput" type="text" value="Amaj7" />
+      <p id="description">Write a chord in the input (try <i>C13<sup>b9</sup></i>
+      or maybe <i>Fsus4<sup>maj#11</sup></i>) above and hit enter. You can click and drag
+      your way around the wave function.</p>
+    </div>
+
+    <script type="text/javascript" src="./waveplot.js"></script>
+  </body>
+</html>
