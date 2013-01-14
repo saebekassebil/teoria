@@ -330,17 +330,18 @@ var scope = (typeof exports === 'object') ? exports : window;
   // through this function.
   teoria.chord = function(name, oSymbol) {
     if (typeof name === 'string') {
-      var root;
+      var root, octave;
       root = name.match(/^([a-h])(x|#|bb|b?)/i);
       if (root && root[0]) {
-        return new TeoriaChord(teoria.note(root[0].toLowerCase()),
+        octave = typeof oSymbol === 'number' ? oSymbol.toString(10) : '4';
+        return new TeoriaChord(teoria.note(root[0].toLowerCase() + octave),
                               name.substr(root[0].length));
       }
     } else if (name instanceof TeoriaNote) {
       return new TeoriaChord(name, oSymbol || '');
-    } else {
-      throw new Error('Invalid Chord. Couldn\'t find note name');
     }
+
+    throw new Error('Invalid Chord. Couldn\'t find note name');
   };
 
   /**
