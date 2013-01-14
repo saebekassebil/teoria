@@ -14,6 +14,10 @@
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
       }
 
+      h1 {
+        font-weight: 300;
+      }
+
       #plotframe {
         box-shadow: rgb(153, 153, 153) 0px 0px 5px inset;
         -webkit-box-shadow: rgb(153, 153, 153) 0px 0px 5px inset;
@@ -55,10 +59,22 @@
       #panel li:hover {
         cursor: pointer;
       }
+
+      #alert {
+        display: none;
+        color: #b94a48;
+        background-color: #f2dede;
+        border: 1px solid #eed3d7;
+        padding: 8px 35px 8px 14px;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+      }
     </style>
   </head>
   <body>
     <div id="container">
+      <div id="alert"><p><strong>Woops!</strong> Seems like you haven't build the project yet.
+        Make a quick <code>`jake build`</code> at the project root!</p></div>
       <h1>teoria.js</h1>
       <div id="plotframe">
         <svg width="750px" height="300px" overflow="hidden" id="plot"></svg>
@@ -70,6 +86,13 @@
       your way around the wave function.</p>
     </div>
 
+    <script type="text/javascript">
+      try {
+        teoria.note('a4');
+      } catch (e) {
+        document.getElementById('alert').style.display = 'block';
+      }
+    </script>
     <script type="text/javascript" src="./waveplot.js"></script>
   </body>
 </html>
