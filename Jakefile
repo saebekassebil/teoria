@@ -1,11 +1,10 @@
 /*jshint node:true */
-/*global desc:true task:true complete:true*/
+/*global desc:true task:true complete:true jake:true*/
 'use strict';
 
 var path    = require('path'),
     fs      = require('fs'),
     mingler = require('mingler'),
-    vows    = require('vows'),
     existsSync = 'existsSync' in fs ? fs.existsSync : path.existsSync,
     colors;
 
