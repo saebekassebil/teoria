@@ -315,25 +315,15 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   teoria.note.fromFrequency = function(fq, concertPitch) {
-    var key, octave, distance, note, name, cents, originalFq;
+    var key, cents, originalFq;
     concertPitch = concertPitch || 440;
 
     key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
     key = Math.round(key);
     originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
     cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
-    octave = Math.floor((key - 4) / 12);  // This is octave - 1
-    distance = key - (octave * 12) - 4;
 
-    note = kNotes[kNoteIndex[Math.round(distance / 2)]];
-    name = note.name;
-    if (note.distance < distance) {
-      name += '#';
-    } else if (note.distance > distance) {
-      name += 'b';
-    }
-
-    return {note: teoria.note(name + (octave + 1).toString(10)), cents: cents};
+    return {note: teoria.note.fromKey(key), cents: cents};
   };
 
   // teoria.chord namespace - All chords should be instantiated
