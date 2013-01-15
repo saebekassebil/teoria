@@ -687,13 +687,19 @@ var scope = (typeof exports === 'object') ? exports : window;
         case 'extension':
           c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) :
                                             parseFloat(c);
-          if (!isNaN(c)) {
+          if (!isNaN(c) && c !== 6) {
             chordLength = (c - 1) / 2;
             if (chordLength !== Math.round(chordLength)) {
               throw new Error('Invalid interval extension: ' + c.toString(10));
             }
 
             i += String(c).length - 1;
+          } else if (c === 6) {
+            notes[2] = 'M6';
+
+            if (chordLength < 3) {
+              chordLength = 3;
+            }
           } else {
             i -= 1;
           }
@@ -704,6 +710,7 @@ var scope = (typeof exports === 'object') ? exports : window;
         case 'alterations':
           var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
               next, flat = false, sharp = false;
+
           if (alterations.length === 1) {
             throw new Error('Invalid alterations');
           } else if (alterations[0].length !== 0) {
@@ -1083,42 +1090,33 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   teoria.note.fromFrequency = function(fq, concertPitch) {
-    var key, octave, distance, note, name, cents, originalFq;
+    var key, cents, originalFq;
     concertPitch = concertPitch || 440;
 
     key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
     key = Math.round(key);
     originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
     cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
-    octave = Math.floor((key - 4) / 12);  // This is octave - 1
-    distance = key - (octave * 12) - 4;
 
-    note = kNotes[kNoteIndex[Math.round(distance / 2)]];
-    name = note.name;
-    if (note.distance < distance) {
-      name += '#';
-    } else if (note.distance > distance) {
-      name += 'b';
-    }
-
-    return {note: teoria.note(name + (octave + 1).toString(10)), cents: cents};
+    return {note: teoria.note.fromKey(key), cents: cents};
   };
 
   // teoria.chord namespace - All chords should be instantiated
   // through this function.
   teoria.chord = function(name, oSymbol) {
     if (typeof name === 'string') {
-      var root;
+      var root, octave;
       root = name.match(/^([a-h])(x|#|bb|b?)/i);
       if (root && root[0]) {
-        return new TeoriaChord(teoria.note(root[0].toLowerCase()),
+        octave = typeof oSymbol === 'number' ? oSymbol.toString(10) : '4';
+        return new TeoriaChord(teoria.note(root[0].toLowerCase() + octave),
                               name.substr(root[0].length));
       }
     } else if (name instanceof TeoriaNote) {
       return new TeoriaChord(name, oSymbol || '');
-    } else {
-      throw new Error('Invalid Chord. Couldn\'t find note name');
     }
+
+    throw new Error('Invalid Chord. Couldn\'t find note name');
   };
 
   /**
