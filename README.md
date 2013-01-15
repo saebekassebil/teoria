@@ -39,7 +39,7 @@ For a technical library reference, look further down this document.
 
 // Note creation with scientific and Helmholtz notation
 var a4 = teoria.note('a4');   // equivalent to teoria.note('a');
-var g5 = teoria.note('g\'\'');  // equivalent to teoria.note('g5');
+var g5 = teoria.note("g''");  // equivalent to teoria.note('g5');
 var c3 = teoria.note.fromKey(28); // equivalent to teoria.note('c');
     
 // Intervals
