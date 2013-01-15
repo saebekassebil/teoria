@@ -60,13 +60,19 @@ function TeoriaChord(root, name) {
       case 'extension':
         c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) :
                                           parseFloat(c);
-        if (!isNaN(c)) {
+        if (!isNaN(c) && c !== 6) {
           chordLength = (c - 1) / 2;
           if (chordLength !== Math.round(chordLength)) {
             throw new Error('Invalid interval extension: ' + c.toString(10));
           }
 
           i += String(c).length - 1;
+        } else if (c === 6) {
+          notes[2] = 'M6';
+
+          if (chordLength < 3) {
+            chordLength = 3;
+          }
         } else {
           i -= 1;
         }
@@ -77,6 +83,7 @@ function TeoriaChord(root, name) {
       case 'alterations':
         var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
             next, flat = false, sharp = false;
+
         if (alterations.length === 1) {
           throw new Error('Invalid alterations');
         } else if (alterations[0].length !== 0) {

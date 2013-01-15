@@ -630,6 +630,31 @@ var suite = vows.describe('Teoria Framework').addBatch({
       'G/f#': function() {
         var notes = simpleArray(teoria.chord('G/f#'));
         assert.deepEqual(notes, ['f#', 'g', 'b', 'd']);
+      },
+
+      'C6': function() {
+        var notes = simpleArray(teoria.chord('C6'));
+        assert.deepEqual(notes, ['c', 'e', 'g', 'a']);
+      },
+
+      'A#6': function() {
+        var notes = simpleArray(teoria.chord('A#6'));
+        assert.deepEqual(notes, ['a#', 'cx', 'e#', 'fx']);
+      },
+
+      'Bb6': function() {
+        var notes = simpleArray(teoria.chord('Bb6'));
+        assert.deepEqual(notes, ['bb', 'd', 'f', 'g']);
+      },
+
+      'Am6': function() {
+        var notes = simpleArray(teoria.chord('Am6'));
+        assert.deepEqual(notes, ['a', 'c', 'e', 'f#']);
+      },
+
+      'D(#6)': function() {
+        var notes = simpleArray(teoria.chord('D(#6)'));
+        assert.deepEqual(notes, ['d', 'f#', 'a', 'b#']);
       }
     }
   }
