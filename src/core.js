@@ -326,6 +326,11 @@ var scope = (typeof exports === 'object') ? exports : window;
     return {note: teoria.note.fromKey(key), cents: cents};
   };
 
+  teoria.note.fromMIDI = function(note) {
+    var frequency = 440 * Math.pow(2, ((note - 69) / 12));
+    return teoria.note.fromFrequency(frequency).note;
+  };
+
   // teoria.chord namespace - All chords should be instantiated
   // through this function.
   teoria.chord = function(name, oSymbol) {
