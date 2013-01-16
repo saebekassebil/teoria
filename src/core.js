@@ -326,6 +326,10 @@ var scope = (typeof exports === 'object') ? exports : window;
     return {note: teoria.note.fromKey(key), cents: cents};
   };
 
+  teoria.note.fromMIDI = function(note) {
+    return teoria.note.fromKey(note - 20);
+  };
+
   // teoria.chord namespace - All chords should be instantiated
   // through this function.
   teoria.chord = function(name, oSymbol) {
