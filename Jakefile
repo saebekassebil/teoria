@@ -1,5 +1,5 @@
-/*jshint node:true */
-/*global desc:true task:true complete:true jake:true*/
+///*jshint node:true */
+///*global desc:true task:true complete:true jake:true*/
 'use strict';
 
 var path    = require('path'),
@@ -66,9 +66,7 @@ var kFileList = [
 desc('Default task both lints and build the entire project');
 task({'default': ['lint', 'build']}, function(){});
 
-// Concatenates the files
-desc('Concatenates all files into dist/teoria[.min].js');
-task('build', function() {
+function doBuild() {
   var params, filename;
 
   params = Array.prototype.slice.call(arguments);
@@ -88,25 +86,23 @@ task('build', function() {
   // Change to /src dir
   process.chdir(kSrcDir);
 
-  mingler.on('complete', function(concatenation) {
+  mingler.on('complete', function (concatenation) {
     // Should the source be minified?
-    if(settings.minify) {
+    if (settings.minify) {
       var ugly, ast, ratio, compressed;
       try {
         ugly = require('uglify-js');
-      } catch(e) {
+      } catch (e) {
         return log('uglify-js module doesn\'t appear to be installed. Use:' +
           '`npm install uglify-js`', 'error');
       }
 
       log('Minifying');
 
-      ast = ugly.parser.parse(concatenation);
-      ast = ugly.uglify.ast_mangle(ast);
-      ast = ugly.uglify.ast_squeeze(ast);
+      var result = ugly.minify(concatenation, { fromString: true });
 
-      compressed = ugly.uglify.gen_code(ast);
-      ratio = 100 - (compressed.length/concatenation.length) * 100;
+      var compressed = result.code;
+      ratio = 100 - (compressed.length / concatenation.length) * 100;
       ratio = ratio.toString().substr(0, 4);
 
       log('Saved ' + ratio + '% of the original size');
@@ -140,7 +136,20 @@ task('build', function() {
   mingler.mingle(kMainFile, function() {
     process.chdir('../');
   });
-}, {async: true});
+}
+
+// Concatenates the files
+desc('Concatenates all files into dist/teoria[.min].js');
+task('build', doBuild, { async: true });
+
+// Concatenates the files
+desc('Concatenates all files into dist/teoria.min.js');
+task(
+  'minify',
+  function () {
+    doBuild("minify");
+  }, { async: true }
+);
 
 desc('Builds the project and unit tests it');
 task('test', ['build'], function() {
