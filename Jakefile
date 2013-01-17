@@ -1,9 +1,9 @@
-///*jshint node:true */
-///*global desc:true task:true complete:true jake:true*/
+/*jshint node:true */
+/*global desc:true task:true complete:true jake:true*/
 'use strict';
 
-var path    = require('path'),
-    fs      = require('fs'),
+var path = require('path'),
+    fs = require('fs'),
     mingler = require('mingler'),
     existsSync = 'existsSync' in fs ? fs.existsSync : path.existsSync,
     colors;
@@ -30,20 +30,20 @@ var logcolors = {
 function log(text, type, acolor, nolabel) {
   type = (typeof console[type] === 'function') ? type : 'info';
 
-  if(!settings.silent) {
-    if(!nolabel) {
-      text = ' ['+type.toUpperCase()+'] ' + text;
-    } else {
+  if (!settings.silent) {
+    if (!nolabel) {
+      text = ' [' + type.toUpperCase() + '] ' + text;
+   } else {
       text = ' ' + text;
-    }
+   }
 
-    if(settings.colors && colors) {
+    if (settings.colors && colors) {
       acolor = logcolors[acolor || type] || 'grey';
       console[type](text[acolor]);
-    } else {
+   } else {
       console[type](text);
-    }
-  }
+   }
+ }
 }
 
 // Constants
@@ -64,42 +64,42 @@ var kFileList = [
 
 // Default task - lint and build
 desc('Default task both lints and build the entire project');
-task({'default': ['lint', 'build']}, function(){});
+task({'default': ['lint', 'build']}, function() {});
 
 function doBuild() {
   var params, filename;
 
   params = Array.prototype.slice.call(arguments);
   params.forEach(function(el) {
-    if(el in settings) {
+    if (el in settings) {
       settings[el] = !settings[el];
-    } else {
+   } else {
       log('Ignoring invalid settings: ' + el, 'warn');
-    }
-  });
+   }
+ });
 
   if (!existsSync(kDistDir)) {
     log('Creating ' + kDistDir + ' directory');
     fs.mkdirSync(kDistDir, 0x01FF); // With 0777 mode
-  }
+ }
 
   // Change to /src dir
   process.chdir(kSrcDir);
 
-  mingler.on('complete', function (concatenation) {
+  mingler.on('complete', function(concatenation) {
     // Should the source be minified?
     if (settings.minify) {
       var ugly, ast, ratio, compressed;
       try {
         ugly = require('uglify-js');
-      } catch (e) {
+     } catch (e) {
         return log('uglify-js module doesn\'t appear to be installed. Use:' +
           '`npm install uglify-js`', 'error');
-      }
+     }
 
       log('Minifying');
 
-      var result = ugly.minify(concatenation, { fromString: true });
+      var result = ugly.minify(concatenation, {fromString: true});
 
       var compressed = result.code;
       ratio = 100 - (compressed.length / concatenation.length) * 100;
@@ -108,9 +108,9 @@ function doBuild() {
       log('Saved ' + ratio + '% of the original size');
       concatenation = compressed;
       filename = kDistMinFilename;
-    } else {
+   } else {
       filename = kDistFilename;
-    }
+   }
 
     // Write to file and close!
     log('Writing to output file \'' + filename + '\'');
@@ -118,44 +118,41 @@ function doBuild() {
     log('Concatenation completed - Goodbye!');
 
     complete();
-  });
+ });
 
   mingler.on('error', function(error) {
     log(error, 'error');
     process.exit(1);
-  });
+ });
 
   mingler.on('warning', function(warning) {
     log(warning, 'warn');
-  });
+ });
 
   mingler.on('concatenate', function(feedback) {
     log("Concatenating: " + feedback.filename, 'info', 'grey');
-  });
+ });
 
   mingler.mingle(kMainFile, function() {
     process.chdir('../');
-  });
+ });
 }
 
 // Concatenates the files
 desc('Concatenates all files into dist/teoria[.min].js');
-task('build', doBuild, { async: true });
+task('build', doBuild, {async: true});
 
 // Concatenates the files
 desc('Concatenates all files into dist/teoria.min.js');
-task(
-  'minify',
-  function () {
+task('minify',function() {
     doBuild("minify");
-  }, { async: true }
-);
+}, {async: true});
 
 desc('Builds the project and unit tests it');
 task('test', ['build'], function() {
   jake.exec('node test/teoria.js', function() {
     complete();
-  }, {printStdout: true});
+ }, {printStdout: true});
 }, {async: true});
 
 // Lints the files according to .jshintrc
@@ -164,12 +161,12 @@ task('lint', function() {
   var jshint, config, errors, errorfilecount, content;
   try {
     jshint = require('jshint');
-  } catch(e) {
+ } catch (e) {
     console.log(e);
     log('jshint doesn\'t appear to be installed. Do a `npm install -g jshint`',
       'error');
     return false;
-  }
+ }
 
   // Load configuration
   config = fs.readFileSync('./.jshintrc', 'utf8');
@@ -180,20 +177,20 @@ task('lint', function() {
   kFileList.forEach(function(file) {
     try {
       content = fs.readFileSync(file, 'utf8');
-    } catch(e) {
+   } catch (e) {
       log('Unable to open file ' + file, 'error');
-    }
+   }
 
     content = content.replace(/^\uFEFF/, ''); // Remove Unicode BOM
-    if(!jshint.JSHINT(content, config)) {
+    if (!jshint.JSHINT(content, config)) {
       errorfilecount++;
       jshint.JSHINT.errors.forEach(function(error) {
-        if(error) {
+        if (error) {
           errors.push({file: file, error: error});
-        }
-      });
-    }
-  });
+       }
+     });
+   }
+ });
 
   log(kFileList.length.toString(10) + ' files linted, ' +
       (kFileList.length - errorfilecount) +
@@ -204,13 +201,13 @@ task('lint', function() {
     log(error.file + ': line ' + error.error.line +
         ', col ' + error.error.character + ', ' + error.error.reason,
         'error', 'grey', true);
-  });
+ });
 
   // Show lint status
-  if(errors.length === 0) {
+  if (errors.length === 0) {
     log('Lint passed', 'info');
-  } else {
+ } else {
     log('Lint failed!', 'error');
-  }
+ }
 });
 
