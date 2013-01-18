@@ -327,8 +327,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   };
 
   teoria.note.fromMIDI = function(note) {
-    var frequency = 440 * Math.pow(2, ((note - 69) / 12));
-    return teoria.note.fromFrequency(frequency).note;
+    return teoria.note.fromKey(note - 20);
   };
 
   // teoria.chord namespace - All chords should be instantiated

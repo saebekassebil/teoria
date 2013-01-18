@@ -106,6 +106,9 @@ given frequency
 
 *cents* - A number value of how many cents the note is out of tune
 
+### teoria.note.fromMIDI(note)
+Returns an instance of TeoriaNote set to the corresponding MIDI note value.
+
 #### TeoriaNote.name
  - The name of the note, in lowercase letter (*only* the name, not the
  accidental signs)
