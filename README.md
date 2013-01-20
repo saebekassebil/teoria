@@ -27,31 +27,27 @@ Features
  There's also support for counting the interval span in semitones and inverting the
  interval.
 
-Building
+Test and linting
 --------
 
-Building the library is simple. Just fetch the code:
-
-```bash
-git clone git://github.com/saebekassebil/teoria
-```
-
-Install Jake (the build tool)
+We use vows for running the unit tests, so do a quick install of both 
+vows and jshint and you'll be ready to test and lint the library
 
 ```bash
 npm install -g jake
+npm install -g jshint
+npm install -g vows
 ```
 
-Enter the directory, and install the dependencies:
-```bash
-cd teoria && npm install
-```
+Now you can test and lint all you want:
 
-And build the library! You can build a minified version, by adding `[minify]` to the command:
 ```bash
-jake build
-# or
-jake build[minify]
+# Both test and lint:
+jake
+# Just lint:
+jake lint
+# Just test:
+jake test
 ```
 
 Syntax
