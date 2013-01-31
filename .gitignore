@@ -1,11 +1,5 @@
-# Node.js Modules (such as vows) #
-##################################
+# Ignore node modules
 node_modules/
 
-# Playground / Testing Files #
-##############################
+# Ignore my sandbox file
 index.html
-
-# Build files #
-###############
-dist/
