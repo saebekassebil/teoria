@@ -1,6 +1,6 @@
 {
   "name": "teoria",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Music theory for JavaScript",
   "homepage": "https://github.com/saebekassebil/teoria",
   "author": {
@@ -8,6 +8,8 @@
     "email": "saebekassebil@gmail.com",
     "url": "https://github.com/saebekassebil"
   },
+
+  "main": "./dist/teoria.js",
 
   "devDependencies": {
     "jake": ">=0.2.0",
