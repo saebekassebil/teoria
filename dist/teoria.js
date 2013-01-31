@@ -1,13 +1,12 @@
 /*jshint unused:false */
 /*global exports:true */
 
-/**
- * Teoria.js - Music Theory for JavaScript
- *
- * Jakob Miland - Copyleft 2011
- **/
-var scope = (typeof exports === 'object') ? exports : window;
-(function teoriaClosure(globalScope) {
+//    Teoria.js
+//    http://saebekassebil.github.com/teoria
+//    Copyleft Jakob Miland (saebekassebil)
+//    Teoria may be freely distributed under the MIT License.
+
+(function teoriaClosure() {
   'use strict';
 
   var teoria = {};
@@ -1279,6 +1278,15 @@ var scope = (typeof exports === 'object') ? exports : window;
   teoria.TeoriaScale = TeoriaScale;
   teoria.TeoriaInterval = TeoriaInterval;
 
-  globalScope.teoria = teoria;
-})(scope);
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = teoria;
+    }
+    exports.teoria = teoria;
+  } else if (typeof this !== 'undefined') {
+    this.teoria = teoria;
+  } else if (typeof window !== 'undefined') {
+    window.teoria = teoria;
+  }
+})();
 
