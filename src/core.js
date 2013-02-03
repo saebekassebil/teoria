@@ -1,5 +1,4 @@
 /*jshint unused:false */
-/*global exports:true */
 
 //    Teoria.js
 //    http://saebekassebil.github.com/teoria
