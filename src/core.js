@@ -494,7 +494,43 @@
     chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
                 'P5', 'm6', 'M6', 'm7', 'M7'],
     harmonicchromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
-                'P5', 'm6', 'M6', 'm7', 'M7']
+                'P5', 'm6', 'M6', 'm7', 'M7'],
+                
+    // Other Scales
+    acoustic: ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'm7'], 
+    adonai_malakh mode: ['P1', 'M2', 'M3', 'P4', 'P5', 'm6', 'm7'], 
+    algerian: ['P1', 'M2', 'm3', 'A4', 'P5', 'm6', 'M7', 'etc.'], 
+    altered: ['P1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7'], 
+    augmented: ['P1', 'm3', 'M3', 'P5', 'A5', 'M7'], 
+    bebop_dominant: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7', 'M7'], 
+    blues: ['P1', 'm3', 'P4', 'A4', 'P5', 'm7'], 
+    double_harmonic: ['P1', 'm2', 'M3', 'P4', 'P5', 'm6', 'M7'], 
+    enigmatic: ['P1', 'm2', 'M3', 'A4', 'A5', 'A6', 'M7'], 
+    flamenco_mode: ['P1', 'm2', 'M3', 'P4', 'P5', 'm6', 'M7'], 
+    gypsy: ['P1', 'M2', 'm3', 'A4', 'P5', 'm6', 'm7'], 
+    half_diminished: ['P1', 'M2', 'm3', 'P4', 'm5', 'm6', 'm7'], 
+    harmonic_major: ['P1', 'M2', 'M3', 'P4', 'P5', 'm6', 'M7'], 
+    harmonic_minor: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', '7'], // *
+    hirajoshi: ['P1', 'M2', 'm3', 'P5', 'm6'], 
+    hungarian_gypsy: ['P1', 'M2', 'm3', 'A4', 'P5', 'm6', 'M7'], 
+    hungarian_minor: ['P1', 'M2', 'm3', 'A4', 'P5', 'm6', 'M7'], 
+    in_scale: ['P1', 'm2', 'P4', 'P5', 'm6'], 
+    insen: ['P1', 'm2', 'P4', 'P5', 'm7'], 
+    istrian: ['P1', 'm2', 'm3', 'm4', 'm5', 'P5'], 
+    iwato: ['P1', 'm2', 'P4', 'm5', 'm7'], 
+    lydian_augmented: ['P1', 'M2', 'M3', 'A4', 'A5', 'M6', 'M7'], 
+    bebop: ['P1', 'M2', 'M3', 'P4', 'P5', '(A5/m6)', 'M6', 'M7'], 
+    melodic_minor: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'M7'], 
+    neapolitan_major: ['P1', 'm2', 'm3', 'P4', 'P5', 'M6', 'M7'], 
+    neapolitan_minor: ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'M7'], 
+    octatonic: ['P1', 'M2', 'm3', 'P4', 'm5', 'm6', 'M6', '7'], // * '1', 'm2', 'm3', 'M3', 'A4', 'P5', 'M6', 'm7'] 
+    persian: ['P1', 'm2', 'M3', 'P4', 'm5', 'm6', 'M7'], 
+    phrygian_dominant: ['P1', 'm2', 'M3', 'P4', 'P5', 'm6', 'm7'], 
+    prometheus: ['P1', 'M2', 'M3', 'A4', 'M6', 'm7'], 
+    tritone: ['P1', 'm2', 'M3', 'm5', 'P5', 'm7'], 
+    ukrainian_dorian: ['P1', 'M2', 'm3', 'A4', 'P5', 'M6', 'm7'], 
+    whole_tone: ['P1', 'M2', 'M3', 'A4', 'A5', 'A6'], 
+    yo_scale: ['P1', 'm3', 'P4', 'P5', 'M7'], 
   };
 
   teoria.TeoriaNote = TeoriaNote;
