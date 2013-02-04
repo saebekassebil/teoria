@@ -2,7 +2,7 @@
 
 //    Teoria.js
 //    http://saebekassebil.github.com/teoria
-//    Copyleft Jakob Miland (saebekassebil)
+//    Copyright Jakob Miland (saebekassebil)
 //    Teoria may be freely distributed under the MIT License.
 
 (function teoriaClosure() {
