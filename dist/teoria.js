@@ -2,7 +2,7 @@
 
 //    Teoria.js
 //    http://saebekassebil.github.com/teoria
-//    Copyleft Jakob Miland (saebekassebil)
+//    Copyright Jakob Miland (saebekassebil)
 //    Teoria may be freely distributed under the MIT License.
 
 (function teoriaClosure() {
@@ -1140,7 +1140,8 @@
       quality = kQualityLong[pattern[1]];
       intervalNumber = parseInt(pattern[2], 10);
 
-      return new TeoriaInterval(intervalNumber, quality, direction);
+      // Uses the second argument 'to', as direction
+      return new TeoriaInterval(intervalNumber, quality, to);
     }
 
     if (typeof to === 'string' && from instanceof TeoriaNote) {
