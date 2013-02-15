@@ -431,31 +431,23 @@
    * Returns the interval between two instances of teoria.note
    */
   teoria.interval.between = function(from, to) {
-    var fromKey = from.key(), toKey = to.key(), semitones, interval,
-        intervalInt, tmp, quality, alteration, direction = 'up',
-        simpleInterval;
+    var semitones, interval, intervalInt, quality,
+        alteration, direction = 'up', dir = 1;
 
-    semitones = toKey - fromKey;
-    intervalInt = kNotes[to.name].index - kNotes[from.name].index +
-                  (7 * (to.octave - from.octave));
+    semitones = to.key() - from.key();
+    intervalInt = to.key(true) - from.key(true);
 
-    if (semitones < 0 || intervalInt < 0) {
+    if (intervalInt < 0) {
       intervalInt = -intervalInt;
       direction = 'down';
-      tmp = from;
-      from = to;
-      to = tmp;
+      dir = -1;
     }
 
-    intervalInt += 1;
-    simpleInterval = (intervalInt >= 8 && intervalInt % 7 === 1) ?
-          intervalInt % 7 * 8 : ((intervalInt - 1) % 7) + 1;
-
-    interval = kIntervals[simpleInterval - 1];
+    interval = kIntervals[intervalInt % 7];
     alteration = kAlterations[interval.quality];
-    quality = alteration[(Math.abs(semitones) - interval.size + 2) % 12];
+    quality = alteration[(dir * semitones - interval.size + 2) % 12];
 
-    return new TeoriaInterval(intervalInt, quality, direction);
+    return new TeoriaInterval(intervalInt + 1, quality, direction);
   };
 
   teoria.interval.invert = function(sInterval) {
