@@ -378,28 +378,28 @@ scale step. Example 'first', 'second', 'fourth', 'seventh'.
  - A sugar function for the `#from` and `#between` methods of the same namespace and
  for creating `TeoriaInterval` objects.
 
-*from* - Either a string, in "simple-format" or a `TeoriaNote` that is
-the root of the interval measuring. If a string is supplied, it's treated as
-an interval in simple format, and returns a `TeoriaInterval` object.
+#### teoria.interval(`string`: from[, `string`: direction])
+ - Returns a `TeoriaInterval` object, with the given interval
 
-*to* - Either a string, which is a "simple-format" interval such as 'M2' for
-major second, and 'P5' for perfect fifth. More details on this format later.
-If it's a string the note which is the given interval (*to*) away from the
-note (*from*) is returned. If *to* is a `TeoriaNote` then an interval
-object is returned, which represents the interval between the two notes. For
-the format of this interval object, take a look at the #between method
+*from* - An interval in "simple-format" such as 'M2' for major second, and 'P5' for perfect fifth. Look further down for more details on this format.
 
-*direction* - The direction of the interval (only relevant when *to* is a string).
-Can be 'up' or 'down', defaults to 'up'
+*direction* - An optional direction string, either `'up'` or `'down'`. Defaults to `'up'`
+
+#### teoria.interval(`TeoriaNote`: from, `string`: to[, `string`: direction)
+ - A sugar method for the `teoria.interval.from` function
+
+#### teoria.interval(`TeoriaNote`: from, `TeoriaNote`: to)
+ - A sugar method for the `teoria.interval.between` function
 
 #### teoria.interval.from(from, to[, direction])
  - Returns a note which lies a given interval away from a root note.
 
-*from* - Same as above, the `TeoriaNote` which is the base of the measuring
+*from* - The `TeoriaNote` which is the root of the measuring
 
-*to* - A string as described above.
+*to* - An interval in "simple-format" such as 'M2' for
+major second, and 'P5' for perfect fifth.
 
-*direction* - The direction as described above.
+*direction* - An optional direction string, either `'up'` or `'down'`. Defaults to `'up'`
 
 #### teoria.interval.between(from, to)
  - Returns an interval object which represents the interval between two notes.
