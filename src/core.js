@@ -365,7 +365,8 @@
       quality = kQualityLong[pattern[1]];
       intervalNumber = parseInt(pattern[2], 10);
 
-      return new TeoriaInterval(intervalNumber, quality, direction);
+      // Uses the second argument 'to', as direction
+      return new TeoriaInterval(intervalNumber, quality, to);
     }
 
     if (typeof to === 'string' && from instanceof TeoriaNote) {
