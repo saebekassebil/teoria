@@ -414,6 +414,14 @@ var suite = vows.describe('Teoria Framework').addBatch({
 
       'Major fourteenth': function(note) {
         assert.deepEqual(note.interval('M14'), teoria.note('e#'));
+      },
+
+      'Doubly diminished second up': function() {
+        assert.deepEqual(teoria.note('e').interval(teoria.note('fbb')), teoria.interval('dd2'));
+      },
+
+      'Doubly diminished second down': function() {
+        assert.deepEqual(teoria.note('f').interval(teoria.note('ex')), teoria.interval('dd2', 'down'));
       }
     },
 
