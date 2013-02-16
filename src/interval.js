@@ -71,7 +71,7 @@ TeoriaInterval.prototype = {
   },
 
   toString: function() {
-    return (this.compoundOctaves > 0) ? this.compound() : this.simple();
+    return this.compound();
   }
 };
 

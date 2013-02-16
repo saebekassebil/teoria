@@ -343,8 +343,8 @@
 
       if (octave.length === 0) { // no octave symbols
         octave = (noteName === noteName.toLowerCase()) ? 3 : 2;
-      } else { // Pro
-        if (octave.match(/^'+$/)) { // Up
+      } else {
+        if (octave.match(/^'+$/)) {
           if (noteName === noteName.toUpperCase()) { // If upper-case
             throw new Error('Format must respect the Helmholtz notation');
           }
@@ -443,7 +443,6 @@
       var paddingChar = (this.octave < 3) ? ',' : '\'';
       var paddingCount = (this.octave < 2) ? 2 - this.octave : this.octave - 3;
 
-      pad(name + this.accidental.sign, paddingChar, paddingCount);
       return pad(name + this.accidental.sign, paddingChar, paddingCount);
     },
 
@@ -451,8 +450,7 @@
      * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
      */
     scientific: function() {
-      var octave = (typeof this.octave === 'number') ? this.octave : '';
-      return this.name.toUpperCase() + this.accidental.sign + octave;
+      return this.name.toUpperCase() + this.accidental.sign + this.octave;
     },
 
     /**
@@ -521,7 +519,7 @@
      * Returns the degree of this note in a given scale
      * If the scale doesn't contain this note, the scale degree
      * will be returned as 0 allowing for expressions such as:
-     * if(teoria.note('a').scaleDegree(teoria.scale('a', 'major'))) {
+     * if (teoria.note('a').scaleDegree(teoria.scale('a', 'major'))) {
      *   ...
      * }
      *
@@ -618,7 +616,7 @@
     },
 
     toString: function() {
-      return (this.compoundOctaves > 0) ? this.compound() : this.simple();
+      return this.compound();
     }
   };
 
@@ -653,8 +651,7 @@
     }
 
     for (i = 0, length = name.length; i < length; i++) {
-      c = name[i];
-      if (!c) {
+      if (!(c = name[i])) {
         break;
       }
 
@@ -1004,33 +1001,19 @@
     },
 
     type: function() {
-      var name = null, length = this.notes.length;
-      if (length === 2) {
-        name = 'ditonic';
-      } else if (length === 3) {
-        name = 'tritonic';
-      } else if (length === 4) {
-        name = 'tetratonic';
-      } else if (length === 5) {
-        name = 'pentatonic';
-      } else if (length === 6) {
-        name = 'hexatonic';
-      } else if (length === 7) {
-        name = 'heptatonic';
-      } else if (length === 8) {
-        name = 'octatonic';
+      var length = this.notes.length - 2;
+      if (length < 8) {
+        return ['di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa'][length] +
+          'tonic';
       }
-
-      return name;
     },
 
     get: function(i) {
-      if (typeof i === 'number') {
-        return (i > 0 && i <= this.notes.length) ? this.notes[i - 1] : null;
-      } else if (typeof i === 'string' && i in kStepNumber) {
-        i = parseFloat(kStepNumber[i]);
-        return (i > 0 && i <= this.notes.length) ? this.notes[i - 1] : null;
+      if (typeof i === 'string' && i in kStepNumber) {
+        i = parseInt(kStepNumber[i], 10);
       }
+
+      return this.notes[i - 1];
     },
 
     solfege: function(index, showOctaves) {
@@ -1084,7 +1067,7 @@
       name += 'b';
     }
 
-    return teoria.note(name + (octave + 1).toString(10));
+    return teoria.note(name + (octave + 1));
   };
 
   teoria.note.fromFrequency = function(fq, concertPitch) {
@@ -1105,17 +1088,17 @@
 
   // teoria.chord namespace - All chords should be instantiated
   // through this function.
-  teoria.chord = function(name, oSymbol) {
+  teoria.chord = function(name, symbol) {
     if (typeof name === 'string') {
       var root, octave;
       root = name.match(/^([a-h])(x|#|bb|b?)/i);
       if (root && root[0]) {
-        octave = typeof oSymbol === 'number' ? oSymbol.toString(10) : '4';
+        octave = typeof symbol === 'number' ? symbol.toString(10) : '4';
         return new TeoriaChord(teoria.note(root[0].toLowerCase() + octave),
                               name.substr(root[0].length));
       }
     } else if (name instanceof TeoriaNote) {
-      return new TeoriaChord(name, oSymbol || '');
+      return new TeoriaChord(name, symbol || '');
     }
 
     throw new Error('Invalid Chord. Couldn\'t find note name');
@@ -1244,15 +1227,15 @@
    */
   teoria.scale.scales = {
     // Modal Scales
-    major: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    ionian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    dorian: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
-    phrygian: ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    lydian: ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
+    major:      ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+    ionian:     ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+    dorian:     ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
+    phrygian:   ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    lydian:     ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
     mixolydian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
-    minor: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    aeolian: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    locrian: ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
+    minor:      ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    aeolian:    ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    locrian:    ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
 
     // Pentatonic
     majorpentatonic: ['P1', 'M2', 'M3', 'P5', 'M6'],

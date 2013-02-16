@@ -28,8 +28,7 @@ function TeoriaChord(root, name) {
   }
 
   for (i = 0, length = name.length; i < length; i++) {
-    c = name[i];
-    if (!c) {
+    if (!(c = name[i])) {
       break;
     }
 

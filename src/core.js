@@ -309,7 +309,7 @@
       name += 'b';
     }
 
-    return teoria.note(name + (octave + 1).toString(10));
+    return teoria.note(name + (octave + 1));
   };
 
   teoria.note.fromFrequency = function(fq, concertPitch) {
@@ -330,17 +330,17 @@
 
   // teoria.chord namespace - All chords should be instantiated
   // through this function.
-  teoria.chord = function(name, oSymbol) {
+  teoria.chord = function(name, symbol) {
     if (typeof name === 'string') {
       var root, octave;
       root = name.match(/^([a-h])(x|#|bb|b?)/i);
       if (root && root[0]) {
-        octave = typeof oSymbol === 'number' ? oSymbol.toString(10) : '4';
+        octave = typeof symbol === 'number' ? symbol.toString(10) : '4';
         return new TeoriaChord(teoria.note(root[0].toLowerCase() + octave),
                               name.substr(root[0].length));
       }
     } else if (name instanceof TeoriaNote) {
-      return new TeoriaChord(name, oSymbol || '');
+      return new TeoriaChord(name, symbol || '');
     }
 
     throw new Error('Invalid Chord. Couldn\'t find note name');
@@ -469,15 +469,15 @@
    */
   teoria.scale.scales = {
     // Modal Scales
-    major: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    ionian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    dorian: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
-    phrygian: ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    lydian: ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
+    major:      ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+    ionian:     ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+    dorian:     ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
+    phrygian:   ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    lydian:     ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
     mixolydian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
-    minor: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    aeolian: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    locrian: ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
+    minor:      ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    aeolian:    ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+    locrian:    ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
 
     // Pentatonic
     majorpentatonic: ['P1', 'M2', 'M3', 'P5', 'M6'],

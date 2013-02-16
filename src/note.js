@@ -54,8 +54,8 @@ function TeoriaNote(name, duration) {
 
     if (octave.length === 0) { // no octave symbols
       octave = (noteName === noteName.toLowerCase()) ? 3 : 2;
-    } else { // Pro
-      if (octave.match(/^'+$/)) { // Up
+    } else {
+      if (octave.match(/^'+$/)) {
         if (noteName === noteName.toUpperCase()) { // If upper-case
           throw new Error('Format must respect the Helmholtz notation');
         }
@@ -154,7 +154,6 @@ TeoriaNote.prototype = {
     var paddingChar = (this.octave < 3) ? ',' : '\'';
     var paddingCount = (this.octave < 2) ? 2 - this.octave : this.octave - 3;
 
-    pad(name + this.accidental.sign, paddingChar, paddingCount);
     return pad(name + this.accidental.sign, paddingChar, paddingCount);
   },
 
@@ -162,8 +161,7 @@ TeoriaNote.prototype = {
    * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
    */
   scientific: function() {
-    var octave = (typeof this.octave === 'number') ? this.octave : '';
-    return this.name.toUpperCase() + this.accidental.sign + octave;
+    return this.name.toUpperCase() + this.accidental.sign + this.octave;
   },
 
   /**
@@ -232,7 +230,7 @@ TeoriaNote.prototype = {
    * Returns the degree of this note in a given scale
    * If the scale doesn't contain this note, the scale degree
    * will be returned as 0 allowing for expressions such as:
-   * if(teoria.note('a').scaleDegree(teoria.scale('a', 'major'))) {
+   * if (teoria.note('a').scaleDegree(teoria.scale('a', 'major'))) {
    *   ...
    * }
    *

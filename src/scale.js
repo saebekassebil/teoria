@@ -44,33 +44,19 @@ TeoriaScale.prototype = {
   },
 
   type: function() {
-    var name = null, length = this.notes.length;
-    if (length === 2) {
-      name = 'ditonic';
-    } else if (length === 3) {
-      name = 'tritonic';
-    } else if (length === 4) {
-      name = 'tetratonic';
-    } else if (length === 5) {
-      name = 'pentatonic';
-    } else if (length === 6) {
-      name = 'hexatonic';
-    } else if (length === 7) {
-      name = 'heptatonic';
-    } else if (length === 8) {
-      name = 'octatonic';
+    var length = this.notes.length - 2;
+    if (length < 8) {
+      return ['di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa'][length] +
+        'tonic';
     }
-
-    return name;
   },
 
   get: function(i) {
-    if (typeof i === 'number') {
-      return (i > 0 && i <= this.notes.length) ? this.notes[i - 1] : null;
-    } else if (typeof i === 'string' && i in kStepNumber) {
-      i = parseFloat(kStepNumber[i]);
-      return (i > 0 && i <= this.notes.length) ? this.notes[i - 1] : null;
+    if (typeof i === 'string' && i in kStepNumber) {
+      i = parseInt(kStepNumber[i], 10);
     }
+
+    return this.notes[i - 1];
   },
 
   solfege: function(index, showOctaves) {
