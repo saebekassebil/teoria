@@ -2,8 +2,8 @@
 /*global desc:true task:true complete:true jake:true*/
 'use strict';
 
-var path    = require('path'),
-    fs      = require('fs'),
+var path = require('path'),
+    fs = require('fs'),
     mingler = require('mingler'),
     existsSync = 'existsSync' in fs ? fs.existsSync : path.existsSync,
     colors;
@@ -30,14 +30,14 @@ var logcolors = {
 function log(text, type, acolor, nolabel) {
   type = (typeof console[type] === 'function') ? type : 'info';
 
-  if(!settings.silent) {
-    if(!nolabel) {
-      text = ' ['+type.toUpperCase()+'] ' + text;
+  if (!settings.silent) {
+    if (!nolabel) {
+      text = ' [' + type.toUpperCase() + '] ' + text;
     } else {
       text = ' ' + text;
     }
 
-    if(settings.colors && colors) {
+    if (settings.colors && colors) {
       acolor = logcolors[acolor || type] || 'grey';
       console[type](text[acolor]);
     } else {
@@ -64,16 +64,14 @@ var kFileList = [
 
 // Default task - lint and build
 desc('Default task both lints and build the entire project');
-task({'default': ['lint', 'build']}, function(){});
+task({'default': ['lint', 'build']}, function() {});
 
-// Concatenates the files
-desc('Concatenates all files into dist/teoria[.min].js');
-task('build', function() {
+function doBuild() {
   var params, filename;
 
   params = Array.prototype.slice.call(arguments);
   params.forEach(function(el) {
-    if(el in settings) {
+    if (el in settings) {
       settings[el] = !settings[el];
     } else {
       log('Ignoring invalid settings: ' + el, 'warn');
@@ -90,23 +88,21 @@ task('build', function() {
 
   mingler.on('complete', function(concatenation) {
     // Should the source be minified?
-    if(settings.minify) {
+    if (settings.minify) {
       var ugly, ast, ratio, compressed;
       try {
         ugly = require('uglify-js');
-      } catch(e) {
+      } catch (e) {
         return log('uglify-js module doesn\'t appear to be installed. Use:' +
           '`npm install uglify-js`', 'error');
       }
 
       log('Minifying');
 
-      ast = ugly.parser.parse(concatenation);
-      ast = ugly.uglify.ast_mangle(ast);
-      ast = ugly.uglify.ast_squeeze(ast);
+      var result = ugly.minify(concatenation, {fromString: true});
 
-      compressed = ugly.uglify.gen_code(ast);
-      ratio = 100 - (compressed.length/concatenation.length) * 100;
+      var compressed = result.code;
+      ratio = 100 - (compressed.length / concatenation.length) * 100;
       ratio = ratio.toString().substr(0, 4);
 
       log('Saved ' + ratio + '% of the original size');
@@ -140,6 +136,16 @@ task('build', function() {
   mingler.mingle(kMainFile, function() {
     process.chdir('../');
   });
+}
+
+// Concatenates the files
+desc('Concatenates all files into dist/teoria[.min].js');
+task('build', doBuild, {async: true});
+
+// Concatenates the files
+desc('Concatenates all files into dist/teoria.min.js');
+task('minify',function() {
+    doBuild("minify");
 }, {async: true});
 
 desc('Builds the project and unit tests it');
@@ -155,7 +161,7 @@ task('lint', function() {
   var jshint, config, errors, errorfilecount, content;
   try {
     jshint = require('jshint');
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     log('jshint doesn\'t appear to be installed. Do a `npm install -g jshint`',
       'error');
@@ -171,18 +177,18 @@ task('lint', function() {
   kFileList.forEach(function(file) {
     try {
       content = fs.readFileSync(file, 'utf8');
-    } catch(e) {
+    } catch (e) {
       log('Unable to open file ' + file, 'error');
     }
 
     content = content.replace(/^\uFEFF/, ''); // Remove Unicode BOM
-    if(!jshint.JSHINT(content, config)) {
+    if (!jshint.JSHINT(content, config)) {
       errorfilecount++;
       jshint.JSHINT.errors.forEach(function(error) {
-        if(error) {
+        if (error) {
           errors.push({file: file, error: error});
         }
-      });
+     });
     }
   });
 
@@ -198,10 +204,9 @@ task('lint', function() {
   });
 
   // Show lint status
-  if(errors.length === 0) {
+  if (errors.length === 0) {
     log('Lint passed', 'info');
   } else {
     log('Lint failed!', 'error');
   }
 });
-
