@@ -89,7 +89,7 @@ function doBuild() {
   mingler.on('complete', function(concatenation) {
     // Should the source be minified?
     if (settings.minify) {
-      var ugly, ast, ratio, compressed;
+      var ugly, ratio, compressed;
       try {
         ugly = require('uglify-js');
       } catch (e) {
@@ -101,7 +101,7 @@ function doBuild() {
 
       var result = ugly.minify(concatenation, {fromString: true});
 
-      var compressed = result.code;
+      compressed = result.code;
       ratio = 100 - (compressed.length / concatenation.length) * 100;
       ratio = ratio.toString().substr(0, 4);
 
