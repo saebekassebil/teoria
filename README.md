@@ -126,7 +126,10 @@ musical note. When calling teoria.note you're actually instantiating a
 `TeoriaNote` object.
 
 ### teoria.note.fromKey(key)
-A static method that returns an instance of TeoriaNote set to the note at the given piano key
+A static method that returns an instance of TeoriaNote set to the note
+at the given 88 key piano position, where A0 is key number 1.
+See [Wikipedia's piano key article](http://en.wikipedia.org/wiki/Piano_key_frequencies)
+for more information.
 
 ### teoria.note.fromFrequency(fq)
 A static method returns an object containing two elements:
