@@ -106,6 +106,14 @@ TeoriaNote.prototype = {
 
     return concertPitch * Math.pow(2, (this.key() - 49) / 12);
   },
+  
+  /**
+   * Returns tone quality of the note. 
+   * An integer between 0 and 11 (C-B)
+   */
+  tone: function() {
+    return kNotes[this.name].distance + this.accidental.value;
+  },    
 
   /**
    * Returns the pitch class index (chroma) of the note
