@@ -109,6 +109,52 @@ var suite = vows.describe('Teoria Framework').addBatch({
         assert.deepEqual(cis4.interval(db4),
             new teoria.TeoriaInterval(2, 'diminished'));
       }
+    },
+
+    'Chroma': {
+      'C has chroma 0': function() {
+        assert.equal(teoria.note('c').chroma(), 0);
+      },
+
+      'C# has chroma 1': function() {
+        assert.equal(teoria.note('c#').chroma(), 1);
+      },
+
+      'B has chroma 11': function() {
+        assert.equal(teoria.note('b').chroma(), 11);
+      },
+
+      'Db has chroma 1': function() {
+        assert.equal(teoria.note('db').chroma(), 1);
+      },
+
+      'Dbb has chroma 0': function() {
+        assert.equal(teoria.note('dbb').chroma(), 0);
+      },
+
+      'E has chroma 4': function() {
+        assert.equal(teoria.note('e').chroma(), 4);
+      },
+
+      'F has chroma 5': function() {
+        assert.equal(teoria.note('f').chroma(), 5);
+      },
+
+      'Fb has chroma 4': function() {
+        assert.equal(teoria.note('fb').chroma(), 4);
+      },
+
+      'H# has chroma 0': function() {
+        assert.equal(teoria.note('h#').chroma(), 0);
+      },
+
+      'Bx has chroma 1': function() {
+        assert.equal(teoria.note('bx').chroma(), 1);
+      },
+
+      'Cbb has chroma 10': function() {
+        assert.equal(teoria.note('cbb').chroma(), 10);
+      }
     }
   },
 

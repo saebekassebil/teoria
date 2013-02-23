@@ -397,6 +397,14 @@
     },
 
     /**
+     * Returns the pitch class index (chroma) of the note
+     */
+    chroma: function() {
+      var value = (kNotes[this.name].distance + this.accidental.value) % 12;
+      return (value < 0) ? value + 12 : value;
+    },
+
+    /**
      * Sugar function for teoria.scale(note, scale)
      */
     scale: function(scale) {

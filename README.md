@@ -173,6 +173,15 @@ be counted when finding the key number. This is mostly for internal use.
 *concertPitch* - If supplied this number will be used instead of the normal
 concert pitch which is 440hz. This is useful for some classical music.
 
+#### TeoriaNote#chroma()
+ - Returns the pitch class (index) of the note.
+
+This allows for easy enharmonic checking:
+
+    teoria.note('e').chroma() === teoria.note('fb').chroma();
+
+The chroma number is ranging from pitch class C which is 0 to 11 which is B
+
 #### TeoriaNote#scale(scaleName)
  - Returns an instance of TeoriaScale, with the tonic/root set to this note.
 
