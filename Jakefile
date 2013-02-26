@@ -132,7 +132,7 @@ function doBuild() {
 
 // Concatenates the files
 desc('Concatenates all files into dist/teoria[.min].js');
-task('build', doBuild, {async: true});
+task('build', doBuild, { async: true });
 
 // Concatenates and minifies the files
 desc('Concatenates and minifies all files into dist/teoria.min.js');
@@ -142,7 +142,7 @@ task('minify', function() { doBuild('minify'); }, { async: true });
 desc('Builds the project and unit tests it');
 task('test', ['build'], function() {
   jake.exec('node test/teoria.js', complete, { printStdout: true });
-}, {async: true});
+}, { async: true });
 
 // Lints the files according to .jshintrc
 desc('Lint all files according to coding standards');
