@@ -2,15 +2,13 @@
 /*global desc:true task:true complete:true jake:true*/
 'use strict';
 
-var path = require('path'),
-    fs = require('fs'),
-    mingler = require('mingler'),
-    existsSync = 'existsSync' in fs ? fs.existsSync : path.existsSync,
-    colors;
-
-try {
-  colors = require('colors');
-} catch (e) {}
+var path        = require('path'),
+    fs          = require('fs'),
+    mingler     = require('mingler'),
+    colors      = require('colors'),
+    ugly        = require('uglify-js'),
+    jshint      = require('jshint'),
+    existsSync  = 'existsSync' in fs ? fs.existsSync : path.existsSync;
 
 // Default settings
 var settings = {
@@ -20,11 +18,12 @@ var settings = {
 };
 
 // Log colors if the npm module colors is available
-var logcolors = {
+colors.setTheme({
   info: 'cyan',
   warn: 'yellow',
-  error: 'red'
-};
+  error: 'red',
+  extra: 'grey'
+});
 
 // Utility function which respects the 'silent' setting
 function log(text, type, acolor, nolabel) {
@@ -37,9 +36,8 @@ function log(text, type, acolor, nolabel) {
       text = ' ' + text;
     }
 
-    if (settings.colors && colors) {
-      acolor = logcolors[acolor || type] || 'grey';
-      console[type](text[acolor]);
+    if (settings.colors) {
+      console[type](text[acolor || type]);
     } else {
       console[type](text);
     }
@@ -89,21 +87,15 @@ function doBuild() {
   mingler.on('complete', function(concatenation) {
     // Should the source be minified?
     if (settings.minify) {
-      var ugly, ratio, compressed;
-      try {
-        ugly = require('uglify-js');
-      } catch (e) {
-        return log('uglify-js module doesn\'t appear to be installed. Use:' +
-          '`npm install uglify-js`', 'error');
-      }
+      var ratio, compressed, result;
 
       log('Minifying');
 
-      var result = ugly.minify(concatenation, {fromString: true});
-
+      result = ugly.minify(concatenation, { fromString: true });
       compressed = result.code;
+
       ratio = 100 - (compressed.length / concatenation.length) * 100;
-      ratio = ratio.toString().substr(0, 4);
+      ratio = ratio.toPrecision(4);
 
       log('Saved ' + ratio + '% of the original size');
       concatenation = compressed;
@@ -130,7 +122,7 @@ function doBuild() {
   });
 
   mingler.on('concatenate', function(feedback) {
-    log("Concatenating: " + feedback.filename, 'info', 'grey');
+    log('Concatenating: ' + feedback.filename, 'info', 'grey');
   });
 
   mingler.mingle(kMainFile, function() {
@@ -142,53 +134,37 @@ function doBuild() {
 desc('Concatenates all files into dist/teoria[.min].js');
 task('build', doBuild, {async: true});
 
-// Concatenates the files
-desc('Concatenates all files into dist/teoria.min.js');
-task('minify',function() {
-    doBuild("minify");
-}, {async: true});
+// Concatenates and minifies the files
+desc('Concatenates and minifies all files into dist/teoria.min.js');
+task('minify', function() { doBuild('minify'); }, { async: true });
 
+// Unit test the project
 desc('Builds the project and unit tests it');
 task('test', ['build'], function() {
-  jake.exec('node test/teoria.js', function() {
-    complete();
-  }, {printStdout: true});
+  jake.exec('node test/teoria.js', complete, { printStdout: true });
 }, {async: true});
 
 // Lints the files according to .jshintrc
 desc('Lint all files according to coding standards');
 task('lint', function() {
-  var jshint, config, errors, errorfilecount, content;
-  try {
-    jshint = require('jshint');
-  } catch (e) {
-    console.log(e);
-    log('jshint doesn\'t appear to be installed. Do a `npm install -g jshint`',
-      'error');
-    return false;
-  }
+  var config, errors, errorfilecount, content;
 
   // Load configuration
-  config = fs.readFileSync('./.jshintrc', 'utf8');
-  config = JSON.parse(config);
+  config = JSON.parse(fs.readFileSync('./.jshintrc', 'utf8'));
 
   // List all files in src/
   errors = [], errorfilecount = 0;
   kFileList.forEach(function(file) {
-    try {
-      content = fs.readFileSync(file, 'utf8');
-    } catch (e) {
-      log('Unable to open file ' + file, 'error');
-    }
-
+    // Read the contents of the file
+    content = fs.readFileSync(file, 'utf8');
     content = content.replace(/^\uFEFF/, ''); // Remove Unicode BOM
+
+    // Lint it according to .jshintrc
     if (!jshint.JSHINT(content, config)) {
       errorfilecount++;
-      jshint.JSHINT.errors.forEach(function(error) {
-        if (error) {
-          errors.push({file: file, error: error});
-        }
-     });
+      errors = jshint.JSHINT.errors.map(function(error) {
+        return { file: file, error: error };
+      });
     }
   });
 
