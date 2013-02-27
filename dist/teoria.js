@@ -634,6 +634,7 @@
       return null;
     }
 
+
     name = name || '';
     this.name = root.name.toUpperCase() + root.accidental.sign + name;
     this.symbol = name;
@@ -641,9 +642,6 @@
     this.notes = [root];
     this.quality = 'major';
 
-    // TODO implement these...
-    // Half-diminished code === 216 || code === 248
-    // Diminished code === 111 || code === 176
     var i, length, c, code, strQuality, parsing = 'quality',
         notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
         chordLength = 2, additionals = [], bass, note;
@@ -668,23 +666,28 @@
 
       switch (parsing) {
         case 'quality':
-          var triad;
           if (strQuality && kQualityLong[strQuality]) {
-            triad = kChords[kQualityLong[strQuality]];
             this.quality = kQualityLong[strQuality];
             i += strQuality.length - 1;
           } else if (kQualityLong[c] && strQuality !== 'maj') {
-            triad = kChords[kQualityLong[c]];
             this.quality = kQualityLong[c];
+          } else if (code === 216 || code === 248) {
+            this.quality = 'diminished';
+            chordLength = 3;
+          } else if (code === 111 || code === 176) {
+            this.quality = 'diminished';
+            chordLength = 3;
+            notes[2] = 'd7';
           } else {
-            triad = kChords.major;
+            this.quality = 'major';
             i -= 1;
           }
 
+          var triad = kChords[this.quality];
           notes[0] = triad[0];
           notes[1] = triad[1];
-          parsing = 'extension';
 
+          parsing = 'extension';
           break;
 
         case 'extension':
