@@ -739,6 +739,16 @@ var suite = vows.describe('Teoria Framework').addBatch({
       'G#ø7': function() {
         var notes = simpleArray(teoria.chord('G#ø7'));
         assert.deepEqual(notes, ['g#', 'b', 'd', 'f#']);
+      },
+
+      'Cmin': function() {
+        var notes = simpleArray(teoria.chord('Cmin'));
+        assert.deepEqual(notes, ['c', 'eb', 'g']);
+      },
+
+      'Bmin11': function() {
+        var notes = simpleArray(teoria.chord('Bmin11'));
+        assert.deepEqual(notes, ['b', 'd', 'f#', 'a', 'c#', 'e']);
       }
     }
   }

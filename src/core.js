@@ -120,6 +120,7 @@
     'd': 'diminished',
     'dd': 'doubly diminished',
 
+    'min': 'minor',
     'aug': 'augmented',
     'dim': 'diminished'
   };
