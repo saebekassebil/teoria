@@ -3,17 +3,23 @@ function TeoriaChord(root, name) {
     return null;
   }
 
-
   name = name || '';
   this.name = root.name.toUpperCase() + root.accidental.sign + name;
   this.symbol = name;
   this.root = root;
   this.notes = [root];
-  this.quality = 'major';
 
-  var i, length, c, code, strQuality, parsing = 'quality',
+  var i, length, c, strQuality, parsing = 'quality', additionals = [],
       notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
-      chordLength = 2, additionals = [], bass, note;
+      chordLength = 2, bass, note, symbol;
+
+  function setChord(intervals) {
+    for (var n = 0, chordl = intervals.length; n < chordl; n++) {
+      notes[n] = intervals[n];
+    }
+
+    chordLength = intervals.length;
+  }
 
   // Remove whitespace, commas and parentheses
   name = name.replace(/[,\s\(\)]/g, '');
@@ -30,51 +36,40 @@ function TeoriaChord(root, name) {
       break;
     }
 
-    code = c.charCodeAt(i);
-    strQuality = ((i + 3) <= length) ? name.substr(i, 3) : null;
-
     switch (parsing) {
+      // Parses for the "base" chord, either a triad or a seventh chord
       case 'quality':
-        if (strQuality && kQualityLong[strQuality]) {
-          this.quality = kQualityLong[strQuality];
-          i += strQuality.length - 1;
-        } else if (kQualityLong[c] && strQuality !== 'maj') {
-          this.quality = kQualityLong[c];
-        } else if (code === 216 || code === 248) {
-          this.quality = 'diminished';
-          chordLength = 3;
-        } else if (code === 111 || code === 176) {
-          this.quality = 'diminished';
-          chordLength = 3;
-          notes[2] = 'd7';
-        } else {
-          this.quality = 'major';
-          i -= 1;
-        }
+        strQuality = ((i + 3) <= length) ? name.substr(i, 3) : null;
+        symbol = (strQuality in kSymbols) ?
+          strQuality : (c in kSymbols) ? c : '';
 
-        var triad = kChords[this.quality];
-        notes[0] = triad[0];
-        notes[1] = triad[1];
+        setChord(kSymbols[symbol]);
 
+        i += symbol.length - 1;
         parsing = 'extension';
         break;
 
+      // Parses for the top interval or a pure sixth
       case 'extension':
-        c = (c === '1' && name[i + 1]) ? parseFloat(name.substr(i, 2)) :
-                                          parseFloat(c);
+        c = (c === '1' && name[i + 1]) ?
+          parseFloat(name.substr(i, 2)) : parseFloat(c);
+
         if (!isNaN(c) && c !== 6) {
           chordLength = (c - 1) / 2;
+
           if (chordLength !== Math.round(chordLength)) {
             throw new Error('Invalid interval extension: ' + c.toString(10));
+          }
+
+          // Special care for diminished chords
+          if (symbol === 'o' || symbol === 'dim') {
+            notes[2] = 'd7';
           }
 
           i += String(c).length - 1;
         } else if (c === 6) {
           notes[2] = 'M6';
-
-          if (chordLength < 3) {
-            chordLength = 3;
-          }
+          chordLength = (chordLength < 3) ? 3 : chordLength;
         } else {
           i -= 1;
         }
@@ -82,6 +77,7 @@ function TeoriaChord(root, name) {
         parsing = 'alterations';
         break;
 
+      // Parses for possible alterations of intervals (#5, b9, etc.)
       case 'alterations':
         var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
             next, flat = false, sharp = false;
@@ -93,14 +89,13 @@ function TeoriaChord(root, name) {
         }
 
         for (var a = 1, aLength = alterations.length; a < aLength; a++) {
-          next = (aLength > a + 1) ? alterations[a + 1] : null;
+          next = alterations[a + 1];
+
           switch (alterations[a]) {
           case 'maj':
-            if (chordLength < 3) {
-              chordLength = 3;
-            }
+            chordLength = (chordLength < 3) ? 3 : chordLength;
 
-            if (next === '7') {
+            if (next === '7') { // Ignore the seventh, that is already implied
               a++;
             }
 
@@ -110,17 +105,18 @@ function TeoriaChord(root, name) {
           case 'sus':
             var type = 'P4';
             if (next === '2' || next === '4') {
+              a++;
+
               if (next === '2') {
                 type = 'M2';
               }
-              a++;
             }
 
             notes[0] = type; // Replace third with M2 or P4
             break;
 
           case 'add':
-            if (next && !isNaN(parseFloat(next))) {
+            if (next && !isNaN(parseInt(next, 10))) {
               if (next === '9') {
                 additionals.push('M9');
               } else if (next === '11') {
@@ -146,8 +142,8 @@ function TeoriaChord(root, name) {
               break;
             }
 
-            var token = parseFloat(alterations[a]), quality,
-                interval = parseFloat(alterations[a]), intPos;
+            var token = parseInt(alterations[a], 10), quality,
+                interval = parseInt(alterations[a], 10), intPos;
             if (isNaN(token) ||
                 String(token).length !== alterations[a].length) {
               throw new Error('Invalid token: \'' + alterations[a] + '\'');
@@ -162,13 +158,11 @@ function TeoriaChord(root, name) {
                 notes[2] = 'M6';
               }
 
-              if (chordLength < 3) {
-                chordLength = 3;
-              }
-
+              chordLength = (chordLength < 3) ? 3 : chordLength;
               continue;
             }
 
+            // Calculate the position in the 'note' array
             intPos = (interval - 1) / 2 - 1;
             if (chordLength < intPos + 1) {
               chordLength = intPos + 1;
@@ -181,6 +175,8 @@ function TeoriaChord(root, name) {
             }
 
             quality = notes[intPos][0];
+
+            // Alterate the quality of the interval according the accidentals
             if (sharp) {
               if (quality === 'd') {
                 quality = 'm';
@@ -199,7 +195,7 @@ function TeoriaChord(root, name) {
               }
             }
 
-            notes[intPos] = quality + notes[intPos].substr(1);
+            notes[intPos] = quality + interval;
             break;
           }
         }
@@ -245,15 +241,32 @@ TeoriaChord.prototype = {
 
   parallel: function(additional) {
     additional = additional || '';
-    if (this.chordType() !== 'triad' || this.quality === 'diminished' ||
-        this.quality === 'augmented') {
+    var quality = this.quality();
+
+    if (this.chordType() !== 'triad' || quality === 'diminished' ||
+        quality === 'augmented') {
       throw new Error('Only major/minor triads have parallel chords');
     }
 
-    if (this.quality === 'major') {
+    if (quality === 'major') {
       return new TeoriaChord(this.root.interval('m3', 'down'), 'm');
     } else {
       return new TeoriaChord(this.root.interval('m3', 'up'));
+    }
+  },
+
+  quality: function() {
+    var third = this.root.interval(this.notes[1]).simple();
+    var fifth = this.root.interval(this.notes[2]).simple();
+
+    if (third === 'M3' && fifth === 'P5') {
+      return 'major';
+    } else if (third === 'M3' && fifth === 'A5') {
+      return 'augmented';
+    } else if (third === 'm3' && fifth === 'P5') {
+      return 'minor';
+    } else if (third === 'm3' && fifth === 'd5') {
+      return 'diminished';
     }
   },
 
@@ -324,7 +337,6 @@ TeoriaChord.prototype = {
     this.symbol = chord.symbol;
     this.root = chord.root;
     this.notes = chord.notes;
-    this.quality = chord.quality;
 
     return this;
   },

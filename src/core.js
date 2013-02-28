@@ -172,14 +172,23 @@
             'major', 'augmented', 'doubly augmented']
   };
 
-  var kChords = {
-    'major': ['M3', 'P5'],
-    'minor': ['m3', 'P5'],
-    'augmented': ['M3', 'A5'],
-    'diminished': ['m3', 'd5'],
-    'sus2': ['M2', 'P5'],
-    'sus4': ['P4', 'P5'],
-    'power': ['P5']
+  var kSymbols = {
+    'min': ['m3', 'P5'],
+    'm': ['m3', 'P5'],
+    '-': ['m3', 'P5'],
+
+    'M': ['M3', 'P5'],
+    '': ['M3', 'P5'],
+
+    '+': ['M3', 'A5'],
+    'aug': ['M3', 'A5'],
+
+    'dim': ['m3', 'd5'],
+    'o': ['m3', 'd5'],
+
+    'maj': ['M3', 'P5', 'M7'],
+    'dom': ['M3', 'P5', 'm7'],
+    'ø': ['m3', 'd5', 'm7']
   };
 
   var kChordShort = {

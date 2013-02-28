@@ -713,7 +713,7 @@ var suite = vows.describe('Teoria Framework').addBatch({
 
       'Eo': function() {
         var notes = simpleArray(teoria.chord('Eo'));
-        assert.deepEqual(notes, ['e', 'g', 'bb', 'db']);
+        assert.deepEqual(notes, ['e', 'g', 'bb']);
       },
 
       'Eø': function() {
@@ -723,7 +723,7 @@ var suite = vows.describe('Teoria Framework').addBatch({
 
       'Do': function() {
         var notes = simpleArray(teoria.chord('Do'));
-        assert.deepEqual(notes, ['d', 'f', 'ab', 'cb']);
+        assert.deepEqual(notes, ['d', 'f', 'ab']);
       },
 
       'Dø': function() {
