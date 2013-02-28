@@ -750,6 +750,44 @@ var suite = vows.describe('Teoria Framework').addBatch({
         var notes = simpleArray(teoria.chord('Bmin11'));
         assert.deepEqual(notes, ['b', 'd', 'f#', 'a', 'c#', 'e']);
       }
+    },
+
+    'Chord Methods': {
+      '#quality() of Bmaj7': function() {
+        assert.equal(teoria.chord('Bmaj7').quality(), 'major')
+      },
+
+      '#quality() of E7': function() {
+        assert.equal(teoria.chord('E7').quality(), 'major')
+      },
+
+      '#quality() of Dbm7b5': function() {
+        assert.equal(teoria.chord('Dbm7b5').quality(), 'diminished')
+      },
+
+      '#quality() of Cmin11': function() {
+        assert.equal(teoria.chord('Cmin11').quality(), 'minor')
+      },
+
+      '#quality() of A+': function() {
+        assert.equal(teoria.chord('A+').quality(), 'augmented')
+      },
+
+      '#quality() of A#(b13)': function() {
+        assert.equal(teoria.chord('A#(b13)').quality(), 'major')
+      },
+
+      '#quality() of Gmb5': function() {
+        assert.equal(teoria.chord('Gmb5').quality(), 'diminished')
+      },
+
+      '#quality() of Asus4': function() {
+        assert.equal(teoria.chord('Asus4').quality(), undefined)
+      },
+
+      '#quality() of Fm#5': function() {
+        assert.equal(teoria.chord('Fm#5').quality(), undefined)
+      },
     }
   }
 });
