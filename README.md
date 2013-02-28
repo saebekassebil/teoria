@@ -287,7 +287,7 @@ then the second argument is an optional octave number (`typeof "number"`) of the
 
 #### TeoriaChord#quality()
  - Returns a string which holds the quality of the chord, `'major'`, `'minor'`,
- `'augmented'`, `'diminished'` or `undefined`
+ `'augmented'`, `'diminished'`, `'half-diminished'`, `'dominant'` or `'undefined'`
 
 #### TeoriaChord#get(interval)
  - Returns the note at a given interval in the chord, if it exists.

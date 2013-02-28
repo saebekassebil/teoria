@@ -897,17 +897,46 @@
     },
 
     quality: function() {
-      var third = this.root.interval(this.notes[1]).simple();
-      var fifth = this.root.interval(this.notes[2]).simple();
+      var third = this.get('third'),
+          fifth = this.get('fifth'),
+          seventh = this.get('seventh');
 
-      if (third === 'M3' && fifth === 'P5') {
+      if (!third) {
+        return;
+      }
+
+      third = this.root.interval(third);
+      third = (third.direction === 'down') ? third.invert() : third;
+      third = third.simple();
+
+      if (fifth) {
+        fifth = this.root.interval(fifth);
+        fifth = (fifth.direction === 'down') ? fifth.invert() : fifth;
+        fifth = fifth.simple();
+      }
+
+      if (seventh) {
+        seventh = this.root.interval(seventh);
+        seventh = (seventh.direction === 'down') ? seventh.invert() : seventh;
+        seventh = seventh.simple();
+      }
+
+      if (third === 'M3') {
+        if (fifth === 'A5') {
+          return 'augmented';
+        } else if (fifth === 'P5') {
+          return (seventh === 'm7') ? 'dominant' : 'major';
+        }
+
         return 'major';
-      } else if (third === 'M3' && fifth === 'A5') {
-        return 'augmented';
-      } else if (third === 'm3' && fifth === 'P5') {
+      } else if (third === 'm3') {
+        if (fifth === 'P5') {
+          return 'minor';
+        } else if (fifth === 'd5') {
+          return (seventh === 'm7') ? 'half-diminished' : 'diminished';
+        }
+
         return 'minor';
-      } else if (third === 'm3' && fifth === 'd5') {
-        return 'diminished';
       }
     },
 

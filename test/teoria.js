@@ -758,11 +758,11 @@ var suite = vows.describe('Teoria Framework').addBatch({
       },
 
       '#quality() of E7': function() {
-        assert.equal(teoria.chord('E7').quality(), 'major')
+        assert.equal(teoria.chord('E7').quality(), 'dominant')
       },
 
       '#quality() of Dbm7b5': function() {
-        assert.equal(teoria.chord('Dbm7b5').quality(), 'diminished')
+        assert.equal(teoria.chord('Dbm7b5').quality(), 'half-diminished')
       },
 
       '#quality() of Cmin11': function() {
@@ -774,7 +774,7 @@ var suite = vows.describe('Teoria Framework').addBatch({
       },
 
       '#quality() of A#(b13)': function() {
-        assert.equal(teoria.chord('A#(b13)').quality(), 'major')
+        assert.equal(teoria.chord('A#(b13)').quality(), 'dominant')
       },
 
       '#quality() of Gmb5': function() {
@@ -786,7 +786,7 @@ var suite = vows.describe('Teoria Framework').addBatch({
       },
 
       '#quality() of Fm#5': function() {
-        assert.equal(teoria.chord('Fm#5').quality(), undefined)
+        assert.equal(teoria.chord('Fm#5').quality(), 'minor')
       },
     }
   }
