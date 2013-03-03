@@ -79,7 +79,7 @@ function TeoriaChord(root, name) {
 
       // Parses for possible alterations of intervals (#5, b9, etc.)
       case 'alterations':
-        var alterations = name.substr(i).split(/(#|b|add|maj|sus)/),
+        var alterations = name.substr(i).split(/(#|b|add|maj|sus|M)/),
             next, flat = false, sharp = false;
 
         if (alterations.length === 1) {
@@ -92,6 +92,7 @@ function TeoriaChord(root, name) {
           next = alterations[a + 1];
 
           switch (alterations[a]) {
+          case 'M':
           case 'maj':
             chordLength = (chordLength < 3) ? 3 : chordLength;
 
