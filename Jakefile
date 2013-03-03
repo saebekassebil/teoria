@@ -8,6 +8,7 @@ var path        = require('path'),
     colors      = require('colors'),
     ugly        = require('uglify-js'),
     jshint      = require('jshint'),
+    exec        = require('child_process').exec,
     existsSync  = 'existsSync' in fs ? fs.existsSync : path.existsSync;
 
 // Default settings
@@ -139,9 +140,12 @@ desc('Concatenates and minifies all files into dist/teoria.min.js');
 task('minify', function() { doBuild('minify'); }, { async: true });
 
 // Unit test the project
-desc('Builds the project and unit tests it');
-task('test', ['build'], function() {
-  jake.exec('node test/teoria.js', complete, { printStdout: true });
+desc('Unit tests against current build');
+task('test', function() {
+  exec('vows --dot-matrix test/*', function(err, stdout, stderr) {
+    console.log(stdout);
+    complete();
+  });
 }, { async: true });
 
 // Lints the files according to .jshintrc
