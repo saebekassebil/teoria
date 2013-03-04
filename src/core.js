@@ -297,11 +297,6 @@
     return str;
   }
 
-  //=include note.js
-  //=include interval.js
-  //=include chord.js
-  //=include scale.js
-
   // teoria.note namespace - All notes should be instantiated
   // through this function.
   teoria.note = function(name, duration) {
@@ -473,32 +468,13 @@
     return new TeoriaScale(tonic, scale);
   };
 
-  /**
-   * A list of scales, used internally by the TeoriaScale object.
-   * Scales are written in absolute interval format.
-   */
-  teoria.scale.scales = {
-    // Modal Scales
-    major:      ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    ionian:     ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    dorian:     ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
-    phrygian:   ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    lydian:     ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
-    mixolydian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
-    minor:      ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    aeolian:    ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    locrian:    ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
+  teoria.scale.scales = {};
 
-    // Pentatonic
-    majorpentatonic: ['P1', 'M2', 'M3', 'P5', 'M6'],
-    minorpentatonic: ['P1', 'm3', 'P4', 'P5', 'm7'],
-
-    // Chromatic
-    chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
-                'P5', 'm6', 'M6', 'm7', 'M7'],
-    harmonicchromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
-                'P5', 'm6', 'M6', 'm7', 'M7']
-  };
+  //=include note.js
+  //=include interval.js
+  //=include chord.js
+  //=include scale.js
+  //=include #scales#
 
   teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;

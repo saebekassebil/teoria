@@ -297,6 +297,179 @@
     return str;
   }
 
+  // teoria.note namespace - All notes should be instantiated
+  // through this function.
+  teoria.note = function(name, duration) {
+    return new TeoriaNote(name, duration);
+  };
+
+  teoria.note.fromKey = function(key) {
+    var octave = Math.floor((key - 4) / 12);
+    var distance = key - (octave * 12) - 4;
+    var note = kNotes[kNoteIndex[Math.round(distance / 2)]];
+    var name = note.name;
+    if (note.distance < distance) {
+      name += '#';
+    } else if (note.distance > distance) {
+      name += 'b';
+    }
+
+    return teoria.note(name + (octave + 1));
+  };
+
+  teoria.note.fromFrequency = function(fq, concertPitch) {
+    var key, cents, originalFq;
+    concertPitch = concertPitch || 440;
+
+    key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
+    key = Math.round(key);
+    originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
+    cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
+
+    return {note: teoria.note.fromKey(key), cents: cents};
+  };
+
+  teoria.note.fromMIDI = function(note) {
+    return teoria.note.fromKey(note - 20);
+  };
+
+  // teoria.chord namespace - All chords should be instantiated
+  // through this function.
+  teoria.chord = function(name, symbol) {
+    if (typeof name === 'string') {
+      var root, octave;
+      root = name.match(/^([a-h])(x|#|bb|b?)/i);
+      if (root && root[0]) {
+        octave = typeof symbol === 'number' ? symbol.toString(10) : '4';
+        return new TeoriaChord(teoria.note(root[0].toLowerCase() + octave),
+                              name.substr(root[0].length));
+      }
+    } else if (name instanceof TeoriaNote) {
+      return new TeoriaChord(name, symbol || '');
+    }
+
+    throw new Error('Invalid Chord. Couldn\'t find note name');
+  };
+
+  /**
+   * teoria.interval
+   *
+   * Sugar function for #from and #between methods, with the possibility to
+   * declare a interval by its string name: P8, M3, m7 etc.
+   */
+  teoria.interval = function(from, to, direction) {
+    var quality, intervalNumber, interval, pattern = /^(AA|A|P|M|m|d|dd)(\d+)$/;
+
+    // Construct a TeoriaInterval object from string representation
+    if (typeof from === 'string') {
+      pattern = from.match(pattern);
+      if (!pattern) {
+        throw new Error('Invalid string-interval format');
+      }
+
+      quality = kQualityLong[pattern[1]];
+      intervalNumber = parseInt(pattern[2], 10);
+
+      // Uses the second argument 'to', as direction
+      return new TeoriaInterval(intervalNumber, quality, to);
+    }
+
+    if (typeof to === 'string' && from instanceof TeoriaNote) {
+      if (direction === 'down') {
+        to = teoria.interval.invert(to);
+      }
+
+      pattern = to.match(pattern);
+      if (!pattern) {
+        throw new Error('Invalid string-interval format');
+      }
+
+      quality = kQualityLong[pattern[1]];
+      intervalNumber = parseInt(pattern[2], 10);
+
+      interval = new TeoriaInterval(intervalNumber, quality, direction);
+
+      return teoria.interval.from(from, interval);
+    } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
+      return teoria.interval.between(from, to);
+    } else {
+      throw new Error('Invalid parameters');
+    }
+  };
+
+  /**
+   * Returns the note from a given note (from), with a given interval (to)
+   */
+  teoria.interval.from = function(from, to) {
+    var note, diff, octave, index, dist;
+
+    index = to.simpleInterval - 1;
+    index = kNotes[from.name].index + index;
+
+    if (index > kNoteIndex.length - 1) {
+      index = index - kNoteIndex.length;
+    }
+
+    note = kNoteIndex[index];
+    dist = getDistance(from.name, note);
+    diff = to.simpleIntervalType.size + to.qualityValue() - dist;
+
+    octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
+    octave += 1 + Math.floor((to.simpleInterval - 1) / 7);
+    octave += to.compoundOctaves;
+
+    diff += from.accidental.value;
+    if (diff >= 10) {
+      diff -= 12;
+    }
+
+    note += kAccidentalSign[diff];
+
+    if (to.direction === 'down') {
+      octave--;
+    }
+
+    return teoria.note(note + octave.toString(10));
+  };
+
+  /**
+   * Returns the interval between two instances of teoria.note
+   */
+  teoria.interval.between = function(from, to) {
+    var semitones, interval, intervalInt, quality,
+        alteration, direction = 'up', dir = 1;
+
+    semitones = to.key() - from.key();
+    intervalInt = to.key(true) - from.key(true);
+
+    if (intervalInt < 0) {
+      intervalInt = -intervalInt;
+      direction = 'down';
+      dir = -1;
+    }
+
+    interval = kIntervals[intervalInt % 7];
+    alteration = kAlterations[interval.quality];
+    quality = alteration[(dir * semitones - interval.size + 2) % 12];
+
+    return new TeoriaInterval(intervalInt + 1, quality, direction);
+  };
+
+  teoria.interval.invert = function(sInterval) {
+    return teoria.interval(sInterval).invert().toString();
+  };
+
+  // teoria.scale namespace - Scales are constructed through this function.
+  teoria.scale = function(tonic, scale) {
+    if (!(tonic instanceof TeoriaNote)) {
+      tonic = teoria.note(tonic);
+    }
+
+    return new TeoriaScale(tonic, scale);
+  };
+
+  teoria.scale.scales = {};
+
   /**
    * TeoriaNote - teoria.note - the note object
    *
@@ -1112,204 +1285,20 @@
   };
 
 
+  teoria.scale.scales.ionian = teoria.scale.scales.major =
+    ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'];
+  teoria.scale.scales.dorian = ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'];
+  teoria.scale.scales.phrygian = ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'];
+  teoria.scale.scales.lydian = ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'];
+  teoria.scale.scales.mixolydian = ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'];
+  teoria.scale.scales.aeolian = teoria.scale.scales.minor =
+    ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'];
+  teoria.scale.scales.locrian = ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'];
+  teoria.scale.scales.majorpentatonic = ['P1', 'M2', 'M3', 'P5', 'M6'];
+  teoria.scale.scales.minorpentatonic = ['P1', 'm3', 'P4', 'P5', 'm7'];
+  teoria.scale.scales.chromatic = teoria.scale.scales.harmonicchromatic =
+    ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4', 'P5', 'm6', 'M6', 'm7', 'M7'];
 
-  // teoria.note namespace - All notes should be instantiated
-  // through this function.
-  teoria.note = function(name, duration) {
-    return new TeoriaNote(name, duration);
-  };
-
-  teoria.note.fromKey = function(key) {
-    var octave = Math.floor((key - 4) / 12);
-    var distance = key - (octave * 12) - 4;
-    var note = kNotes[kNoteIndex[Math.round(distance / 2)]];
-    var name = note.name;
-    if (note.distance < distance) {
-      name += '#';
-    } else if (note.distance > distance) {
-      name += 'b';
-    }
-
-    return teoria.note(name + (octave + 1));
-  };
-
-  teoria.note.fromFrequency = function(fq, concertPitch) {
-    var key, cents, originalFq;
-    concertPitch = concertPitch || 440;
-
-    key = 49 + 12 * ((Math.log(fq) - Math.log(concertPitch)) / Math.log(2));
-    key = Math.round(key);
-    originalFq = concertPitch * Math.pow(2, (key - 49) / 12);
-    cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
-
-    return {note: teoria.note.fromKey(key), cents: cents};
-  };
-
-  teoria.note.fromMIDI = function(note) {
-    return teoria.note.fromKey(note - 20);
-  };
-
-  // teoria.chord namespace - All chords should be instantiated
-  // through this function.
-  teoria.chord = function(name, symbol) {
-    if (typeof name === 'string') {
-      var root, octave;
-      root = name.match(/^([a-h])(x|#|bb|b?)/i);
-      if (root && root[0]) {
-        octave = typeof symbol === 'number' ? symbol.toString(10) : '4';
-        return new TeoriaChord(teoria.note(root[0].toLowerCase() + octave),
-                              name.substr(root[0].length));
-      }
-    } else if (name instanceof TeoriaNote) {
-      return new TeoriaChord(name, symbol || '');
-    }
-
-    throw new Error('Invalid Chord. Couldn\'t find note name');
-  };
-
-  /**
-   * teoria.interval
-   *
-   * Sugar function for #from and #between methods, with the possibility to
-   * declare a interval by its string name: P8, M3, m7 etc.
-   */
-  teoria.interval = function(from, to, direction) {
-    var quality, intervalNumber, interval, pattern = /^(AA|A|P|M|m|d|dd)(\d+)$/;
-
-    // Construct a TeoriaInterval object from string representation
-    if (typeof from === 'string') {
-      pattern = from.match(pattern);
-      if (!pattern) {
-        throw new Error('Invalid string-interval format');
-      }
-
-      quality = kQualityLong[pattern[1]];
-      intervalNumber = parseInt(pattern[2], 10);
-
-      // Uses the second argument 'to', as direction
-      return new TeoriaInterval(intervalNumber, quality, to);
-    }
-
-    if (typeof to === 'string' && from instanceof TeoriaNote) {
-      if (direction === 'down') {
-        to = teoria.interval.invert(to);
-      }
-
-      pattern = to.match(pattern);
-      if (!pattern) {
-        throw new Error('Invalid string-interval format');
-      }
-
-      quality = kQualityLong[pattern[1]];
-      intervalNumber = parseInt(pattern[2], 10);
-
-      interval = new TeoriaInterval(intervalNumber, quality, direction);
-
-      return teoria.interval.from(from, interval);
-    } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
-      return teoria.interval.between(from, to);
-    } else {
-      throw new Error('Invalid parameters');
-    }
-  };
-
-  /**
-   * Returns the note from a given note (from), with a given interval (to)
-   */
-  teoria.interval.from = function(from, to) {
-    var note, diff, octave, index, dist;
-
-    index = to.simpleInterval - 1;
-    index = kNotes[from.name].index + index;
-
-    if (index > kNoteIndex.length - 1) {
-      index = index - kNoteIndex.length;
-    }
-
-    note = kNoteIndex[index];
-    dist = getDistance(from.name, note);
-    diff = to.simpleIntervalType.size + to.qualityValue() - dist;
-
-    octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
-    octave += 1 + Math.floor((to.simpleInterval - 1) / 7);
-    octave += to.compoundOctaves;
-
-    diff += from.accidental.value;
-    if (diff >= 10) {
-      diff -= 12;
-    }
-
-    note += kAccidentalSign[diff];
-
-    if (to.direction === 'down') {
-      octave--;
-    }
-
-    return teoria.note(note + octave.toString(10));
-  };
-
-  /**
-   * Returns the interval between two instances of teoria.note
-   */
-  teoria.interval.between = function(from, to) {
-    var semitones, interval, intervalInt, quality,
-        alteration, direction = 'up', dir = 1;
-
-    semitones = to.key() - from.key();
-    intervalInt = to.key(true) - from.key(true);
-
-    if (intervalInt < 0) {
-      intervalInt = -intervalInt;
-      direction = 'down';
-      dir = -1;
-    }
-
-    interval = kIntervals[intervalInt % 7];
-    alteration = kAlterations[interval.quality];
-    quality = alteration[(dir * semitones - interval.size + 2) % 12];
-
-    return new TeoriaInterval(intervalInt + 1, quality, direction);
-  };
-
-  teoria.interval.invert = function(sInterval) {
-    return teoria.interval(sInterval).invert().toString();
-  };
-
-  // teoria.scale namespace - Scales are constructed through this function.
-  teoria.scale = function(tonic, scale) {
-    if (!(tonic instanceof TeoriaNote)) {
-      tonic = teoria.note(tonic);
-    }
-
-    return new TeoriaScale(tonic, scale);
-  };
-
-  /**
-   * A list of scales, used internally by the TeoriaScale object.
-   * Scales are written in absolute interval format.
-   */
-  teoria.scale.scales = {
-    // Modal Scales
-    major:      ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    ionian:     ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-    dorian:     ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
-    phrygian:   ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    lydian:     ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
-    mixolydian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
-    minor:      ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    aeolian:    ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-    locrian:    ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
-
-    // Pentatonic
-    majorpentatonic: ['P1', 'M2', 'M3', 'P5', 'M6'],
-    minorpentatonic: ['P1', 'm3', 'P4', 'P5', 'm7'],
-
-    // Chromatic
-    chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
-                'P5', 'm6', 'M6', 'm7', 'M7'],
-    harmonicchromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4',
-                'P5', 'm6', 'M6', 'm7', 'M7']
-  };
 
   teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;

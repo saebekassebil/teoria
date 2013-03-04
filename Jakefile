@@ -1,5 +1,5 @@
-/*jshint node:true */
-/*global desc:true task:true complete:true jake:true*/
+/* jshint node:true */
+/* global desc, task, complete */
 'use strict';
 
 var path        = require('path'),
@@ -61,6 +61,20 @@ var kFileList = [
   'Jakefile'
 ];
 
+var includeScales = {
+  'ionian': true,
+  'dorian': true,
+  'phrygian': true,
+  'lydian': true,
+  'mixolydian': true,
+  'aeolian': true,
+  'locrian': true,
+
+  'majorpentatonic': true,
+  'minorpentatonic': true,
+  'chromatic': true
+};
+
 // Default task - lint and build
 desc('Default task both lints and build the entire project');
 task({'default': ['lint', 'build']}, function() {});
@@ -68,6 +82,7 @@ task({'default': ['lint', 'build']}, function() {});
 function doBuild() {
   var params, filename;
 
+  // Parse build configurations
   params = Array.prototype.slice.call(arguments);
   params.forEach(function(el) {
     if (el in settings) {
@@ -76,6 +91,14 @@ function doBuild() {
       log('Ignoring invalid settings: ' + el, 'warn');
     }
   });
+
+  // Check if any scales should be added or removed
+  var scales = process.env.scales;
+  if (scales) {
+    scales.split(',').forEach(function(scale) {
+      includeScales[scale.substr(1)] = scale[0] !== '-';
+    });
+  }
 
   if (!existsSync(kDistDir)) {
     log('Creating ' + kDistDir + ' directory');
@@ -123,7 +146,28 @@ function doBuild() {
   });
 
   mingler.on('concatenate', function(feedback) {
-    log('Concatenating: ' + feedback.filename, 'info', 'grey');
+    if (feedback.filename === '#scales#') {
+      var files = [];
+      for (var scale in includeScales) {
+        if (includeScales.hasOwnProperty(scale)) {
+          if (includeScales[scale] === false) {
+            log('Exluding scale ' + scale, 'info', 'grey');
+            continue;
+          }
+
+          if (existsSync('scales/' + scale + '.js')) {
+            log('Including scale ' + scale, 'info', 'grey');
+            files.push(fs.readFileSync('scales/' + scale + '.js', 'utf8'));
+          } else {
+            log('Scale named "' + scale + '" couldn\'t be found', 'warn');
+          }
+        }
+      }
+
+      feedback.content(files.join(''));
+    } else {
+      log('Concatenating: ' + feedback.filename, 'info', 'grey');
+    }
   });
 
   mingler.mingle(kMainFile, function() {
@@ -142,7 +186,7 @@ task('minify', function() { doBuild('minify'); }, { async: true });
 // Unit test the project
 desc('Unit tests against current build');
 task('test', function() {
-  exec('vows --dot-matrix test/*', function(err, stdout, stderr) {
+  exec('vows --dot-matrix test/*', function(err, stdout) {
     console.log(stdout);
     complete();
   });
