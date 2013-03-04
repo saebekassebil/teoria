@@ -468,9 +468,12 @@
     return new TeoriaScale(tonic, scale);
   };
 
+  teoria.scale.scales = {};
+
   //=include note.js
   //=include interval.js
   //=include chord.js
+  //=include scale.js
   //=include #scales#
 
   teoria.TeoriaNote = TeoriaNote;

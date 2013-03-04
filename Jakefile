@@ -1,5 +1,5 @@
-/*jshint node:true */
-/*global desc:true task:true complete:true jake:true*/
+/* jshint node:true */
+/* global desc, task, complete */
 'use strict';
 
 var path        = require('path'),
@@ -149,16 +149,18 @@ function doBuild() {
     if (feedback.filename === '#scales#') {
       var files = [];
       for (var scale in includeScales) {
-        if (includeScales[scale] === false) {
-          log('Exluding scale ' + scale, 'info', 'grey');
-          continue;
-        }
+        if (includeScales.hasOwnProperty(scale)) {
+          if (includeScales[scale] === false) {
+            log('Exluding scale ' + scale, 'info', 'grey');
+            continue;
+          }
 
-        if (existsSync('scales/' + scale + '.js')) {
-          log('Including scale ' + scale, 'info', 'grey');
-          files.push(fs.readFileSync('scales/' + scale + '.js', 'utf8'));
-        } else {
-          log('Scale named "' + scale + '" couldn\'t be found', 'warn');
+          if (existsSync('scales/' + scale + '.js')) {
+            log('Including scale ' + scale, 'info', 'grey');
+            files.push(fs.readFileSync('scales/' + scale + '.js', 'utf8'));
+          } else {
+            log('Scale named "' + scale + '" couldn\'t be found', 'warn');
+          }
         }
       }
 
@@ -184,7 +186,7 @@ task('minify', function() { doBuild('minify'); }, { async: true });
 // Unit test the project
 desc('Unit tests against current build');
 task('test', function() {
-  exec('vows --dot-matrix test/*', function(err, stdout, stderr) {
+  exec('vows --dot-matrix test/*', function(err, stdout) {
     console.log(stdout);
     complete();
   });
