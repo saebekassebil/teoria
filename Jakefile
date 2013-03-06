@@ -46,20 +46,11 @@ function log(text, type, acolor, nolabel) {
 }
 
 // Constants
-var kDistDir = 'dist/';
-var kSrcDir = 'src/';
+var kDistDir = 'dist';
+var kSrcDir = 'src';
 var kMainFile = 'core.js';
 var kDistFilename = 'teoria.js';
 var kDistMinFilename = 'teoria.min.js';
-var kFileList = [
-  kSrcDir + 'core.js',
-  kSrcDir + 'note.js',
-  kSrcDir + 'interval.js',
-  kSrcDir + 'chord.js',
-  kSrcDir + 'scale.js',
-
-  'Jakefile'
-];
 
 var includeScales = {
   'ionian': true,
@@ -130,7 +121,7 @@ function doBuild() {
 
     // Write to file and close!
     log('Writing to output file \'' + filename + '\'');
-    fs.writeFileSync(kDistDir + filename, concatenation, 'utf8');
+    fs.writeFileSync(kDistDir + '/' + filename, concatenation, 'utf8');
     log('Concatenation completed - Goodbye!');
 
     complete();
@@ -195,17 +186,14 @@ task('test', function() {
 // Lints the files according to .jshintrc
 desc('Lint all files according to coding standards');
 task('lint', function() {
-  var config, errors, errorfilecount, content;
+  var config, errors = [], errorfilecount = 0, filecount = 0;
 
-  // Load configuration
-  config = JSON.parse(fs.readFileSync('./.jshintrc', 'utf8'));
-
-  // List all files in src/
-  errors = [], errorfilecount = 0;
-  kFileList.forEach(function(file) {
+  function lintFile(file) {
     // Read the contents of the file
-    content = fs.readFileSync(file, 'utf8');
+    var content = fs.readFileSync(file, 'utf8');
     content = content.replace(/^\uFEFF/, ''); // Remove Unicode BOM
+
+    filecount++;
 
     // Lint it according to .jshintrc
     if (!jshint.JSHINT(content, config)) {
@@ -214,10 +202,28 @@ task('lint', function() {
         return { file: file, error: error };
       });
     }
-  });
+  }
 
-  log(kFileList.length.toString(10) + ' files linted, ' +
-      (kFileList.length - errorfilecount) +
+  function lintDirectory(dir) {
+
+    return fs.readdirSync(dir).map(function(file) {
+      var stat = fs.statSync(dir + '/' + file);
+      if (stat.isDirectory()) {
+        return lintDirectory(dir + '/' + file);
+      } else if (stat.isFile()) {
+        return lintFile(dir + '/' + file);
+      }
+    });
+  }
+
+  // Load configuration
+  config = JSON.parse(fs.readFileSync('./.jshintrc', 'utf8'));
+
+  // Lint the filetree
+  lintDirectory('./src');
+
+  // Tell us how we did
+  log(filecount + ' files linted, ' + (filecount - errorfilecount) +
       ' successfully, ' + errorfilecount + ' with errors!', 'info');
 
   // Show errors
