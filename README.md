@@ -54,6 +54,19 @@ jake build
 jake build[minify]
 ```
 
+If you want to include some of the more fancy scales, that ship with the repository
+but doesn't automatically gets added to the build, you can configure which scales
+to include in the build like this:
+```bash
+jake build scales=+blues,+flamenco,-chromatic
+```
+
+As you can see, `scales` is just a a comma-seperated list of scale names, prefixed
+with either a `+` or a `-` to signify whether they should be included or not.
+
+Take a look in the `src/scales` directory, if you want to know which scales there is,
+and feel free to submit pull requests for other ones!
+
 Syntax
 ---------
 
