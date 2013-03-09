@@ -424,7 +424,7 @@
     } else if (diff <= -10) {
       diff += 12;
     }
-    
+
     if (to.simpleInterval === 8) {
       octave += dir;
     } else if (dir < 0) {
@@ -829,15 +829,16 @@
     this.name = root.name.toUpperCase() + root.accidental.sign + name;
     this.symbol = name;
     this.root = root;
-    this.notes = [root];
+    this.intervals = [];
+    this._voicing = [];
 
     var i, length, c, strQuality, parsing = 'quality', additionals = [],
-        notes = ['M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
-        chordLength = 2, bass, note, symbol;
+        notes = ['P1', 'M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
+        chordLength = 2, bass, symbol;
 
     function setChord(intervals) {
       for (var n = 0, chordl = intervals.length; n < chordl; n++) {
-        notes[n] = intervals[n];
+        notes[n + 1] = intervals[n];
       }
 
       chordLength = intervals.length;
@@ -885,12 +886,12 @@
 
             // Special care for diminished chords
             if (symbol === 'o' || symbol === 'dim') {
-              notes[2] = 'd7';
+              notes[3] = 'd7';
             }
 
             i += String(c).length - 1;
           } else if (c === 6) {
-            notes[2] = 'M6';
+            notes[3] = 'M6';
             chordLength = (chordLength < 3) ? 3 : chordLength;
           } else {
             i -= 1;
@@ -922,7 +923,7 @@
                 a++;
               }
 
-              notes[2] = 'M7';
+              notes[3] = 'M7';
               break;
 
             case 'sus':
@@ -935,7 +936,7 @@
                 }
               }
 
-              notes[0] = type; // Replace third with M2 or P4
+              notes[1] = type; // Replace third with M2 or P4
               break;
 
             case 'add':
@@ -974,11 +975,11 @@
 
               if (token === 6) {
                 if (sharp) {
-                  notes[2] = 'A6';
+                  notes[3] = 'A6';
                 } else if (flat) {
-                  notes[2] = 'm6';
+                  notes[3] = 'm6';
                 } else {
-                  notes[2] = 'M6';
+                  notes[3] = 'M6';
                 }
 
                 chordLength = (chordLength < 3) ? 3 : chordLength;
@@ -986,9 +987,9 @@
               }
 
               // Calculate the position in the 'note' array
-              intPos = (interval - 1) / 2 - 1;
-              if (chordLength < intPos + 1) {
-                chordLength = intPos + 1;
+              intPos = (interval - 1) / 2;
+              if (chordLength < intPos) {
+                chordLength = intPos;
               }
 
               if (interval < 5 || interval === 7 ||
@@ -1032,26 +1033,70 @@
       }
     }
 
-    notes = notes.slice(0, chordLength).concat(additionals);
-    if (bass) {
-      bass = teoria.note(bass);
-      var bassInterval = teoria.interval.between(root, bass);
-      bass.octave -= (bassInterval.direction === 'up') ? 1 : 0;
+    this.intervals = notes
+      .slice(0, chordLength + 1)
+      .concat(additionals)
+      .map(function(i) { return teoria.interval(i); });
 
-      this.notes.splice(0, 0, bass);
+    for (i = 0, length = this.intervals.length; i < length; i++) {
+      this._voicing[i] = this.intervals[i];
     }
 
-    for (i = 0; i < notes.length; i++) {
-      note = this.root.interval(notes[i]);
-      if (bass && note.toString(true) === bass.toString(true)) {
-        continue;
+    if (bass) {
+      var intervals = this.intervals, bassInterval, inserted = 0, note;
+      // Make sure the bass is atop of the root note
+      note = teoria.note(bass + (root.octave + 1));
+
+      bassInterval = teoria.interval.between(root, note);
+      bass = bassInterval.simpleInterval;
+
+      if (bassInterval.direction === 'up') {
+        bassInterval = bassInterval.invert();
+        bassInterval.direction = 'down';
       }
 
-      this.notes.push(note);
+      this._voicing = [bassInterval];
+      for (i = 0; i < length; i++) {
+        if (intervals[i].interval === bass) {
+          continue;
+        }
+
+        inserted++;
+        this._voicing[inserted] = intervals[i];
+      }
     }
   }
 
   TeoriaChord.prototype = {
+    notes: function() {
+      var voicing = this.voicing(), notes = [];
+
+      for (var i = 0, length = voicing.length; i < length; i++) {
+        notes.push(teoria.interval.from(this.root, voicing[i]));
+      }
+
+      return notes;
+    },
+
+    voicing: function(voicing) {
+      // Get the voicing
+      if (!voicing) {
+        return this._voicing;
+      }
+
+      // Set the voicing
+      this._voicing = [];
+      for (var i = 0, length = voicing.length; i < length; i++) {
+        this._voicing[i] = teoria.interval(voicing[i]);
+      }
+
+      return this;
+    },
+
+    resetVoicing: function() {
+      this._voicing = this.intervals;
+    },
+
     dominant: function(additional) {
       additional = additional || '';
       return new TeoriaChord(this.root.interval('P5'), additional);
@@ -1079,26 +1124,31 @@
     },
 
     quality: function() {
-      var third = this.get('third'),
-          fifth = this.get('fifth'),
-          seventh = this.get('seventh');
+      var third, fifth, seventh, intervals = this.intervals;
+
+      for (var i = 0, length = intervals.length; i < length; i++) {
+        if (intervals[i].interval === 3) {
+          third = intervals[i];
+        } else if (intervals[i].interval === 5) {
+          fifth = intervals[i];
+        } else if (intervals[i].interval === 7) {
+          seventh = intervals[i];
+        }
+      }
 
       if (!third) {
         return;
       }
 
-      third = this.root.interval(third);
       third = (third.direction === 'down') ? third.invert() : third;
       third = third.simple();
 
       if (fifth) {
-        fifth = this.root.interval(fifth);
         fifth = (fifth.direction === 'down') ? fifth.invert() : fifth;
         fifth = fifth.simple();
       }
 
       if (seventh) {
-        seventh = this.root.interval(seventh);
         seventh = (seventh.direction === 'down') ? seventh.invert() : seventh;
         seventh = seventh.simple();
       }
@@ -1123,14 +1173,14 @@
     },
 
     chordType: function() { // In need of better name
-      var length = this.notes.length, interval, has, invert, i, name;
+      var length = this.intervals.length, interval, has, invert, i, name;
 
       if (length === 2) {
         return 'dyad';
       } else if (length === 3) {
         has = {first: false, third: false, fifth: false};
         for (i = 0; i < length; i++) {
-          interval = this.root.interval(this.notes[i]);
+          interval = this.intervals[i];
           invert = interval.invert();
           if (interval.simpleIntervalType.name in has) {
             has[interval.simpleIntervalType.name] = true;
@@ -1143,7 +1193,7 @@
       } else if (length === 4) {
         has = {first: false, third: false, fifth: false, seventh: false};
         for (i = 0; i < length; i++) {
-          interval = this.root.interval(this.notes[i]);
+          interval = this.intervals[i];
           invert = interval.invert();
           if (interval.simpleIntervalType.name in has) {
             has[interval.simpleIntervalType.name] = true;
@@ -1162,12 +1212,12 @@
 
     get: function(interval) {
       if (typeof interval === 'string' && interval in kStepNumber) {
-        var quality = kIntervals[kIntervalIndex[interval]].quality;
-        quality = (quality === 'perfect') ? 'P' : 'M';
-        interval = this.root.interval(quality + kStepNumber[interval]);
-        for (var i = 0, length = this.notes.length; i < length; i++) {
-          if (this.notes[i].name === interval.name) {
-            return this.notes[i];
+        var intervals = this.intervals, i, length;
+
+        interval = kStepNumber[interval];
+        for (i = 0, length = intervals.length; i < length; i++) {
+          if (intervals[i].interval === +interval) {
+            return teoria.interval.from(this.root, intervals[i]);
           }
         }
 
@@ -1183,12 +1233,9 @@
     },
 
     transpose: function(interval, direction) {
-      var chord = new TeoriaChord(this.root.interval(interval, direction),
-                                  this.symbol);
-      this.name = chord.name;
-      this.symbol = chord.symbol;
-      this.root = chord.root;
-      this.notes = chord.notes;
+      this.root.transpose(interval, direction);
+      this.name = this.root.name.toUpperCase() +
+                  this.root.accidental.sign + this.symbol;
 
       return this;
     },

@@ -290,13 +290,34 @@ then the second argument is an optional octave number (`typeof "number"`) of the
 *symbol* - A string containing the chord symbol (exluding the note name)
 
 #### TeoriaChord.name
- - Holds the full chord symbol, inclusive the root name
+ - Holds the full chord symbol, inclusive the root name.
 
 #### TeoriaChord.root
- - Holds the `TeoriaNote` that is the root of the chord
+ - Holds the `TeoriaNote` that is the root of the chord.
 
-#### TeoriaChord.notes
- - An array of notes that the chords is built of
+#### TeoriaChord#notes()
+ - Returns an array of `TeoriaNote`s that the chord consists of.
+
+#### TeoriaChord#voicing([voicing])
+ - Works both as a setter and getter. If no parameter is supplied the
+ current voicing is returned as an array of `TeoriaInterval`s
+
+*voicing* - An optional array of intervals in simple-format,
+that represents the current voicing of the chord.
+
+Here's an example:
+```javascript
+var bbmaj = teoria.chord('Bbmaj7');
+// Default voicing:
+bbmaj.voicing();  // #-> ['P1', 'M3', 'P5', 'M7'];
+bbmaj.notes();    // #-> ['bb', 'd', 'f', 'a'];
+
+// New voicing
+bbmaj.voicing(['P1', 'P5', 'M7', 'M10']);
+bbmaj.notes();    // #-> ['bb', 'f', 'a', 'd'];
+```
+*NB:* Note that above returned results are pseudo-results, as they will be
+returned wrapped in `TeoriaInterval` and `TeoriaNote` objects.
 
 #### TeoriaChord#quality()
  - Returns a string which holds the quality of the chord, `'major'`, `'minor'`,
