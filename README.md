@@ -451,6 +451,10 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval(
 `'m' = minor`, `'M' = major`, `'A' = augmented` and
 `'d' = diminished`
 
+The number may be prefixed with a `-` to signify that its direction is down. E.g.:
+
+`m-3` means a descending minor third, and `P-5` means a descending perfect fifth.
+
 ## TeoriaInterval(intervalNumber, quality[, direction])
  - A representation of a music interval
 
@@ -470,17 +474,27 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval(
 #### TeoriaInterval#semitones()
  - Returns the `number` of semitones the interval span.
 
-#### TeoriaInterval#simple()
+#### TeoriaInterval#simple([ignoreDirection])
  - Returns the simple part of the interval (as opposed to #compound). Example:
+
+*ignoreDirection* - An optional boolea that, if set to `true`, returns the
+"direction-agnostic" interval. That is the interval with a positive number.
 
 ```javascript
 teoria.interval('M17').simple() === 'M3'
 teoria.interval('m23').simple() === 'm2'
 teoria.interval('P5').simple() === 'P5'
+teoria.interval('P-4').simple() === 'P-4'
+
+// With ignoreDirection = true
+teoria.interval('M3').simple(true) === 'M3'
+teoria.interval('m-10').simple(true) === 'm3'
 ```
 
-#### TeoriaInterval#compound()
+#### TeoriaInterval#compound([ignoreDirection])
  - Returns the whole interval, compound or not.
+
+*ignoreDirection* - See description for `simple()` above.
 
 ```javascript
 teoria.interval('M17').compound() === 'M17'

@@ -195,6 +195,28 @@ vows.describe('Intervals').addBatch({
     }
   },
 
+  'Interval descending': {
+    'A major third down from E4': function() {
+      assert.deepEqual(teoria.note('E4').interval('M-3'), teoria.note('C4'));
+    },
+
+    'Minor second down from C2': function() {
+      assert.deepEqual(teoria.note('C2').interval('m-2'), teoria.note('B1'));
+    },
+
+    'A diminished fifth down from Eb5': function() {
+      assert.deepEqual(teoria.note('Eb5').interval('d-5'), teoria.note('A4'));
+    },
+
+    'A major ninth down from G#4': function() {
+      assert.deepEqual(teoria.note('G#4').interval('M-9'), teoria.note('F#3'));
+    },
+
+    'An augmented sixth down from Bb4': function() {
+      assert.deepEqual(teoria.note('Bb4').interval('A-6'), teoria.note('Dbb4'));
+    }
+  },
+
   'Interval inversions': {
     'Invert m2 is M7': function() {
       assert.equal(teoria.interval.invert('m2'), 'M7');

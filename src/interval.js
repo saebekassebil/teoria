@@ -23,13 +23,18 @@ TeoriaInterval.prototype = {
             this.compoundOctaves * 12;
   },
 
-  simple: function() {
-    return kQualityTemp[this.quality] + this.simpleInterval.toString();
+  simple: function(ignore) {
+    var intval = this.simpleInterval;
+    intval = (this.direction === 'down' && !ignore) ? -intval : intval;
+
+    return kQualityTemp[this.quality] + intval.toString();
   },
 
-  compound: function() {
-    return kQualityTemp[this.quality] +
-      (this.simpleInterval + this.compoundOctaves * 7).toString();
+  compound: function(ignore) {
+    var intval = this.simpleInterval + this.compoundOctaves * 7;
+    intval = (this.direction === 'down' && !ignore) ? -intval : intval;
+
+    return kQualityTemp[this.quality] + intval.toString();
   },
 
   isCompound: function() {
@@ -42,7 +47,7 @@ TeoriaInterval.prototype = {
     intervalNumber = 9 - intervalNumber;
 
     return new TeoriaInterval(intervalNumber,
-                              kQualityInversion[this.quality]);
+                              kQualityInversion[this.quality], this.direction);
   },
 
   qualityValue: function() {
