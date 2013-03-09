@@ -358,36 +358,26 @@
    * declare a interval by its string name: P8, M3, m7 etc.
    */
   teoria.interval = function(from, to, direction) {
-    var quality, intervalNumber, interval, pattern = /^(AA|A|P|M|m|d|dd)(\d+)$/;
+    var quality, intervalNumber, interval, match;
 
     // Construct a TeoriaInterval object from string representation
     if (typeof from === 'string') {
-      pattern = from.match(pattern);
-      if (!pattern) {
+      match = from.match(/^(AA|A|P|M|m|d|dd)(-?\d+)$/);
+      if (!match) {
         throw new Error('Invalid string-interval format');
       }
 
-      quality = kQualityLong[pattern[1]];
-      intervalNumber = parseInt(pattern[2], 10);
+      quality = kQualityLong[match[1]];
+      intervalNumber = parseInt(match[2], 10);
 
       // Uses the second argument 'to', as direction
-      return new TeoriaInterval(intervalNumber, quality, to);
+      direction = to === 'down' || intervalNumber < 0 ? 'down' : 'up';
+
+      return new TeoriaInterval(Math.abs(intervalNumber), quality, direction);
     }
 
     if (typeof to === 'string' && from instanceof TeoriaNote) {
-      if (direction === 'down') {
-        to = teoria.interval.invert(to);
-      }
-
-      pattern = to.match(pattern);
-      if (!pattern) {
-        throw new Error('Invalid string-interval format');
-      }
-
-      quality = kQualityLong[pattern[1]];
-      intervalNumber = parseInt(pattern[2], 10);
-
-      interval = new TeoriaInterval(intervalNumber, quality, direction);
+      interval = teoria.interval(to, direction);
 
       return teoria.interval.from(from, interval);
     } else if (to instanceof TeoriaNote && from instanceof TeoriaNote) {
@@ -401,34 +391,47 @@
    * Returns the note from a given note (from), with a given interval (to)
    */
   teoria.interval.from = function(from, to) {
-    var note, diff, octave, index, dist;
+    var note, diff, octave, index, dist, intval, dir;
+    dir = (to.direction === 'down') ? -1 : 1;
 
-    index = to.simpleInterval - 1;
-    index = kNotes[from.name].index + index;
+    intval = to.simpleInterval - 1;
+    intval = dir * intval;
+
+    index = kNotes[from.name].index + intval;
 
     if (index > kNoteIndex.length - 1) {
       index = index - kNoteIndex.length;
+    } else if (index < 0) {
+      index = index + kNoteIndex.length;
     }
 
     note = kNoteIndex[index];
     dist = getDistance(from.name, note);
-    diff = to.simpleIntervalType.size + to.qualityValue() - dist;
+
+    if (dir > 0) {
+      diff = to.simpleIntervalType.size + to.qualityValue() - dist;
+    } else {
+      diff = getDistance(note, from.name) -
+        (to.simpleIntervalType.size + to.qualityValue());
+    }
+    diff += from.accidental.value;
 
     octave = Math.floor((from.key() - from.accidental.value + dist - 4) / 12);
-    octave += 1 + Math.floor((to.simpleInterval - 1) / 7);
-    octave += to.compoundOctaves;
+    octave += 1 + dir * to.compoundOctaves;
 
-    diff += from.accidental.value;
     if (diff >= 10) {
       diff -= 12;
+    } else if (diff <= -10) {
+      diff += 12;
     }
-
-    note += kAccidentalSign[diff];
-
-    if (to.direction === 'down') {
+    
+    if (to.simpleInterval === 8) {
+      octave += dir;
+    } else if (dir < 0) {
       octave--;
     }
 
+    note += kAccidentalSign[diff];
     return teoria.note(note + octave.toString(10));
   };
 
@@ -683,7 +686,7 @@
         stroke = (count >= 0) ? '\'' : ',';
       }
 
-      solfege = kIntervalSolfege[interval.simple()];
+      solfege = kIntervalSolfege[interval.simple(true)];
       return (showOctaves) ? pad(solfege, stroke, Math.abs(count)) : solfege;
     },
 
@@ -721,7 +724,7 @@
       interval = (interval.direction === 'down' ||
                   interval.simpleInterval === 8) ? interval.invert() : interval;
 
-      return scale.scale.indexOf(interval.simple()) + 1;
+      return scale.scale.indexOf(interval.simple(true)) + 1;
     },
 
     /**
@@ -759,13 +762,18 @@
               this.compoundOctaves * 12;
     },
 
-    simple: function() {
-      return kQualityTemp[this.quality] + this.simpleInterval.toString();
+    simple: function(ignore) {
+      var intval = this.simpleInterval;
+      intval = (this.direction === 'down' && !ignore) ? -intval : intval;
+
+      return kQualityTemp[this.quality] + intval.toString();
     },
 
-    compound: function() {
-      return kQualityTemp[this.quality] +
-        (this.simpleInterval + this.compoundOctaves * 7).toString();
+    compound: function(ignore) {
+      var intval = this.simpleInterval + this.compoundOctaves * 7;
+      intval = (this.direction === 'down' && !ignore) ? -intval : intval;
+
+      return kQualityTemp[this.quality] + intval.toString();
     },
 
     isCompound: function() {
@@ -778,7 +786,7 @@
       intervalNumber = 9 - intervalNumber;
 
       return new TeoriaInterval(intervalNumber,
-                                kQualityInversion[this.quality]);
+                                kQualityInversion[this.quality], this.direction);
     },
 
     qualityValue: function() {
