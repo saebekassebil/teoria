@@ -4,12 +4,7 @@ var vows = require('vows'),
 
 // Utility function
 function simpleArray(chord) {
-  var notes = [];
-  for(var i = 0, length = chord.notes.length; i < length; i++) {
-    notes.push(chord.notes[i].name + chord.notes[i].accidental.sign);
-  }
-
-  return notes;
+  return chord.notes().map(function(n) { return n.toString(true); });
 }
 
 vows.describe('Chords').addBatch({
@@ -36,12 +31,12 @@ vows.describe('Chords').addBatch({
 
     'Hmaj7': function() {
       var notes = simpleArray(teoria.chord('Hmaj7'));
-      assert.deepEqual(notes, ['h', 'd#', 'f#', 'a#']);
+      assert.deepEqual(notes, ['b', 'd#', 'f#', 'a#']);
     },
 
     'H#maj7': function() {
       var notes = simpleArray(teoria.chord('H#maj7'));
-      assert.deepEqual(notes, ['h#', 'dx', 'fx', 'ax']);
+      assert.deepEqual(notes, ['b#', 'dx', 'fx', 'ax']);
     },
 
     'C7b5': function() {
