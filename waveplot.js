@@ -65,7 +65,7 @@ function plotChord(chord, options) {
   var panel = options.panel;
 
   // plot the notes
-  chord.notes.forEach(function(n, i) {
+  chord.notes().forEach(function(n, i) {
     // Push the wave lambda to the sum stack
     fqs.push(waveLambda(n.fq()));
 
@@ -133,8 +133,8 @@ var g = document.createElementNS(SVGNS, 'g');
 plot.appendChild(g);
 var panel = document.getElementById('panel');
 var options = {
-  from: -0.030,
-  to: 0.030,
+  from: -0.040,
+  to: 0.040,
   samples: 1800,
   translate: {
     x: 0,
