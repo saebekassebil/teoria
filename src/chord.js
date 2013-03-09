@@ -412,6 +412,8 @@ TeoriaChord.prototype = {
 
   transpose: function(interval, direction) {
     this.root.transpose(interval, direction);
+    this.name = this.root.name.toUpperCase() +
+                this.root.accidental.sign + this.symbol;
 
     return this;
   },
