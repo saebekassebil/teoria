@@ -424,7 +424,7 @@
     } else if (diff <= -10) {
       diff += 12;
     }
-    
+
     if (to.simpleInterval === 8) {
       octave += dir;
     } else if (dir < 0) {
