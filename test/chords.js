@@ -202,6 +202,16 @@ vows.describe('Chords').addBatch({
     'Bbdom7b5': function() {
       var notes = simpleArray(teoria.chord('Bbdom7b5'));
       assert.deepEqual(notes, ['bb', 'd', 'fb', 'ab']);
+    },
+
+    'E5': function() {
+      var notes = simpleArray(teoria.chord('E5'));
+      assert.deepEqual(notes, ['e', 'b']);
+    },
+
+    'A5': function() {
+      var notes = simpleArray(teoria.chord('A5'));
+      assert.deepEqual(notes, ['a', 'e']);
     }
   },
 
