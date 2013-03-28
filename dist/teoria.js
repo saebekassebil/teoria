@@ -198,7 +198,9 @@
     'minor': 'm',
     'augmented': 'aug',
     'diminished': 'dim',
-    'power': '5'
+    'half-diminished': '7b5',
+    'power': '5',
+    'dominant': '7'
   };
 
   var kAccidentalSign = {
@@ -622,10 +624,7 @@
      * Returns a TeoriaChord object with this note as root
      */
     chord: function(chord) {
-      chord = chord || 'major';
-      if (chord in kChordShort) {
-        chord = kChordShort[chord];
-      }
+      chord = (chord in kChordShort) ? kChordShort[chord] : chord;
 
       return new TeoriaChord(this, chord);
     },

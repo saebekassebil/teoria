@@ -145,10 +145,7 @@ TeoriaNote.prototype = {
    * Returns a TeoriaChord object with this note as root
    */
   chord: function(chord) {
-    chord = chord || 'major';
-    if (chord in kChordShort) {
-      chord = kChordShort[chord];
-    }
+    chord = (chord in kChordShort) ? kChordShort[chord] : chord;
 
     return new TeoriaChord(this, chord);
   },

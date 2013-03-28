@@ -198,7 +198,9 @@
     'minor': 'm',
     'augmented': 'aug',
     'diminished': 'dim',
-    'power': '5'
+    'half-diminished': '7b5',
+    'power': '5',
+    'dominant': '7'
   };
 
   var kAccidentalSign = {
