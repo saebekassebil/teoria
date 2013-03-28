@@ -162,7 +162,7 @@ function doBuild() {
   });
 
   mingler.mingle(kMainFile, function() {
-    process.chdir('../');
+    process.chdir('..');
   });
 }
 
@@ -205,9 +205,9 @@ task('lint', function() {
   }
 
   function lintDirectory(dir) {
-
     return fs.readdirSync(dir).map(function(file) {
       var stat = fs.statSync(dir + '/' + file);
+
       if (stat.isDirectory()) {
         return lintDirectory(dir + '/' + file);
       } else if (stat.isFile()) {
@@ -217,10 +217,11 @@ task('lint', function() {
   }
 
   // Load configuration
-  config = JSON.parse(fs.readFileSync('./.jshintrc', 'utf8'));
+  config = JSON.parse(fs.readFileSync('.jshintrc', 'utf8'));
 
-  // Lint the filetree
-  lintDirectory('./src');
+  // Lint source files
+  lintFile('Jakefile');
+  lintDirectory(kSrcDir);
 
   // Tell us how we did
   log(filecount + ' files linted, ' + (filecount - errorfilecount) +
