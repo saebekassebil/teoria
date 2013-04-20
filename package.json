@@ -23,7 +23,8 @@
   },
 
   "scripts": {
-    "test": "jake test"
+    "test": "jake test",
+    "lint": "jake lint"
   },
 
   "devDependencies": {
