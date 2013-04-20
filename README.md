@@ -1,5 +1,6 @@
 Teoria.js
 =========
+![Build Status](https://api.travis-ci.org/saebekassebil/teoria.png)
 
 Teoria.js is a lightweight and fast JavaScript framework
 for music theory, both Jazz and Classical. It aims at providing an intuitive
