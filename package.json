@@ -22,6 +22,10 @@
     "url": "https://raw.github.com/saebekassebil/teoria/master/LICENSE"
   },
 
+  "scripts": {
+    "test": "jake test"
+  },
+
   "devDependencies": {
     "colors": ">=0.6.0",
     "mingler": ">=0.1.4",
