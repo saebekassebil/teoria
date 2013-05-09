@@ -176,11 +176,17 @@ task('minify', function() { doBuild('minify'); }, { async: true });
 
 // Unit test the project
 desc('Unit tests against current build');
-task('test', ['build'], function() {
-  exec('vows --dot-matrix test/*', function(err, stdout) {
-    console.log(stdout);
-    complete();
+task('test', function() {
+  var build = jake.Task.build;
+  build.addListener('complete', function() {
+    exec('vows --dot-matrix test/*', function(err, stdout) {
+      console.log(stdout);
+      complete();
+    });
   });
+
+  settings.silent = true;
+  build.invoke();
 }, { async: true });
 
 // Lints the files according to .jshintrc
