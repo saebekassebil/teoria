@@ -244,6 +244,6 @@ task('lint', function() {
   if (errors.length === 0) {
     log('Lint passed', 'info');
   } else {
-    log('Lint failed!', 'error');
+    fail('Lint failed!');
   }
 });
