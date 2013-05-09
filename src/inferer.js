@@ -1,3 +1,5 @@
+/* exported inferTriad */
+
 var kTriads = {
   'M': ['M3', 'P5'],
   'm': ['m3', 'P5'],
@@ -24,7 +26,7 @@ function inferTriad(notes) {
       interval = note.interval(other);
 
       return interval.direction === 'down' ?
-        interval.invert().simple(true) : interval.simple()
+        interval.invert().simple(true) : interval.simple();
     });
 
     // Look through the triads hash table
@@ -34,5 +36,5 @@ function inferTriad(notes) {
       }
     }
   }
-};
+}
 

@@ -1,3 +1,5 @@
+/* exported getDistance, pad, compareArray */
+
 /**
  * getDistance, returns the distance in semitones between two notes
  **/
