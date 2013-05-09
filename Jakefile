@@ -1,5 +1,5 @@
 /* jshint node:true */
-/* global desc, task, complete */
+/* global jake, desc, task, complete */
 'use strict';
 
 var path        = require('path'),
@@ -244,6 +244,6 @@ task('lint', function() {
   if (errors.length === 0) {
     log('Lint passed', 'info');
   } else {
-    fail('Lint failed!');
+    log('Lint failed!', 'error');
   }
 });
