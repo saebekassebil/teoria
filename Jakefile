@@ -1,5 +1,5 @@
 /* jshint node:true */
-/* global desc, task, complete */
+/* global jake, desc, task, complete */
 'use strict';
 
 var path        = require('path'),
