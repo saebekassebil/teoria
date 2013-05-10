@@ -118,7 +118,7 @@ function TeoriaChord(root, name) {
             break;
 
           case 'add':
-            if (next && !isNaN(parseInt(next, 10))) {
+            if (next && !isNaN(+next)) {
               if (next === '9') {
                 additionals.push('M9');
               } else if (next === '11') {
@@ -144,8 +144,7 @@ function TeoriaChord(root, name) {
               break;
             }
 
-            var token = parseInt(alterations[a], 10), quality,
-                interval = parseInt(alterations[a], 10), intPos;
+            var token = +alterations[a], quality, intPos;
             if (isNaN(token) ||
                 String(token).length !== alterations[a].length) {
               throw new Error('Invalid token: \'' + alterations[a] + '\'');
@@ -165,15 +164,14 @@ function TeoriaChord(root, name) {
             }
 
             // Calculate the position in the 'note' array
-            intPos = (interval - 1) / 2;
+            intPos = (token - 1) / 2;
             if (chordLength < intPos) {
               chordLength = intPos;
             }
 
-            if (interval < 5 || interval === 7 ||
+            if (token < 5 || token === 7 ||
                 intPos !== Math.round(intPos)) {
-              throw new Error('Invalid interval alteration: ' +
-                  interval.toString(10));
+              throw new Error('Invalid interval alteration: ' + token);
             }
 
             quality = notes[intPos][0];
@@ -197,7 +195,8 @@ function TeoriaChord(root, name) {
               }
             }
 
-            notes[intPos] = quality + interval;
+            sharp = flat = false;
+            notes[intPos] = quality + token;
             break;
           }
         }
