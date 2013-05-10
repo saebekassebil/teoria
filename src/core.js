@@ -280,26 +280,8 @@
     'A8': 'di',
     'AA8': 'dai'
   };
-  /**
-   * getDistance, returns the distance in semitones between two notes
-   */
-  function getDistance(from, to) {
-    from = kNotes[from];
-    to = kNotes[to];
-    if (from.distance > to.distance) {
-      return (to.distance + 12) - from.distance;
-    } else {
-      return to.distance - from.distance;
-    }
-  }
 
-  function pad(str, ch, len) {
-    for (; len > 0; len--) {
-      str += ch;
-    }
-
-    return str;
-  }
+  //=include utils.js
 
   // teoria.note namespace - All notes should be instantiated
   // through this function.
@@ -482,12 +464,15 @@
   //=include chord.js
   //=include scale.js
   //=include #scales#
+  //=include inferer.js
 
+  teoria.inferTriad = inferTriad;
   teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;
   teoria.TeoriaScale = TeoriaScale;
   teoria.TeoriaInterval = TeoriaInterval;
 
+  // Export both as AMD and browser module
   if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {
       exports = module.exports = teoria;

@@ -23,8 +23,11 @@
     "kStepNumber",
     "kIntervalSolfege",
 
+    "inferTriad",
+
     "getDistance",
-    "pad"
+    "pad",
+    "compareArray"
   ],
 
   "node":     true,
@@ -46,5 +49,6 @@
   "latedef":  true,
   "undef":    true,
   "evil":     false,
-  "unused":   true
+  "unused":   true,
+  "loopfunc": true
 }
