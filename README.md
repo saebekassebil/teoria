@@ -221,8 +221,10 @@ isn't set, a standard major chord will be returned.
 
 Example: `teoria.note('A5').helmholtz() -> "a''"`
 
-#### TeoriaNote#scientific()
+#### TeoriaNote#scientific([dontShowOctave])
  - Returns the note name formatted in scientific notation.
+
+*dontShowOctave* - If set to `true` the octave will not be included in the returned string.
 
 Example: `teoria.note("ab'").scientific() -> "Ab4"`
 
