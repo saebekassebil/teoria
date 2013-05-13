@@ -165,8 +165,9 @@ TeoriaNote.prototype = {
   /**
    * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
    */
-  scientific: function() {
-    return this.name.toUpperCase() + this.accidental.sign + this.octave;
+  scientific: function(dontShowOctave) {
+      var octave = dontShowOctave ? '' : this.octave;
+    return this.name.toUpperCase() + this.accidental.sign + octave;
   },
 
   /**

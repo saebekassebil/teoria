@@ -3,3 +3,11 @@ node_modules/
 
 # Ignore my sandbox file
 index.html
+.idea/encodings.xml
+.idea/libraries/TideFramework.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/scopes/scope_settings.xml
+.idea/teoria.iml
+.idea/vcs.xml
+.idea/workspace.xml
