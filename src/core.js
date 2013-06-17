@@ -219,17 +219,17 @@
   };
 
   var kStepNumber = {
-    'first': '1',
-    'tonic': '1',
-    'second': '2',
-    'third': '3',
-    'fourth': '4',
-    'fifth': '5',
-    'sixth': '6',
-    'seventh': '7',
-    'ninth': '9',
-    'eleventh': '11',
-    'thirteenth': '13'
+    'first': 1,
+    'tonic': 1,
+    'second': 2,
+    'third': 3,
+    'fourth': 4,
+    'fifth': 5,
+    'sixth': 6,
+    'seventh': 7,
+    'ninth': 9,
+    'eleventh': 11,
+    'thirteenth': 13
   };
 
   // Adjusted Shearer syllables - Chromatic solfege system

@@ -52,9 +52,7 @@ TeoriaScale.prototype = {
   },
 
   get: function(i) {
-    if (typeof i === 'string' && i in kStepNumber) {
-      i = parseInt(kStepNumber[i], 10);
-    }
+    i = (typeof i === 'string' && i in kStepNumber) ? kStepNumber[i] : i;
 
     return this.notes[i - 1];
   },

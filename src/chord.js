@@ -393,7 +393,7 @@ TeoriaChord.prototype = {
 
       interval = kStepNumber[interval];
       for (i = 0, length = intervals.length; i < length; i++) {
-        if (intervals[i].interval === +interval) {
+        if (intervals[i].interval === interval) {
           return teoria.interval.from(this.root, intervals[i]);
         }
       }
