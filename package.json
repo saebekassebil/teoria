@@ -1,6 +1,6 @@
 {
   "name": "teoria",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Music theory for JavaScript",
   "homepage": "http://saebekassebil.github.com/teoria",
   "keywords": ["music", "theory", "jazz", "classical", "chord"],
@@ -24,7 +24,8 @@
 
   "scripts": {
     "test": "jake test",
-    "lint": "jake lint"
+    "lint": "jake lint",
+    "prepublish": "jake build"
   },
 
   "devDependencies": {
