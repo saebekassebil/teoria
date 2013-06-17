@@ -466,8 +466,6 @@
   //=include #scales#
   //=include inferer.js
 
-  teoria.inferTriad = inferTriad;
-  teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;
   teoria.TeoriaScale = TeoriaScale;
   teoria.TeoriaInterval = TeoriaInterval;

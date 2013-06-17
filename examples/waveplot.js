@@ -1,5 +1,21 @@
 var SVGNS = 'http://www.w3.org/2000/svg';
 
+function gcd(a, b) {
+  var numbers = Array.prototype.slice.call(arguments);
+
+  return numbers.reduce(function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+  });
+}
+
+function lcm() {
+  var numbers = Array.prototype.slice.call(arguments);
+
+  return numbers.reduce(function(a, b) {
+    return Math.abs(a * b) / gcd(a, b);
+  });
+}
+
 function merge(obj1, obj2) {
   var obj3 = {}, attr;
   for (attr in obj1) { obj3[attr] = obj1[attr]; }
@@ -65,7 +81,7 @@ function plotChord(chord, options) {
   var panel = options.panel;
 
   // plot the notes
-  chord.notes.forEach(function(n, i) {
+  chord.notes().forEach(function(n, i) {
     // Push the wave lambda to the sum stack
     fqs.push(waveLambda(n.fq()));
 
