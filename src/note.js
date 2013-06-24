@@ -1,100 +1,36 @@
-/**
- * TeoriaNote - teoria.note - the note object
- *
- * This object is the representation of a note.
- * The constructor must be called with a name,
- * and optionally a duration argument.
- * The first parameter (name) can be specified in either
- * scientific notation (name+accidentals+octave). Fx:
- *    A4 - Cb3 - D#8 - Hbb - etc.
- * Or in the Helmholtz notation:
- *    C,, - f#'' - d - Eb - etc.
- * The second argument must be an object literal, with a
- * 'value' property and/or a 'dots' property. By default,
- * the duration value is 4 (quarter note) and dots is 0.
- */
-function TeoriaNote(name, duration) {
-  if (typeof name !== 'string') {
-    return null;
-  }
-
+function TeoriaNote(coord, duration) {
   duration = duration || {};
 
-  this.name = name;
-  this.duration = {value: duration.value || 4, dots: duration.dots || 0};
-  this.accidental = {value: 0, sign: ''};
-  var scientific = /^([a-h])(x|#|bb|b?)(-?\d*)/i;
-  var helmholtz = /^([a-h])(x|#|bb|b?)([,\']*)$/i;
-  var accidentalSign, accidentalValue, noteName, octave;
-
-  // Start trying to parse scientific notation
-  var parser = name.match(scientific);
-  if (parser && name === parser[0] && parser[3].length !== 0) { // Scientific
-    noteName = parser[1].toLowerCase();
-    octave = parseInt(parser[3], 10);
-
-    if (parser[2].length > 0) {
-      accidentalSign = parser[2].toLowerCase();
-      accidentalValue = kAccidentalValue[parser[2]];
-    }
-  } else { // Helmholtz Notation
-    name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
-
-    parser = name.match(helmholtz);
-    if (!parser || name !== parser[0]) {
-      throw new Error('Invalid note format');
-    }
-
-    noteName = parser[1];
-    octave = parser[3];
-    if (parser[2].length > 0) {
-      accidentalSign = parser[2].toLowerCase();
-      accidentalValue = kAccidentalValue[parser[2]];
-    }
-
-    if (octave.length === 0) { // no octave symbols
-      octave = (noteName === noteName.toLowerCase()) ? 3 : 2;
-    } else {
-      if (octave.match(/^'+$/)) {
-        if (noteName === noteName.toUpperCase()) { // If upper-case
-          throw new Error('Format must respect the Helmholtz notation');
-        }
-
-        octave = 3 + octave.length;
-      } else if (octave.match(/^,+$/)) {
-        if (noteName === noteName.toLowerCase()) { // If lower-case
-          throw new Error('Format must respect the Helmholtz notation');
-        }
-
-        octave = 2 - octave.length;
-      } else {
-        throw new Error('Invalid characters after note name.');
-      }
-    }
-  }
-
-  this.name = noteName.toLowerCase();
-  this.octave = octave;
-
-  if (accidentalSign) {
-    this.accidental.value = accidentalValue;
-    this.accidental.sign = accidentalSign;
-  }
+  this.duration = { value: duration.value || 4, dots: duration.dots || 0 };
+  this.coord = coord;
 }
 
 TeoriaNote.prototype = {
+  octave: function() {
+    return this.coord[0] + A4[0] - notes[this.name()][0] +
+      this.accidentalValue() * 4;
+  },
+
+  name: function() {
+    return fifths[this.coord[1] + A4[1] - this.accidentalValue() * 7 + 1];
+  },
+
+  accidentalValue: function() {
+    return Math.round((this.coord[1] + A4[1] - 2) / 7);
+  },
+
+  accidental: function() {
+    return accidentals[this.accidentalValue() + 2];
+  },
+
   /**
    * Returns the key number of the note
    */
-  key: function(whitenotes) {
-    var noteValue;
-    if (whitenotes) {
-      noteValue = Math.ceil(kNotes[this.name].distance / 2);
-      return (this.octave - 1) * 7 + 3 + noteValue;
-    } else {
-      noteValue = kNotes[this.name].distance + this.accidental.value;
-      return (this.octave - 1) * 12 + 4 + noteValue;
-    }
+  key: function(white) {
+    if (white)
+      return this.coord[0] * 7 + this.coord[1] * 4 + 29;
+    else
+      return this.coord[0] * 12 + this.coord[1] * 7 + 49;
   },
 
   /**
@@ -104,14 +40,16 @@ TeoriaNote.prototype = {
   fq: function(concertPitch) {
     concertPitch = concertPitch || 440;
 
-    return concertPitch * Math.pow(2, (this.key() - 49) / 12);
+    return concertPitch *
+      Math.pow(2, (this.coord[0] * 12 + this.coord[1] * 7) / 12);
   },
 
   /**
    * Returns the pitch class index (chroma) of the note
    */
   chroma: function() {
-    var value = (kNotes[this.name].distance + this.accidental.value) % 12;
+    var value = (sum(mul(this.coord, [12, 7])) - 3) % 12;
+
     return (value < 0) ? value + 12 : value;
   },
 
@@ -134,9 +72,7 @@ TeoriaNote.prototype = {
    */
   transpose: function(interval, direction) {
     var note = teoria.interval(this, interval, direction);
-    this.name = note.name;
-    this.octave = note.octave;
-    this.accidental = note.accidental;
+    this.coord = note.coord;
 
     return this;
   },
@@ -154,19 +90,20 @@ TeoriaNote.prototype = {
    * Returns the Helmholtz notation form of the note (fx C,, d' F# g#'')
    */
   helmholtz: function() {
-    var name = (this.octave < 3) ? this.name.toUpperCase() :
-                                   this.name.toLowerCase();
-    var paddingChar = (this.octave < 3) ? ',' : '\'';
-    var paddingCount = (this.octave < 2) ? 2 - this.octave : this.octave - 3;
+    var octave = this.octave();
+    var name = this.name();
+    name = octave < 3 ? name.toUpperCase() : name.toLowerCase();
+    var padchar = octave < 3 ? ',' : '\'';
+    var padcount = octave < 2 ? 2 - octave : octave - 3;
 
-    return pad(name + this.accidental.sign, paddingChar, paddingCount);
+    return pad(name + this.accidental(), padchar, padcount);
   },
 
   /**
    * Returns the scientific notation form of the note (fx E4, Bb3, C#7 etc.)
    */
   scientific: function() {
-    return this.name.toUpperCase() + this.accidental.sign + this.octave;
+    return this.name().toUpperCase() + this.accidental() + this.octave();
   },
 
   /**
@@ -175,17 +112,17 @@ TeoriaNote.prototype = {
   enharmonics: function() {
     var enharmonics = [], key = this.key(),
     upper = this.interval('m2', 'up'), lower = this.interval('m2', 'down');
-    var upperKey = upper.key() - upper.accidental.value;
-    var lowerKey = lower.key() - lower.accidental.value;
+    var upperKey = upper.key() - upper.accidentalValue();
+    var lowerKey = lower.key() - lower.accidentalValue();
     var diff = key - upperKey;
     if (diff < 3 && diff > -3) {
-      upper.accidental = {value: diff, sign: kAccidentalSign[diff]};
+      upper.coord = add(upper.coord, mul(sharp, diff));
       enharmonics.push(upper);
     }
 
     diff = key - lowerKey;
     if (diff < 3 && diff > -3) {
-      lower.accidental = {value: diff, sign: kAccidentalSign[diff]};
+      lower.coord = add(lower.coord, mul(sharp, diff));
       enharmonics.push(lower);
     }
 
@@ -198,9 +135,8 @@ TeoriaNote.prototype = {
     }
 
     var interval = scale.tonic.interval(this), solfege, stroke, count;
-    if (interval.direction === 'down') {
+    if (interval.direction() === 'down')
       interval = interval.invert();
-    }
 
     if (showOctaves) {
       count = (this.key(true) - scale.tonic.key(true)) / 7;
@@ -242,19 +178,19 @@ TeoriaNote.prototype = {
    * as 0 evaluates to false in boolean context
    **/
   scaleDegree: function(scale) {
-    var interval = scale.tonic.interval(this);
-    interval = (interval.direction === 'down' ||
-                interval.simpleInterval === 8) ? interval.invert() : interval;
+    var val = scale.tonic.interval(this);
+    var num = val.number();
+    val = (val.direction() === 'down' || (num > 7 && (num - 1) % 7 === 0)) ?
+      val.invert() : val;
 
-    return scale.scale.indexOf(interval.simple(true)) + 1;
+    return scale.scale.indexOf(val.simple(true)) + 1;
   },
 
   /**
    * Returns the name of the note, with an optional display of octave number
    */
-  toString: function(dontShow) {
-    var octave = dontShow ? '' : this.octave;
-    return this.name.toLowerCase() + this.accidental.sign + octave;
+  toString: function(dont) {
+    return this.name() + this.accidental() + (dont ? '' : this.octave());
   }
 };
 
