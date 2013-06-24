@@ -5,7 +5,7 @@ var vows = require('vows'),
 vows.describe('Scales').addBatch({
   'Ab2': {
     topic: function() {
-      return new teoria.TeoriaNote('Ab2');
+      return teoria.note('Ab2');
     },
 
     'Ionian/Major': function(note) {

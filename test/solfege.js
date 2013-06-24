@@ -4,7 +4,7 @@ var vows = require('vows'),
 
 vows.describe('Solfege').addBatch({
   'C in C minor': function() {
-    var note = new teoria.TeoriaNote('c');
+    var note = teoria.note('c');
     assert.equal(note.solfege(teoria.scale(note, 'minor')), 'do');
   },
 
@@ -21,7 +21,7 @@ vows.describe('Solfege').addBatch({
   },
 
   'C4 in C4 minor': function() {
-    var note = new teoria.TeoriaNote('c4');
+    var note = teoria.note('c4');
     var scale = teoria.scale(note, 'minor');
     assert.equal(note.solfege(scale, true), 'do');
   },
