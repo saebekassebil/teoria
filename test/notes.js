@@ -5,15 +5,15 @@ var vows = require('vows'),
 vows.describe('TeoriaNote class').addBatch({
   'A4 - a\'': {
     topic: function() {
-      return new teoria.TeoriaNote('A4');
+      return teoria.note('A4');
     },
 
     'Octave should be 4': function(note) {
-      assert.equal(note.octave, 4);
+      assert.equal(note.octave(), 4);
     },
 
     'Note name is lower case': function(note) {
-      assert.equal(note.name, 'a');
+      assert.equal(note.name(), 'a');
     },
 
     'A4 is the 49th piano key': function(note) {
@@ -35,23 +35,23 @@ vows.describe('TeoriaNote class').addBatch({
 
   'C#5 - c#\'\'': {
     topic: function() {
-      return new teoria.TeoriaNote('c#\'\'');
+      return teoria.note('c#\'\'');
     },
 
     'Octave should be 5': function(note) {
-      assert.equal(note.octave, 5);
+      assert.equal(note.octave(), 5);
     },
 
     'The name attribute of c# is just c': function(note) {
-      assert.equal(note.name, 'c');
+      assert.equal(note.name(), 'c');
     },
 
     'The accidental.sign attribute is #': function(note) {
-      assert.equal(note.accidental.sign, '#');
+      assert.equal(note.accidental(), '#');
     },
 
     'The accidental.value attribute is 1': function(note) {
-      assert.equal(note.accidental.value, 1);
+      assert.equal(note.accidentalValue(), 1);
     },
 
     'C#5 is the 53rd piano key': function(note) {
@@ -71,21 +71,19 @@ vows.describe('TeoriaNote class').addBatch({
     },
 
     'The interval between C#5 and A4 is a major third': function(note) {
-      var a4 = new teoria.TeoriaNote('A4');
+      var a4 = teoria.note('A4');
 
-      assert.deepEqual(note.interval(a4),
-          new teoria.TeoriaInterval(3, 'major', 'down'));
+      assert.deepEqual(note.interval(a4), teoria.interval('M-3'));
     },
 
     'The interval between C#5 and Eb6 is diminished tenth': function(note) {
-      var eb6 = new teoria.TeoriaNote('Eb6');
+      var eb6 = teoria.note('Eb6');
 
-      assert.deepEqual(note.interval(eb6),
-          new teoria.TeoriaInterval(10, 'diminished'));
+      assert.deepEqual(note.interval(eb6), teoria.interval('d10'));
     },
 
     'An diminished fifth away from C#5 is G5': function(note) {
-      var g5 = new teoria.TeoriaNote('G5');
+      var g5 = teoria.note('G5');
 
       assert.deepEqual(note.interval('d5'), g5);
     },
@@ -94,8 +92,79 @@ vows.describe('TeoriaNote class').addBatch({
       var cis4 = teoria.note('c#4');
       var db4 = teoria.note('db4');
 
-      assert.deepEqual(cis4.interval(db4),
-          new teoria.TeoriaInterval(2, 'diminished'));
+      assert.deepEqual(cis4.interval(db4), teoria.interval('d2'));
+    }
+  },
+
+  'Instantiate with coords': {
+    '[0, 0] is A4': function() {
+      assert.equal(teoria.note([0, 0]).scientific(), 'A4');
+    },
+
+    '[-4, 4] is C#3': function() {
+      assert.equal(teoria.note([-4, 4]).scientific(), 'C#3');
+    },
+
+    '[3, -4] is F5': function() {
+      assert.equal(teoria.note([3, -4]).scientific(), 'F5');
+    },
+
+    '[4, -7] is Ab4': function() {
+      assert.equal(teoria.note([4, -7]).scientific(), 'Ab4');
+    }
+  },
+
+  'Instantiate from key': {
+    '#49 is A4': function() {
+      assert.equal(teoria.note.fromKey(49).scientific(), 'A4');
+    },
+
+    '#20 is E2': function() {
+      assert.equal(teoria.note.fromKey(20).scientific(), 'E2');
+    },
+
+    '#57 is F5': function() {
+      assert.equal(teoria.note.fromKey(57).scientific(), 'F5');
+    },
+
+    '#72 is G#6': function() {
+      assert.equal(teoria.note.fromKey(72).scientific(), 'G#6');
+    }
+  },
+
+  'Instantiate from frequency': {
+    '391.995Hz is G4': function() {
+      assert.equal(teoria.note.fromFrequency(391.995).note.scientific(), 'G4');
+    },
+
+    '220.000Hz is A3': function() {
+      assert.equal(teoria.note.fromFrequency(220.000).note.scientific(), 'A3');
+    },
+
+    '155.563Hz is Eb3': function() {
+      assert.equal(teoria.note.fromFrequency(155.563).note.scientific(), 'Eb3');
+    },
+
+    '2959.96Hz is F#7': function() {
+      assert.equal(teoria.note.fromFrequency(2959.96).note.scientific(), 'F#7');
+    }
+  },
+
+  'Instantiate from MIDI': {
+    'MIDI#36 is C2': function() {
+      assert.equal(teoria.note.fromMIDI(36).scientific(), 'C2');
+    },
+
+    'MIDI#77 is F5': function() {
+      assert.equal(teoria.note.fromMIDI(77).scientific(), 'F5');
+    },
+
+    'MIDI#61 is Db4': function() {
+      assert.equal(teoria.note.fromMIDI(61).scientific(), 'Db4');
+    },
+
+    'MIDI#80 is G#5': function() {
+      assert.equal(teoria.note.fromMIDI(80).scientific(), 'G#5');
     }
   },
 

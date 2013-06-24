@@ -1,5 +1,5 @@
 function TeoriaScale(tonic, scale) {
-  var scaleName, i, length;
+  var scaleName, i;
 
   if (!(tonic instanceof TeoriaNote)) {
     throw new Error('Invalid Tonic');
@@ -8,9 +8,8 @@ function TeoriaScale(tonic, scale) {
   if (typeof scale === 'string') {
     scaleName = scale;
     scale = teoria.scale.scales[scale];
-    if (!scale) {
+    if (!scale)
       throw new Error('Invalid Scale');
-    }
   } else {
     for (i in teoria.scale.scales) {
       if (teoria.scale.scales.hasOwnProperty(i)) {
@@ -23,28 +22,27 @@ function TeoriaScale(tonic, scale) {
   }
 
   this.name = scaleName;
-  this.notes = [];
   this.tonic = tonic;
   this.scale = scale;
-
-  for (i = 0, length = scale.length; i < length; i++) {
-    this.notes.push(teoria.interval(tonic, scale[i]));
-  }
 }
 
 TeoriaScale.prototype = {
-  simple: function() {
-    var sNotes = [];
+  notes: function() {
+    var notes = [];
 
-    for (var i = 0, length = this.notes.length; i < length; i++) {
-      sNotes.push(this.notes[i].toString(true));
+    for (var i = 0, length = this.scale.length; i < length; i++) {
+      notes.push(teoria.interval(this.tonic, this.scale[i]));
     }
 
-    return sNotes;
+    return notes;
+  },
+
+  simple: function() {
+    return this.notes().map(function(n) { return n.toString(true); });
   },
 
   type: function() {
-    var length = this.notes.length - 2;
+    var length = this.scale.length - 2;
     if (length < 8) {
       return ['di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa'][length] +
         'tonic';
@@ -54,23 +52,16 @@ TeoriaScale.prototype = {
   get: function(i) {
     i = (typeof i === 'string' && i in kStepNumber) ? kStepNumber[i] : i;
 
-    return this.notes[i - 1];
+    return this.tonic.interval(this.scale[i - 1]);
   },
 
   solfege: function(index, showOctaves) {
-    var i, length, solfegeArray = [];
-
-    // Return specific index in scale
-    if (index) {
+    if (index)
       return this.get(index).solfege(this, showOctaves);
-    }
 
-    // Return an array of solfege syllables
-    for (i = 0, length = this.notes.length; i < length; i++) {
-      solfegeArray.push(this.notes[i].solfege(this, showOctaves));
-    }
-
-    return solfegeArray;
+    return this.notes().map(function(n) {
+      return n.solfege(this, showOctaves);
+    });
   },
 
   interval: function(interval, direction) {
@@ -81,7 +72,6 @@ TeoriaScale.prototype = {
   transpose: function(interval, direction) {
     var scale = new TeoriaScale(this.tonic.interval(interval, direction),
                                 this.scale);
-    this.notes = scale.notes;
     this.scale = scale.scale;
     this.tonic = scale.tonic;
 

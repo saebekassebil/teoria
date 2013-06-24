@@ -5,7 +5,7 @@ var vows = require('vows'),
 vows.describe('Intervals').addBatch({
   'Relative Intervals': {
     topic: function() {
-      return new teoria.TeoriaNote('F#,');
+      return teoria.note('F#,');
     },
 
     'Doubly diminished second': function(note) {
@@ -191,7 +191,7 @@ vows.describe('Intervals').addBatch({
 
     'Doubly diminished second down': function() {
       assert.deepEqual(teoria.note('f').interval(teoria.note('ex')),
-          teoria.interval('dd2', 'down'));
+          teoria.interval('dd-2'));
     }
   },
 
@@ -253,7 +253,7 @@ vows.describe('Intervals').addBatch({
     },
 
     'A 22nd has two compound octaves': function() {
-      assert.equal(teoria.interval('P22').compoundOctaves, 2);
+      assert.equal(teoria.interval('P22').octaves(), 2);
     },
 
     'A major seventh is greater than a minor seventh': function() {
