@@ -116,13 +116,14 @@ teoria.note('a')    // Create a note, A3
 Documentation
 ------------------------
 
-
-## TeoriaNote(name[, duration])
- - This function construct a teoria.note object.
+## teoria.note (name | coord[, duration])
 
 *name* - The name argument is the note name as a string. The note can both
 be expressed in scientific and Helmholtz notation.
 Some examples of valid note names: `Eb4`, `C#,,`, `C4`, `d#''`, `Ab2`
+
+*coord* - If the first argument isn't a string, but a coord array,
+it will instantiate a `TeoriaNote` instance.
 
 *duration* - The duration argument is an optional `object` argument.
 The object has two also optional parameters:
@@ -131,12 +132,6 @@ The object has two also optional parameters:
 `1 = whole`, `2 = half (minim)`, `4 = quarter`, `8 = eight`
 
  - `dots` - The number of dots attached to the note. Defaults to `0`.
-
-### teoria.note (TeoriaNote)
-
-The teoria.note object is teoria's interpretation and representation of a
-musical note. When calling teoria.note you're actually instantiating a
-`TeoriaNote` object.
 
 ### teoria.note.fromKey(key)
 A static method that returns an instance of TeoriaNote set to the note
@@ -156,23 +151,29 @@ A static method returns an object containing two elements:
 
 *note* - A number ranging from 0-127 representing a MIDI note value
 
-#### TeoriaNote.name
+### teoria.note.fromString(note)
+ - Returns an instance of TeoriaNote representing the note name
+
+*note* - The name argument is the note name as a string. The note can both
+be expressed in scientific and Helmholtz notation.
+Some examples of valid note names: `Eb4`, `C#,,`, `C4`, `d#''`, `Ab2`
+
+#### TeoriaNote.name()
  - The name of the note, in lowercase letter (*only* the name, not the
  accidental signs)
 
-#### TeoriaNote.octave
+#### TeoriaNote.octave()
  - The numeric value of the octave of the note
 
 #### TeoriaNote.duration
  - The duration object as described in the constructor for TeoriaNote
 
-#### TeoriaNote.accidental
- - An object containing two elements:
+#### TeoriaNote.accidental()
+ - Returns the string symbolic of the accidental sign (`x`, `#`, `b` or `bb`)
 
-*sign* - The string symbolic of the accidental sign `#`, `x`, `b` or `bb`
-
-*value* - The numeric value (mostly used internally) of the sign:
-`# = 1, x = 2, b = -1, bb = -2`
+#### TeoriaNote.accidentalValue()
+ - Returns the numeric value (mostly used internally) of the sign:
+`x = 2, # = 1, b = -1, bb = -2`
 
 #### TeoriaNote#key([whitenotes])
  - Returns the piano key number. Fx A4 would return 49
@@ -383,8 +384,8 @@ absolute intervals that defines the scale. The default supported scales are:
 ### teoria.scale(tonic, scale)
  - Sugar function for constructing a new `TeoriaScale` object
 
-### TeoriaScale.notes
- - An array of `TeoriaNote`s which is the scale's notes
+### TeoriaScale.notes()
+ - Returns an array of `TeoriaNote`s which is the scale's notes
 
 ### TeoriaScale.name
  - The name of the scale (if available). Type `string` or `undefined`
@@ -424,28 +425,21 @@ scale step. Example 'first', 'second', 'fourth', 'seventh'.
  - A sugar function for the `#from` and `#between` methods of the same namespace and
  for creating `TeoriaInterval` objects.
 
-#### teoria.interval(`string`: from[, `string`: direction])
- - Returns a `TeoriaInterval` object, with the given interval
+#### teoria.interval(`string`: from)
+ - A sugar method for the `teoria.interval.toCoord` function
 
-*from* - An interval in "simple-format" such as 'M2' for major second, and 'P5' for perfect fifth. Look further down for more details on this format.
-
-*direction* - An optional direction string, either `'up'` or `'down'`. Defaults to `'up'`
-
-#### teoria.interval(`TeoriaNote`: from, `string`: to[, `string`: direction)
+#### teoria.interval(`TeoriaNote`: from, `string`: to)
  - A sugar method for the `teoria.interval.from` function
 
 #### teoria.interval(`TeoriaNote`: from, `TeoriaNote`: to)
  - A sugar method for the `teoria.interval.between` function
 
-#### teoria.interval.from(from, to[, direction])
+#### teoria.interval.from(from, to)
  - Returns a note which lies a given interval away from a root note.
 
 *from* - The `TeoriaNote` which is the root of the measuring
 
-*to* - An interval in "simple-format" such as 'M2' for
-major second, and 'P5' for perfect fifth.
-
-*direction* - An optional direction string, either `'up'` or `'down'`. Defaults to `'up'`
+*to* - A `TeoriaInterval`
 
 #### teoria.interval.between(from, to)
  - Returns an interval object which represents the interval between two notes.
@@ -457,6 +451,9 @@ interval object would represent a minor third.
 ```javascript
 teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval('m3')
 ```
+
+#### teoria.interval.toCoord(simpleInterval)
+ - Returns a `TeoriaInterval` representing the interval expressed in string form.
 
 #### teoria.interval.invert(simpleInterval)
  - Returns the inversion of the interval provided
@@ -476,21 +473,34 @@ The number may be prefixed with a `-` to signify that its direction is down. E.g
 
 `m-3` means a descending minor third, and `P-5` means a descending perfect fifth.
 
-## TeoriaInterval(intervalNumber, quality[, direction])
+## TeoriaInterval(coord)
  - A representation of a music interval
 
-#### TeoriaInterval.interval
+#### TeoriaInterval.coord
+ - The interval representation of the interval
+
+#### TeoriaInterval.number()
  - The interval number (A ninth = 9, A seventh = 7, fifteenth = 15)
 
-#### TeoriaInterval.simpleIntervalType
- - The type of interval (mostly used internally)
+#### TeoriaInterval.value()
+ - The value of the interval - That is a ninth = 9, but a downwards ninth is = -9
 
-#### TeoriaInterval.quality
- - The quality of the interval (`'diminished'`, `'minor'`, `'perfect'`, `'major'`
- or `'augmented'`)
+#### TeoriaInterval.base()
+ - Returns the name of the simple interval (not compound)
 
-#### TeoriaInterval.direction
- - The direction of the interval (defaults to `'up'`)
+#### TeoriaInterval.type()
+ - Returns the type of array, either `'perfect'` (1, 4, 5, 8) or `'minor'` (2, 3, 6, 7)
+
+#### TeoriaInterval.quality([long])
+ - The quality of the interval (`'dd'`, `'d'` `'m'`, `'p'`, `'M'`, `'A'` or `'AA'`)
+
+ *long*  is set to a truish value, then long quality names are returned:
+ `'doubly diminished'`, `'diminished'`, `'minor'`, etc.
+
+#### TeoriaInterval.direction([newDirection])
+ - The direction of the interval
+
+*newDirection* - If supplied, then the interval's direction is changed
 
 #### TeoriaInterval#semitones()
  - Returns the `number` of semitones the interval span.
@@ -522,6 +532,9 @@ teoria.interval('M17').compound() === 'M17'
 teoria.interval('m23').compound() === 'm23'
 teoria.interval('P5').compound() === 'P5'
 ```
+
+#### TeoriaInterval#octaves()
+ - Returns the number of compound intervals
 
 #### TeoriaInterval#isCompound()
  - Returns a boolean value, showing if the interval is a compound interval

@@ -6,25 +6,27 @@
     "TeoriaScale",
     "teoria",
 
-    "kNotes",
-    "kNoteIndex",
     "kDurations",
-    "kIntervals",
-    "kIntervalIndex",
-    "kQualityLong",
-    "kQualityTemp",
-    "kValidQualities",
-    "kQualityInversion",
     "kAlterations",
     "kSymbols",
     "kChordShort",
-    "kAccidentalSign",
-    "kAccidentalValue",
     "kStepNumber",
     "kIntervalSolfege",
+    "kQualityLong",
 
-    "getDistance",
-    "pad"
+    "pad",
+    "sum",
+    "mul",
+    "add",
+    "sub",
+    "A4",
+    "accidentals",
+    "sharp",
+    "fifths",
+    "notes",
+    "intervals",
+    "intervalFromFifth",
+    "intervalsIndex"
   ],
 
   "node":     true,
@@ -34,7 +36,6 @@
   "maxlen":   80,
   "strict":   false,
   "devel":    true,
-  "curly":    true,
   "newcap":   true,
   "noempty":  true,
   "nonew":    true,
@@ -46,5 +47,6 @@
   "latedef":  true,
   "undef":    true,
   "evil":     false,
-  "unused":   true
+  "unused":   true,
+  "laxcomma": true
 }

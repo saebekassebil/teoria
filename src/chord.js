@@ -1,10 +1,6 @@
 function TeoriaChord(root, name) {
-  if (!(root instanceof TeoriaNote)) {
-    return null;
-  }
-
   name = name || '';
-  this.name = root.name.toUpperCase() + root.accidental.sign + name;
+  this.name = root.name().toUpperCase() + root.accidental() + name;
   this.symbol = name;
   this.root = root;
   this.intervals = [];
@@ -220,26 +216,22 @@ function TeoriaChord(root, name) {
   }
 
   if (bass) {
-    var intervals = this.intervals, bassInterval, inserted = 0, note;
+    var intervals = this.intervals, bassInterval, note;
     // Make sure the bass is atop of the root note
-    note = teoria.note(bass + (root.octave + 1));
+    note = teoria.note(bass + (root.octave() + 1));
 
     bassInterval = teoria.interval.between(root, note);
-    bass = bassInterval.simpleInterval;
+    bass = bassInterval.simple();
 
-    if (bassInterval.direction === 'up') {
-      bassInterval = bassInterval.invert();
-      bassInterval.direction = 'down';
-    }
+    bassInterval = bassInterval.invert();
+    bassInterval.direction('down');
 
     this._voicing = [bassInterval];
     for (i = 0; i < length; i++) {
-      if (intervals[i].interval === bass) {
+      if (intervals[i].simple() === bass)
         continue;
-      }
 
-      inserted++;
-      this._voicing[inserted] = intervals[i];
+      this._voicing.push(intervals[i]);
     }
   }
 }
@@ -304,11 +296,11 @@ TeoriaChord.prototype = {
     var third, fifth, seventh, intervals = this.intervals;
 
     for (var i = 0, length = intervals.length; i < length; i++) {
-      if (intervals[i].interval === 3) {
+      if (intervals[i].number() === 3) {
         third = intervals[i];
-      } else if (intervals[i].interval === 5) {
+      } else if (intervals[i].number() === 5) {
         fifth = intervals[i];
-      } else if (intervals[i].interval === 7) {
+      } else if (intervals[i].number() === 7) {
         seventh = intervals[i];
       }
     }
@@ -317,7 +309,7 @@ TeoriaChord.prototype = {
       return;
     }
 
-    third = (third.direction === 'down') ? third.invert() : third;
+    third = (third.direction() === 'down') ? third.invert() : third;
     third = third.simple();
 
     if (fifth) {
@@ -359,10 +351,10 @@ TeoriaChord.prototype = {
       for (i = 0; i < length; i++) {
         interval = this.intervals[i];
         invert = interval.invert();
-        if (interval.simpleIntervalType.name in has) {
-          has[interval.simpleIntervalType.name] = true;
-        } else if (invert.simpleIntervalType.name in has) {
-          has[invert.simpleIntervalType.name] = true;
+        if (interval.base() in has) {
+          has[interval.base()] = true;
+        } else if (invert.base() in has) {
+          has[invert.base()] = true;
         }
       }
 
@@ -372,10 +364,10 @@ TeoriaChord.prototype = {
       for (i = 0; i < length; i++) {
         interval = this.intervals[i];
         invert = interval.invert();
-        if (interval.simpleIntervalType.name in has) {
-          has[interval.simpleIntervalType.name] = true;
-        } else if (invert.simpleIntervalType.name in has) {
-          has[invert.simpleIntervalType.name] = true;
+        if (interval.base() in has) {
+          has[interval.base()] = true;
+        } else if (invert.base() in has) {
+          has[invert.base()] = true;
         }
       }
 
@@ -393,7 +385,7 @@ TeoriaChord.prototype = {
 
       interval = kStepNumber[interval];
       for (i = 0, length = intervals.length; i < length; i++) {
-        if (intervals[i].interval === interval) {
+        if (intervals[i].number() === interval) {
           return teoria.interval.from(this.root, intervals[i]);
         }
       }
@@ -411,8 +403,8 @@ TeoriaChord.prototype = {
 
   transpose: function(interval, direction) {
     this.root.transpose(interval, direction);
-    this.name = this.root.name.toUpperCase() +
-                this.root.accidental.sign + this.symbol;
+    this.name = this.root.name().toUpperCase() +
+                this.root.accidental() + this.symbol;
 
     return this;
   },

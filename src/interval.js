@@ -1,74 +1,113 @@
-function TeoriaInterval(intervalNum, quality, direction) {
-  var simple = (intervalNum >= 8 && intervalNum % 7 === 1) ?
-        intervalNum % 7 * 8 : ((intervalNum - 1) % 7) + 1;
-  var compoundOctaves = Math.ceil((intervalNum - simple) / 8);
-  var simpleIntervalType = kIntervals[simple - 1];
-
-
-  if (!(quality in kValidQualities[simpleIntervalType.quality])) {
-    throw new Error('Invalid interval quality');
-  }
-
-  this.interval = intervalNum;
-  this.quality = quality;
-  this.direction = direction === 'down' ? 'down' : 'up';
-  this.simpleInterval = simple;
-  this.simpleIntervalType = simpleIntervalType;
-  this.compoundOctaves = compoundOctaves;
+function TeoriaInterval(coord) {
+  this.coord = coord;
 }
 
 TeoriaInterval.prototype = {
+  name: function() {
+    return intervalsIndex[this.number() - 1];
+  },
+
   semitones: function() {
-    return this.simpleIntervalType.size + this.qualityValue() +
-            this.compoundOctaves * 12;
+    return sum(mul(this.coord, [12, 7]));
+  },
+
+  number: function() {
+    return Math.abs(this.value());
+  },
+
+  value: function() {
+    var without = sub(this.coord,
+      mul(sharp, Math.floor((this.coord[1] - 2) / 7) + 1))
+      , i, val;
+
+    i = intervalFromFifth[without[1] + 5];
+    val = kStepNumber[i] + (without[0] - intervals[i][0]) * 7;
+
+    return (val > 0) ? val : val - 2;
+  },
+
+  type: function() {
+    return intervals[this.base()][0] <= 1 ? 'perfect' : 'minor';
+  },
+
+  base: function() {
+    var fifth = sub(this.coord, mul(sharp, this.qualityValue()))[1], name;
+    fifth = this.value() > 0 ? fifth + 5 : -(fifth - 5) % 7;
+
+    name = intervalFromFifth[fifth];
+    if (name === 'unison' && this.number() >= 8)
+      name = 'octave';
+
+    return name;
+  },
+
+  direction: function(dir) {
+    if (dir)
+      this.coord = mul(this.coord, -1);
+    else
+      return this.semitones() >= 0 ? 'up' : 'down';
   },
 
   simple: function(ignore) {
-    var intval = this.simpleInterval;
-    intval = (this.direction === 'down' && !ignore) ? -intval : intval;
+    var number = this.value();
+    number = number > 8 || number < -8 ?
+      ((number % 7) ? number % 7 : 7) : number;
 
-    return kQualityTemp[this.quality] + intval.toString();
+    return this.quality() + (ignore ? Math.abs(number) : number);
   },
 
   compound: function(ignore) {
-    var intval = this.simpleInterval + this.compoundOctaves * 7;
-    intval = (this.direction === 'down' && !ignore) ? -intval : intval;
+    var number = ignore ? this.number() : this.value();
 
-    return kQualityTemp[this.quality] + intval.toString();
+    return this.quality() + number;
   },
 
   isCompound: function() {
-    return this.compoundOctaves > 0;
+    return this.number() > 8;
+  },
+
+  octaves: function() {
+    var without = sub(this.coord, mul(sharp, this.qualityValue()));
+    var octaves = without[0] - intervals[this.base()][0];
+
+    return octaves;
   },
 
   invert: function() {
-    var intervalNumber = this.simpleInterval;
+    var i = this.base();
+    var qual = this.qualityValue();
+    var acc = this.type() === 'minor' ? -(qual - 1) : -qual;
+    var coord = intervals[intervalsIndex[9 - kStepNumber[i] - 1]];
+    coord = add(coord, mul(sharp, acc));
 
-    intervalNumber = 9 - intervalNumber;
+    return new TeoriaInterval(coord);
+  },
 
-    return new TeoriaInterval(intervalNumber,
-                              kQualityInversion[this.quality], this.direction);
+  quality: function(lng) {
+    var quality = kAlterations[this.type()][this.qualityValue() + 2];
+
+    return lng ? kQualityLong[quality] : quality;
   },
 
   qualityValue: function() {
-    var defQuality = this.simpleIntervalType.quality, quality = this.quality;
-
-    return kValidQualities[defQuality][quality];
+    if (this.direction() === 'down')
+      return Math.floor((-this.coord[1] - 2) / 7) + 1;
+    else
+      return Math.floor((this.coord[1] - 2) / 7) + 1;
   },
 
   equal: function(interval) {
-    return this.interval === interval.interval &&
-           this.quality === interval.quality;
+    return sum(sub(this.coord, interval.coord)) === 0;
   },
 
   greater: function(interval) {
-    var thisSemitones = this.semitones();
-    var thatSemitones = interval.semitones();
+    var semi = this.semitones();
+    var isemi = interval.semitones();
 
     // If equal in absolute size, measure which interval is bigger
     // For example P4 is bigger than A3
-    return (thisSemitones === thatSemitones) ?
-      (this.interval > interval.interval) : (thisSemitones > thatSemitones);
+    return (semi === isemi) ?
+      (this.number() > interval.number()) : (semi > isemi);
   },
 
   smaller: function(interval) {
