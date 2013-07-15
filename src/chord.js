@@ -206,6 +206,12 @@ function TeoriaChord(root, name) {
     }
   }
 
+  // Sixth-nine chord is an exception to the bass rule (e.g. C6/9)
+  if (bass && bass === '9') {
+    additionals.push('M9');
+    bass = null;
+  }
+
   this.intervals = notes
     .slice(0, chordLength + 1)
     .concat(additionals)
