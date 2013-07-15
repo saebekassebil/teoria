@@ -1481,7 +1481,7 @@
   }
 
   function inferChord(notes) {
-    var triads = possibleTriads(notes);
+    var triads = possibleTriads(notes), chords = [];
 
     triads.forEach(function(triad) {
       var indexes = triad.notes.map(function(n) { return n.toString() });
@@ -1494,7 +1494,7 @@
 
       var exts = rest.map(function(n) { return triad.notes[0].interval(n) });
 
-      var extensions = [];
+      var extensions = [], got = {};
       for (var i = 0, length = exts.length; i < length; i++) {
         var inv = exts[i].direction === 'down' ? exts[i].invert() : exts[i];
         var str = exts[i].direction === 'down' ?
@@ -1505,30 +1505,37 @@
         switch (inv.interval) {
           case 2:
           case 4:
+            got[inv.interval + 7] = q;
             extensions.push(q + (inv.interval + 7));
             break;
 
           case 3:
-            // Sus chords, doesn't have thirds
-            if (triad.type.indexOf('sus') !== -1) {
+            // Sus chords, don't have thirds
+            if (triad.type.indexOf('sus') !== -1)
               return;
-            }
+
             break;
 
           default:
+            got[inv.interval] = str.charAt(0);
             extensions.push(str);
             break;
         }
       }
 
+      // Sort descending
       extensions.sort(function(a, b) {
         return +b.substr(1) - +a.substr(1);
       });
 
       var normal = ['m7', 'M9', 'P11', 'M13'];
 
-      console.log("Chord", name, extensions);
+      console.log(got);
+      chords.push({ name: name, exts: extensions });
+      //console.log('Chord', name, extensions);
     });
+
+    return chords;
   }
 
   window.inferChord = inferChord;
