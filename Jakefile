@@ -87,7 +87,7 @@ function doBuild() {
   var scales = process.env.scales;
   if (scales) {
     scales.split(',').forEach(function(scale) {
-      includeScales[scale.substr(1)] = scale[0] !== '-';
+      includeScales[scale.substr(1)] = scale[0] === '+';
     });
   }
 
