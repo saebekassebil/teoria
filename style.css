@@ -1,0 +1,56 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  font-size: 10pt;
+  color: #556270;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
+}
+
+h1 {
+  font-weight: 300;
+}
+
+#plotframe {
+  box-shadow: rgb(153, 153, 153) 0px 0px 5px inset;
+  -webkit-box-shadow: rgb(153, 153, 153) 0px 0px 5px inset;
+  margin-bottom: 20px;
+}
+
+#container {
+  width: 750px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+#chordinput {
+  border: 1px solid #ccc;
+  border-left: 5px solid #1693a5;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#description {
+  font-size: 9pt;
+  font-weight: 300;
+}
+
+#panel {
+  font-size: 8pt;
+  font-weight: 100;
+  color: #556270;
+  list-style-type: none;
+  margin-bottom: 20px;
+}
+
+#panel li {
+  display: inline;
+  padding-left: 10px;
+  margin-right: 15px;
+}
+
+#panel li:hover {
+  cursor: pointer;
+}
