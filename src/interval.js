@@ -42,8 +42,13 @@ TeoriaInterval.prototype = {
   },
 
   direction: function(dir) {
-    if (dir)
-      this.coord = mul(this.coord, -1);
+    if (dir) {
+      var is = this.semitones() >= 0 ? 'up' : 'down';
+      if (is !== dir)
+        this.coord = mul(this.coord, -1);
+
+      return this;
+    }
     else
       return this.semitones() >= 0 ? 'up' : 'down';
   },

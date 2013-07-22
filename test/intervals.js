@@ -275,5 +275,31 @@ vows.describe('Intervals').addBatch({
     'The simple part of a major 23th is a major second': function() {
       assert.equal(teoria.interval('M23').simple(), 'M2');
     }
+  },
+
+  'Interval direction': {
+    'A3 to C4 is up': function() {
+      assert.equal(teoria.note('A3').interval(teoria.note('C4')).direction(), 'up');
+    },
+
+    'Bb5 to Bb5 is up (default direction is up)': function() {
+      assert.equal(teoria.note('Bb5').interval(teoria.note('Bb5')).direction(), 'up');
+    },
+
+    'G#4 to D4 is down': function() {
+      assert.equal(teoria.note('G#4').interval(teoria.note('D4')).direction(), 'down');
+    },
+
+    'F6 to E6 is down': function() {
+      assert.equal(teoria.note('F6').interval(teoria.note('E6')).direction(), 'down');
+    },
+
+    'C4 to A3 is up, w. direction set to up': function() {
+      assert.equal(teoria.note('C4').interval(teoria.note('A3')).direction('up').direction(), 'up');
+    },
+
+    'A3 to C4 remains up w. direction set to up': function() {
+      assert.equal(teoria.note('A3').interval(teoria.note('C4')).direction('up').direction(), 'up');
+    }
   }
 }).export(module);
