@@ -509,7 +509,7 @@ which is either `'up'` or `'down'`
 #### TeoriaInterval#simple([ignoreDirection])
  - Returns the simple part of the interval (as opposed to #compound). Example:
 
-*ignoreDirection* - An optional boolea that, if set to `true`, returns the
+*ignoreDirection* - An optional boolean that, if set to `true`, returns the
 "direction-agnostic" interval. That is the interval with a positive number.
 
 ```javascript
