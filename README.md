@@ -491,16 +491,17 @@ The number may be prefixed with a `-` to signify that its direction is down. E.g
 #### TeoriaInterval.type()
  - Returns the type of array, either `'perfect'` (1, 4, 5, 8) or `'minor'` (2, 3, 6, 7)
 
-#### TeoriaInterval.quality([long])
+#### TeoriaInterval.quality([verbose])
  - The quality of the interval (`'dd'`, `'d'` `'m'`, `'p'`, `'M'`, `'A'` or `'AA'`)
 
- *long*  is set to a truish value, then long quality names are returned:
+*verbose*  is set to a truish value, then long quality names are returned:
  `'doubly diminished'`, `'diminished'`, `'minor'`, etc.
 
-#### TeoriaInterval.direction([newDirection])
+#### TeoriaInterval.direction([dir])
  - The direction of the interval
 
-*newDirection* - If supplied, then the interval's direction is changed
+*dir* - If supplied, then the interval's direction is to the `newDirection`
+which is either `'up'` or `'down'`
 
 #### TeoriaInterval#semitones()
  - Returns the `number` of semitones the interval span.
