@@ -33,6 +33,7 @@ TeoriaInterval.prototype = {
   base: function() {
     var fifth = sub(this.coord, mul(sharp, this.qualityValue()))[1], name;
     fifth = this.value() > 0 ? fifth + 5 : -(fifth - 5) % 7;
+    fifth = fifth < 0 ? intervalFromFifth.length + fifth : fifth;
 
     name = intervalFromFifth[fifth];
     if (name === 'unison' && this.number() >= 8)
