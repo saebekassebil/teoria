@@ -243,6 +243,52 @@ vows.describe('Intervals').addBatch({
     }
   },
 
+  'Interval base': {
+    'Base of d5 is a fifth': function() {
+      assert.equal(teoria.interval('d5').base(), 'fifth');
+    },
+
+    'Base of A7 is a seventh': function() {
+      assert.equal(teoria.interval('A7').base(), 'seventh');
+    },
+
+    'Base of m2 is a second': function() {
+      assert.equal(teoria.interval('m2').base(), 'second');
+    },
+
+    'Base of M6 is a sixth': function() {
+      assert.equal(teoria.interval('M6').base(), 'sixth');
+    },
+
+    'Base of dd8 is an octave': function() {
+      assert.equal(teoria.interval('dd8').base(), 'octave');
+    },
+
+    'Base of AA4 is a fourth': function() {
+      assert.equal(teoria.interval('AA4').base(), 'fourth');
+    },
+
+    'Base of d-5 is a fifth': function() {
+      assert.equal(teoria.interval('d-5').base(), 'fifth');
+    },
+
+    'Base of m-9 is a second': function() {
+      assert.equal(teoria.interval('m-2').base(), 'second');
+    },
+
+    'Base of M-13 is a sixth': function() {
+      assert.equal(teoria.interval('M-13').base(), 'sixth');
+    },
+
+    'Base of P-11 is a fourth': function() {
+      assert.equal(teoria.interval('P-11').base(), 'fourth');
+    },
+
+    'Base of AA-7 is a seventh': function() {
+      assert.equal(teoria.interval('AA-7').base(), 'seventh');
+    }
+  },
+
   'Compound Intervals': {
     'A major seventeenth is a compound interval': function() {
       assert.equal(teoria.interval('M17').isCompound(), true);
