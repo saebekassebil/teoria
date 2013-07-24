@@ -328,7 +328,7 @@ vows.describe('Intervals').addBatch({
       assert.equal(teoria.note('A3').interval(teoria.note('C4')).direction(), 'up');
     },
 
-    'Bb5 to Bb5 is up (default direction is up)': function() {
+    'Bb5 to Bb5 is up (a unison is always up)': function() {
       assert.equal(teoria.note('Bb5').interval(teoria.note('Bb5')).direction(), 'up');
     },
 
@@ -346,6 +346,54 @@ vows.describe('Intervals').addBatch({
 
     'A3 to C4 remains up w. direction set to up': function() {
       assert.equal(teoria.note('A3').interval(teoria.note('C4')).direction('up').direction(), 'up');
+    },
+
+    'm2 is up': function() {
+      assert.equal(teoria.interval('m2').direction(), 'up');
+    },
+
+    'P11 is up': function() {
+      assert.equal(teoria.interval('P11').direction(), 'up');
+    },
+
+    'P1 is up': function() {
+      assert.equal(teoria.interval('P1').direction(), 'up');
+    },
+
+    'A1 is up': function() {
+      assert.equal(teoria.interval('A1').direction(), 'up');
+    },
+
+    'd1 is up': function() {
+      assert.equal(teoria.interval('d1').direction(), 'up');
+    },
+
+    'm-2 is down': function() {
+      assert.equal(teoria.interval('m-2').direction(), 'down');
+    },
+
+    'M-17 is down': function() {
+      assert.equal(teoria.interval('M-17').direction(), 'down');
+    },
+
+    'd-2 is down': function() {
+      assert.equal(teoria.interval('d-2').direction(), 'down');
+    },
+
+    'dd-2 is down (although it is up)': function() {
+      assert.equal(teoria.interval('dd-2').direction(), 'down');
+    },
+
+    'A-2 is down': function() {
+      assert.equal(teoria.interval('A-2').direction(), 'down');
+    },
+
+    'd-1 is up (all unison values are up)': function() {
+      assert.equal(teoria.interval('d-1').direction(), 'up');
+    },
+
+    'A-1 is up (all unison values are up)': function() {
+      assert.equal(teoria.interval('A-1').direction(), 'up');
     }
   }
 }).export(module);
