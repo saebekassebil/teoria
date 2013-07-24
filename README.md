@@ -227,10 +227,19 @@ Example: `teoria.note('A5').helmholtz() -> "a''"`
 
 Example: `teoria.note("ab'").scientific() -> "Ab4"`
 
-#### TeoriaNote#enharmonics()
+#### TeoriaNote#enharmonics(oneAccidental)
  - Returns all notes that are enharmonic with the note
 
-Example: `teoria.note('C').enharmonics() -> [teoria.note('Dbb'), teoria.note('b#')]`
+*oneAccidental* - Boolean, if set to true, only enharmonic notes with one
+accidental is returned. e.g. results such as 'eb' and 'c#' but not 'ebb' and 'cx'
+
+```javascript
+teoria.note('c').enharmonics().toString();
+// -> 'dbb, b#'
+
+teoria.note('c').enharmonics(true).toString();
+// -> 'b#'
+```
 
 #### TeoriaNote#durationInSeconds(bpm, beatUnit)
  - Returns the duration of the note, given a tempo (in bpm) and a beat unit
