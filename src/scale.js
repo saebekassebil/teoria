@@ -64,14 +64,12 @@ TeoriaScale.prototype = {
     });
   },
 
-  interval: function(interval, direction) {
-    return new TeoriaScale(this.tonic.interval(interval, direction),
-                           this.scale);
+  interval: function(interval) {
+    return new TeoriaScale(this.tonic.interval(interval), this.scale);
   },
 
-  transpose: function(interval, direction) {
-    var scale = new TeoriaScale(this.tonic.interval(interval, direction),
-                                this.scale);
+  transpose: function(interval) {
+    var scale = this.interval(interval);
     this.scale = scale.scale;
     this.tonic = scale.tonic;
 

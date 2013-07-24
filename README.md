@@ -202,12 +202,12 @@ The chroma number is ranging from pitch class C which is 0 to 11 which is B
 *scaleName* - The name of the scale to be returned. `'minor'`,
 `'chromatic'`, `'ionian'` and others are valid scale names.
 
-#### TeoriaNote#interval(interval[, direction])
- - A sugar function for calling teoria.interval(interval, direction)
+#### TeoriaNote#interval(interval)
+ - A sugar function for calling teoria.interval(note, interval);
 
 Look at the documentation for `teoria.interval`
 
-#### TeoriaNote#transpose(interval[, direction])
+#### TeoriaNote#transpose(interval)
  - Like the `#interval` method, but changes `this` note, instead of returning a new
 
 #### TeoriaNote#chord([name])

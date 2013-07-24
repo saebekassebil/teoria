@@ -402,13 +402,12 @@ TeoriaChord.prototype = {
     }
   },
 
-  interval: function(interval, direction) {
-    return new TeoriaChord(this.root.interval(interval, direction),
-                           this.symbol);
+  interval: function(interval) {
+    return new TeoriaChord(this.root.interval(interval), this.symbol);
   },
 
-  transpose: function(interval, direction) {
-    this.root.transpose(interval, direction);
+  transpose: function(interval) {
+    this.root.transpose(interval);
     this.name = this.root.name().toUpperCase() +
                 this.root.accidental() + this.symbol;
 
