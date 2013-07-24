@@ -244,5 +244,39 @@ vows.describe('TeoriaNote class').addBatch({
       var note = teoria.note('a#');
       assert.equal(note.scaleDegree(teoria.scale('g', 'minor')), 0);
     }
+  },
+
+  'Enharmonics': {
+    'c is enharmonic with dbb and b#': function() {
+      assert.deepEqual(teoria.note('c4').enharmonics(),
+        ['dbb4', 'b#3'].map(teoria.note));
+    },
+
+    'fb is enharmonic with e and dx': function() {
+      assert.deepEqual(teoria.note('fb4').enharmonics(),
+        ['e4', 'dx4'].map(teoria.note));
+    },
+
+    'cb is enharmonic with ax and b': function() {
+      assert.deepEqual(teoria.note('cb4').enharmonics(),
+        ['b3', 'ax3'].map(teoria.note));
+    }
+  },
+
+  'Enharmonics with only one accidental': {
+    'c is enharmonic with b#': function() {
+      assert.deepEqual(teoria.note('c4').enharmonics(true),
+        ['b#3'].map(teoria.note));
+    },
+
+    'fb is enharmonic with e': function() {
+      assert.deepEqual(teoria.note('fb4').enharmonics(true),
+        ['e4'].map(teoria.note));
+    },
+
+    'cb is enharmonic with b': function() {
+      assert.deepEqual(teoria.note('cb4').enharmonics(true),
+        ['b3'].map(teoria.note));
+    }
   }
 }).export(module);
