@@ -44,14 +44,14 @@ TeoriaInterval.prototype = {
 
   direction: function(dir) {
     if (dir) {
-      var is = this.semitones() >= 0 ? 'up' : 'down';
+      var is = this.value() >= 1 ? 'up' : 'down';
       if (is !== dir)
         this.coord = mul(this.coord, -1);
 
       return this;
     }
     else
-      return this.semitones() >= 0 ? 'up' : 'down';
+      return this.value() >= 1 ? 'up' : 'down';
   },
 
   simple: function(ignore) {
