@@ -61,17 +61,17 @@ TeoriaNote.prototype = {
   },
 
   /**
-   * Sugar function for teoria.interval(note, interval[, direction])
+   * Sugar function for teoria.interval(note, interval)
    */
-  interval: function(interval, direction) {
-    return teoria.interval(this, interval, direction);
+  interval: function(interval) {
+    return teoria.interval(this, interval);
   },
 
   /**
    * Transposes the note, returned by TeoriaNote#interval
    */
-  transpose: function(interval, direction) {
-    var note = teoria.interval(this, interval, direction);
+  transpose: function(interval) {
+    var note = teoria.interval(this, interval);
     this.coord = note.coord;
 
     return this;
@@ -109,24 +109,20 @@ TeoriaNote.prototype = {
   /**
    * Returns notes that are enharmonic with this note.
    */
-  enharmonics: function() {
-    var enharmonics = [], key = this.key(),
-    upper = this.interval('m2', 'up'), lower = this.interval('m2', 'down');
-    var upperKey = upper.key() - upper.accidentalValue();
-    var lowerKey = lower.key() - lower.accidentalValue();
-    var diff = key - upperKey;
-    if (diff < 3 && diff > -3) {
-      upper.coord = add(upper.coord, mul(sharp, diff));
-      enharmonics.push(upper);
-    }
+  enharmonics: function(oneaccidental) {
+    var key = this.key(), limit = oneaccidental ? 2 : 3;
 
-    diff = key - lowerKey;
-    if (diff < 3 && diff > -3) {
-      lower.coord = add(lower.coord, mul(sharp, diff));
-      enharmonics.push(lower);
-    }
+    return ['m3', 'm2', 'm-2', 'm-3']
+      .map(this.interval.bind(this))
+      .filter(function(note) {
+      var acc = note.accidentalValue();
+      var diff = key - (note.key() - acc);
 
-    return enharmonics;
+      if (diff < limit && diff > -limit) {
+        note.coord = add(note.coord, mul(sharp, diff - acc));
+        return true;
+      }
+    });
   },
 
   solfege: function(scale, showOctaves) {
