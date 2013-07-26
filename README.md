@@ -10,20 +10,20 @@ Features
 ---------
 
  - A note object (`teoria.note`), which understands alterations, octaves,
- keynumber, frequency and etc. and Helmholtz notation
+ key number, frequency and etc. and Helmholtz notation
 
  - A chord object (`teoria.chord`), which understands everything
  from simple major/minor chords to advanced Jazz chords (Ab#5b9, F(#11) and such)
 
  - A scale object (`teoria.scale`), The scale object is a powerful presentation of
- a scale, which support quite a few handy methods. A scale can either be
+ a scale, which supports quite a few handy methods. A scale can either be
  constructed from the predefined scales, which by default contains the 7 modes
  (Ionian, Dorian, Phrygian etc.) a major and minor pentatonic and the harmonic
- chromatic scale or from a arbitary array of intervals. The scale object
- also supports solfège, which makes it perfect for tutorials on sight reading.
+ chromatic scale or from an arbitrary array of intervals. The scale object
+ also supports solfège, which makes it perfect for tutorials on sight-reading.
 
  - An interval object (`teoria.interval`), which makes it easy to find the
- interval between to notes, or find a note which is a given interval from a note.
+ interval between two notes, or find a note that is a given interval from a note.
  There's also support for counting the interval span in semitones and inverting the
  interval.
 
@@ -61,7 +61,7 @@ to include in the build like this:
 jake build scales=+blues,+flamenco,-chromatic
 ```
 
-As you can see, `scales` is just a a comma-seperated list of scale names, prefixed
+As you can see, `scales` is just a comma-separated list of scale names, prefixed
 with either a `+` or a `-` to signify whether they should be included or not.
 
 Take a look in the `src/scales` directory, if you want to know which scales there is,
@@ -95,7 +95,7 @@ g5.scale('dorian');               // Returns a TeoriaScale object
 
 // Create chords with the powerful chord parser
 a4.chord('sus2').name;    // Returns the name of the chord: 'Asus2'
-c3.chord('m').name;       // Reutns 'Cm'
+c3.chord('m').name;       // Returns 'Cm'
 teoria.chord('Ab#5b9');   // Returns a TeoriaChord object, representing a Ab#5b9 chord
 g5.chord('dim');          // Returns a TeoriaChord object, representing a Gdim chord
 
@@ -135,7 +135,7 @@ The object has two also optional parameters:
 
 ### teoria.note.fromKey(key)
 A static method that returns an instance of TeoriaNote set to the note
-at the given 88 key piano position, where A0 is key number 1.
+at the given piano key, where A0 is key number 1.
 See [Wikipedia's piano key article](http://en.wikipedia.org/wiki/Piano_key_frequencies)
 for more information.
 
@@ -176,7 +176,7 @@ Some examples of valid note names: `Eb4`, `C#,,`, `C4`, `d#''`, `Ab2`
 `x = 2, # = 1, b = -1, bb = -2`
 
 #### TeoriaNote#key([whitenotes])
- - Returns the piano key number. Fx A4 would return 49
+ - Returns the piano key number. E.g. A4 would return 49
 
 *whitenotes* - If this parameter is set to `true` only the white keys will
 be counted when finding the key number. This is mostly for internal use.
@@ -218,7 +218,7 @@ Examples: `'m7'`, `'#5b9'`, `'major'`. If the name parameter
 isn't set, a standard major chord will be returned.
 
 #### TeoriaNote#helmholtz()
- - Returns the note name formatted in helmholtz notation.
+ - Returns the note name formatted in Helmholtz notation.
 
 Example: `teoria.note('A5').helmholtz() -> "a''"`
 
@@ -231,7 +231,7 @@ Example: `teoria.note("ab'").scientific() -> "Ab4"`
  - Returns all notes that are enharmonic with the note
 
 *oneAccidental* - Boolean, if set to true, only enharmonic notes with one
-accidental is returned. e.g. results such as 'eb' and 'c#' but not 'ebb' and 'cx'
+accidental is returned. E.g. results such as 'eb' and 'c#' but not 'ebb' and 'cx'
 
 ```javascript
 teoria.note('c').enharmonics().toString();
@@ -263,8 +263,8 @@ Examples: `teoria.note('A', 8).durationName() -> 'eighth'`,
  - Returns this note's degree in a given scale (TeoriaScale). For example a
  `D` in a C major scale will return `2` as it is the second degree of that scale.
  If however the note *isn't* a part of the scale, the degree returned will be
- `0`, meaning that the degree doesn't exists. This allows this method to be both
- a scale degree index finder *and* a "isNoteInScale" method.
+ `0`, meaning that the degree doesn't exist. This allows this method to be both
+ a scale degree index finder *and* an "isNoteInScale" method.
 
 *scale* - An instance of `TeoriaScale` which is the context of the degree measuring
 
@@ -297,7 +297,7 @@ the new chord object
 *octave* - If the first argument of the function is a chord name (`typeof "string"`),
 then the second argument is an optional octave number (`typeof "number"`) of the root.
 
-*symbol* - A string containing the chord symbol (exluding the note name)
+*symbol* - A string containing the chord symbol (excluding the note name)
 
 #### TeoriaChord.name
  - Holds the full chord symbol, inclusive the root name.
@@ -312,7 +312,7 @@ then the second argument is an optional octave number (`typeof "number"`) of the
  - Works both as a setter and getter. If no parameter is supplied the
  current voicing is returned as an array of `TeoriaInterval`s
 
-*voicing* - An optional array of intervals in simple-format,
+*voicing* - An optional array of intervals in simple-format
 that represents the current voicing of the chord.
 
 Here's an example:
@@ -344,7 +344,7 @@ returned wrapped in `TeoriaInterval` and `TeoriaNote` objects.
 *additional* - Additional chord extension, for example: `'b9'` or `'#5'`
 
 #### TeoriaChord#subdominant([additional])
- - Returns the naïvely chosen subdominant which is a perfecth fourth away.
+ - Returns the naïvely chosen subdominant which is a perfect fourth away.
 
 *additional* - Like the dominant's.
 
@@ -374,7 +374,7 @@ returned wrapped in `TeoriaInterval` and `TeoriaNote` objects.
 *tonic* - A `TeoriaNote` which is to be the tonic of the scale
 
 *scale* - Can either be a name of a scale (string), or an array of
-absolute intervals that defines the scale. The default supported scales are:
+absolute intervals that defines the scale. The scales supported by default are:
 
  - major
  - minor
@@ -419,8 +419,8 @@ absolute intervals that defines the scale. The default supported scales are:
 ### TeoriaScale#get(index)
  - Returns the note at the given scale index
 
-*index* - Can be a number referring to the scale step, or the name (string) og the
-scale step. Example 'first', 'second', 'fourth', 'seventh'.
+*index* - Can be a number referring to the scale step, or the name (string) of the
+scale step. E.g. 'first', 'second', 'fourth', 'seventh'.
 
 ### TeoriaScale#solfege(index, showOctaves)
  - Returns the solfege name of the given scale step
@@ -444,7 +444,7 @@ scale step. Example 'first', 'second', 'fourth', 'seventh'.
  - A sugar method for the `teoria.interval.between` function
 
 #### teoria.interval.from(from, to)
- - Returns a note which lies a given interval away from a root note.
+ - Returns a note which is a given interval away from a root note.
 
 *from* - The `TeoriaNote` which is the root of the measuring
 
@@ -563,6 +563,6 @@ teoria.interval('P5').compound() === 'P5'
 
 #### TeoriaInterval#qualityValue() - *internal*
  - Returns the relative to default, value of the quality.
- Fx a teoria.interval('M6'), will have a relative quality value of 1, as all the
+ E.g. a teoria.interval('M6'), will have a relative quality value of 1, as all the
  intervals defaults to minor and perfect respectively.
 
