@@ -23,7 +23,7 @@ Features
  also supports solfège, which makes it perfect for tutorials on sight reading.
 
  - An interval object (`teoria.interval`), which makes it easy to find the
- interval between to notes, or find a note which is a given interval from a note.
+ interval between two notes, or find a note which is a given interval from a note.
  There's also support for counting the interval span in semitones and inverting the
  interval.
 
