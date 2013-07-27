@@ -357,10 +357,10 @@ returned wrapped in `TeoriaInterval` and `TeoriaNote` objects.
  - Returns the type of the chord: `'dyad'`, `'triad'`, `'trichord'`,
  `'tetrad'` or `'unknown'`.
 
-#### TeoriaChord#interval(interval[, direction)
+#### TeoriaChord#interval(interval)
  - Returns the same chord, a `interval` away
 
-#### TeoriaChord#transpose(interval[, direction])
+#### TeoriaChord#transpose(interval)
  - Like the `#interval` method, except it's `this` chord that gets changed instead of
  returning a new chord.
 
@@ -430,7 +430,7 @@ scale step. E.g. 'first', 'second', 'fourth', 'seventh'.
 *showOctaves* - A boolean meaning the same as `showOctaves` in `TeoriaNote#solfege`
 
 
-## teoria.interval(from, to[, direction])
+## teoria.interval(from, to)
  - A sugar function for the `#from` and `#between` methods of the same namespace and
  for creating `TeoriaInterval` objects.
 
