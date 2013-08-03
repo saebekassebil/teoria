@@ -6,7 +6,7 @@ function TeoriaChord(root, name) {
   this.intervals = [];
   this._voicing = [];
 
-  var i, length, c, strQuality, parsing = 'quality', additionals = [],
+  var i, length, c, shortQ, parsing = 'quality', additionals = [],
       notes = ['P1', 'M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
       chordLength = 2, bass, symbol;
 
@@ -36,9 +36,9 @@ function TeoriaChord(root, name) {
     switch (parsing) {
       // Parses for the "base" chord, either a triad or a seventh chord
       case 'quality':
-        strQuality = ((i + 3) <= length) ? name.substr(i, 3) : null;
-        symbol = (strQuality in kSymbols) ?
-          strQuality : (c in kSymbols) ? c : '';
+        shortQ = ((i + 3) <= length) ? name.substr(i, 3).toLowerCase() : null;
+        symbol = (shortQ in kSymbols) ?
+          shortQ : (c in kSymbols) ? c : '';
 
         setChord(kSymbols[symbol]);
 
@@ -76,7 +76,7 @@ function TeoriaChord(root, name) {
 
       // Parses for possible alterations of intervals (#5, b9, etc.)
       case 'alterations':
-        var alterations = name.substr(i).split(/(#|b|add|maj|sus|M)/),
+        var alterations = name.substr(i).split(/(#|b|add|maj|sus|M)/i),
             next, flat = false, sharp = false;
 
         if (alterations.length === 1) {
@@ -90,6 +90,7 @@ function TeoriaChord(root, name) {
 
           switch (alterations[a]) {
           case 'M':
+          case 'Maj':
           case 'maj':
             chordLength = (chordLength < 3) ? 3 : chordLength;
 
@@ -100,6 +101,7 @@ function TeoriaChord(root, name) {
             notes[3] = 'M7';
             break;
 
+          case 'Sus':
           case 'sus':
             var type = 'P4';
             if (next === '2' || next === '4') {
@@ -113,6 +115,7 @@ function TeoriaChord(root, name) {
             notes[1] = type; // Replace third with M2 or P4
             break;
 
+          case 'Add':
           case 'add':
             if (next && !isNaN(+next)) {
               if (next === '9') {

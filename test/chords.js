@@ -235,6 +235,36 @@ vows.describe('Chords').addBatch({
     }
   },
 
+  'Case doesn\'t matter': {
+    'BbDom': function() {
+      assert.deepEqual(
+        simpleArray(teoria.chord('BbDom')),
+        simpleArray(teoria.chord('Bbdom'))
+      );
+    },
+
+    'EbMaj9': function() {
+      assert.deepEqual(
+        simpleArray(teoria.chord('EbMaj9')),
+        simpleArray(teoria.chord('Ebmaj9'))
+      );
+    },
+
+    'ASus4': function() {
+      assert.deepEqual(
+        simpleArray(teoria.chord('ASus4')),
+        simpleArray(teoria.chord('Asus4'))
+      );
+    },
+
+    'EAdd9': function() {
+      assert.deepEqual(
+        simpleArray(teoria.chord('EAdd9')),
+        simpleArray(teoria.chord('Eadd9'))
+      );
+    }
+  },
+
   'Chord Methods': {
     '#quality() of Bmaj7': function() {
       assert.equal(teoria.chord('Bmaj7').quality(), 'major');
