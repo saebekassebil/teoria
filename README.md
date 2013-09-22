@@ -501,7 +501,7 @@ The number may be prefixed with a `-` to signify that its direction is down. E.g
  - Returns the type of array, either `'perfect'` (1, 4, 5, 8) or `'minor'` (2, 3, 6, 7)
 
 #### TeoriaInterval.quality([verbose])
- - The quality of the interval (`'dd'`, `'d'` `'m'`, `'p'`, `'M'`, `'A'` or `'AA'`)
+ - The quality of the interval (`'dd'`, `'d'` `'m'`, `'P'`, `'M'`, `'A'` or `'AA'`)
 
 *verbose*  is set to a truish value, then long quality names are returned:
  `'doubly diminished'`, `'diminished'`, `'minor'`, etc.
