@@ -298,8 +298,6 @@
    * declare a interval by its string name: P8, M3, m7 etc.
    */
   teoria.interval = function(from, to) {
-    var quality, intervalNumber, interval, match;
-
     // Construct a TeoriaInterval object from string representation
     if (typeof from === 'string')
       return teoria.interval.toCoord(from);
