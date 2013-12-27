@@ -56,8 +56,8 @@ TeoriaInterval.prototype = {
 
   simple: function(ignore) {
     var number = this.value();
-    number = number > 8 || number < -8 ?
-      ((number % 7) ? number % 7 : 7) : number;
+    if (number > 8 || number < -8)
+        number = number % 7 || (number > 0 ? 7 : -7);
 
     return this.quality() + (ignore ? Math.abs(number) : number);
   },
