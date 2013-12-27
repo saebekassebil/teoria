@@ -298,6 +298,10 @@ vows.describe('Intervals').addBatch({
       assert.equal(teoria.interval('M17').simple(), 'M3');
     },
 
+    'A descending major fourteenth\'s simple part is a descending major seventh': function() {
+      assert.equal(teoria.interval('M-14').simple(), 'M-7');
+    },
+
     'A 22nd has two compound octaves': function() {
       assert.equal(teoria.interval('P22').octaves(), 2);
     },
