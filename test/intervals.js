@@ -322,6 +322,10 @@ vows.describe('Intervals').addBatch({
       assert.equal(teoria.interval('P5').equal(teoria.interval('m6')), false);
     },
 
+    'A perfect fifth is not equal to a perfect octave': function() {
+      assert.equal(teoria.interval('P5').equal(teoria.interval('P8')), false);
+    },
+
     'The simple part of a major 23th is a major second': function() {
       assert.equal(teoria.interval('M23').simple(), 'M2');
     }
