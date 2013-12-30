@@ -103,7 +103,8 @@ TeoriaInterval.prototype = {
   },
 
   equal: function(interval) {
-    return sum(sub(this.coord, interval.coord)) === 0;
+      return this.coord[0] === interval.coord[0] &&
+          this.coord[1] === interval.coord[1];
   },
 
   greater: function(interval) {
