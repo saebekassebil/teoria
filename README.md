@@ -1,7 +1,7 @@
 Teoria.js
 =========
 
-Teoria.js is a lightweight and fast JavaScript framework
+Teoria.js is a lightweight and fast JavaScript library
 for music theory, both Jazz and Classical. It aims at providing an intuitive
 programming interface for music software (such as Sheet Readers,
 Sheet Writers, MIDI Players etc.).
@@ -70,8 +70,8 @@ and feel free to submit pull requests for other ones!
 Syntax
 ---------
 
-This is just a short introduction to what the framework can be used to.
-For a technical library reference, look further down this document.
+This is just a short introduction to what teoria-code looks like,
+for a technical library reference, look further down this document.
 
 ```javascript
 
