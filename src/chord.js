@@ -237,7 +237,7 @@ function TeoriaChord(root, name) {
 
     this._voicing = [bassInterval];
     for (i = 0; i < length; i++) {
-      if (intervals[i].simple() === bass)
+      if (intervals[i].simple().equal(bass))
         continue;
 
       this._voicing.push(intervals[i]);
@@ -319,16 +319,16 @@ TeoriaChord.prototype = {
     }
 
     third = (third.direction() === 'down') ? third.invert() : third;
-    third = third.simple();
+    third = third.simple().toString();
 
     if (fifth) {
       fifth = (fifth.direction === 'down') ? fifth.invert() : fifth;
-      fifth = fifth.simple();
+      fifth = fifth.simple().toString();
     }
 
     if (seventh) {
       seventh = (seventh.direction === 'down') ? seventh.invert() : seventh;
-      seventh = seventh.simple();
+      seventh = seventh.simple().toString();
     }
 
     if (third === 'M3') {

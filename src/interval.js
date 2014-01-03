@@ -59,7 +59,8 @@ TeoriaInterval.prototype = {
     if (number > 8 || number < -8)
         number = number % 7 || (number > 0 ? 7 : -7);
 
-    return this.quality() + (ignore ? Math.abs(number) : number);
+    var str = this.quality() + (ignore ? Math.abs(number) : number);
+    return teoria.interval(str);
   },
 
   compound: function(ignore) {

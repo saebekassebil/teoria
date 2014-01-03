@@ -140,7 +140,7 @@ TeoriaNote.prototype = {
       stroke = (count >= 0) ? '\'' : ',';
     }
 
-    solfege = kIntervalSolfege[interval.simple(true)];
+    solfege = kIntervalSolfege[interval.simple(true).toString()];
     return (showOctaves) ? pad(solfege, stroke, Math.abs(count)) : solfege;
   },
 
@@ -179,7 +179,7 @@ TeoriaNote.prototype = {
     val = (val.direction() === 'down' || (num > 7 && (num - 1) % 7 === 0)) ?
       val.invert() : val;
 
-    return scale.scale.indexOf(val.simple(true)) + 1;
+    return scale.scale.indexOf(val.simple(true).toString()) + 1;
   },
 
   /**
