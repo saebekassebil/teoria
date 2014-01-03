@@ -516,32 +516,24 @@ which is either `'up'` or `'down'`
  - Returns the `number` of semitones the interval span.
 
 #### TeoriaInterval#simple([ignoreDirection])
- - Returns the simple part of the interval (as opposed to #compound). Example:
+ - Returns the simple part of the interval as a TeoriaInterval. Example:
 
 *ignoreDirection* - An optional boolean that, if set to `true`, returns the
 "direction-agnostic" interval. That is the interval with a positive number.
 
 ```javascript
-teoria.interval('M17').simple() === 'M3'
-teoria.interval('m23').simple() === 'm2'
-teoria.interval('P5').simple() === 'P5'
-teoria.interval('P-4').simple() === 'P-4'
+teoria.interval('M17').simple();    // #-> 'M3'
+teoria.interval('m23').simple();    // #-> 'm2'
+teoria.interval('P5').simple();     // #-> 'P5'
+teoria.interval('P-4').simple();    // #-> 'P-4'
 
 // With ignoreDirection = true
-teoria.interval('M3').simple(true) === 'M3'
-teoria.interval('m-10').simple(true) === 'm3'
+teoria.interval('M3').simple(true);     // #->'M3'
+teoria.interval('m-10').simple(true);   // #-> 'm3'
 ```
 
-#### TeoriaInterval#compound([ignoreDirection])
- - Returns the whole interval, compound or not.
-
-*ignoreDirection* - See description for `simple()` above.
-
-```javascript
-teoria.interval('M17').compound() === 'M17'
-teoria.interval('m23').compound() === 'm23'
-teoria.interval('P5').compound() === 'P5'
-```
+*NB:* Note that above returned results are pseudo-results, as they will be
+returned wrapped in `TeoriaInterval` objects.
 
 #### TeoriaInterval#octaves()
  - Returns the number of compound intervals
