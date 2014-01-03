@@ -63,12 +63,6 @@ TeoriaInterval.prototype = {
     return teoria.interval(str);
   },
 
-  compound: function(ignore) {
-    var number = ignore ? this.number() : this.value();
-
-    return this.quality() + number;
-  },
-
   isCompound: function() {
     return this.number() > 8;
   },
@@ -122,8 +116,11 @@ TeoriaInterval.prototype = {
     return !this.equal(interval) && !this.greater(interval);
   },
 
-  toString: function() {
-    return this.compound();
+  toString: function(ignore) {
+    // If given true, return the positive value
+    var number = ignore ? this.number() : this.value();
+
+    return this.quality() + number;
   }
 };
 
