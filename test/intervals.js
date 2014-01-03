@@ -302,6 +302,18 @@ vows.describe('Intervals').addBatch({
       assert.equal(teoria.interval('M-14').simple(), 'M-7');
     },
 
+    'A perfect nineteenth\'s simple part is equal to a perfect fifth': function() {
+      assert.equal(teoria.interval('P19').simple().equal(teoria.interval('P5')), true);
+    },
+
+    'A perfect nineteenth\'s simple part is not equal to a major sixth': function() {
+      assert.equal(teoria.interval('P19').simple().equal(teoria.interval('M6')), false);
+    },
+
+    'A descending augmented ninth\'s simple part is equal to a descending augmented second': function() {
+      assert.equal(teoria.interval('A-9').simple().equal(teoria.interval('A-2')), true);
+    },
+
     'A 22nd has two compound octaves': function() {
       assert.equal(teoria.interval('P22').octaves(), 2);
     },
