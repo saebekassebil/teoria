@@ -1,5 +1,5 @@
 /* jshint node:true */
-/* global jake, desc, task, complete */
+/* global desc, task, complete */
 'use strict';
 
 var path        = require('path'),
@@ -8,7 +8,6 @@ var path        = require('path'),
     colors      = require('colors'),
     ugly        = require('uglify-js'),
     jshint      = require('jshint'),
-    exec        = require('child_process').exec,
     spawn       = require('child_process').spawn,
     existsSync  = 'existsSync' in fs ? fs.existsSync : path.existsSync;
 
