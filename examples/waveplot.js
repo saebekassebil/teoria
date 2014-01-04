@@ -65,7 +65,7 @@ function plotChord(chord, options) {
   var panel = options.panel;
 
   // plot the notes
-  chord.notes.forEach(function(n, i) {
+  chord.notes().forEach(function(n, i) {
     // Push the wave lambda to the sum stack
     fqs.push(waveLambda(n.fq()));
 
@@ -102,20 +102,16 @@ function plotChord(chord, options) {
   // plot the chord wave
   var chord = plotFunction(function(x) {
     return fqs.reduce(function(a, b) { return a + b(x); }, 0);
-  }, merge(options, {color: chordColor, opacity: 1, width: 2 }));
+  }, merge(options, { color: chordColor, opacity: 1, width: 2 }));
   plot.appendChild(chord);
 }
 
 function purge(el) {
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
-  }
+  while (el.firstChild) el.removeChild(el.firstChild);
 }
 
 function inputChanged() {
-  if (!this.value) {
-    return;
-  }
+  if (!this.value) return;
 
   try {
     var chord = teoria.chord(this.value);
@@ -164,9 +160,7 @@ plot.addEventListener('mouseup', function(e) {
 }, false);
 
 plot.addEventListener('mousemove', function(e) {
-  if (!mouseDown) {
-    return;
-  }
+  if (!mouseDown) return;
 
   var x = origo.x + e.pageX - mouseDown.x;
   var y = origo.y + e.pageY - mouseDown.y;
