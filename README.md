@@ -494,6 +494,10 @@ The number may be prefixed with a `-` to signify that its direction is down. E.g
 #### TeoriaInterval.value()
  - The value of the interval - That is a ninth = 9, but a downwards ninth is = -9
 
+#### TeoriaInterval.toString()
+ - Returns the *simpleInterval* representation of the interval. E.g. `'P5'`,
+ `'M3'`, `'A9'`, etc.
+
 #### TeoriaInterval.base()
  - Returns the name of the simple interval (not compound)
 
