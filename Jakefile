@@ -9,6 +9,7 @@ var path        = require('path'),
     ugly        = require('uglify-js'),
     jshint      = require('jshint'),
     exec        = require('child_process').exec,
+    spawn       = require('child_process').spawn,
     existsSync  = 'existsSync' in fs ? fs.existsSync : path.existsSync;
 
 // Default settings
@@ -177,16 +178,8 @@ task('minify', function() { doBuild('minify'); }, { async: true });
 // Unit test the project
 desc('Unit tests against current build');
 task('test', function() {
-  var build = jake.Task.build;
-  build.addListener('complete', function() {
-    exec('vows --dot-matrix test/*', function(err, stdout) {
-      console.log(stdout);
-      complete();
-    });
-  });
-
-  settings.silent = true;
-  build.invoke();
+  var vows = spawn('vows', ['--dot-matrix', 'test/*'], { customFds: [0,1,2] });
+  vows.on('exit', complete);
 }, { async: true });
 
 // Lints the files according to .jshintrc
