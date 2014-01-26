@@ -68,8 +68,15 @@ TeoriaInterval.prototype = {
   },
 
   octaves: function() {
-    var without = sub(this.coord, mul(sharp, this.qualityValue()));
-    var octaves = without[0] - intervals[this.base()][0];
+    var without, octaves;
+
+    if (this.direction() === 'up') {
+      without = sub(this.coord, mul(sharp, this.qualityValue()));
+      octaves = without[0] - intervals[this.base()][0];
+    } else {
+      without = sub(this.coord, mul(sharp, -this.qualityValue()));
+      octaves = -(without[0] + intervals[this.base()][0]);
+    }
 
     return octaves;
   },

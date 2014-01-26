@@ -322,6 +322,22 @@ vows.describe('Intervals').addBatch({
       assert.equal(teoria.interval('P22').octaves(), 2);
     },
 
+    'A descending fourth has no compound octaves': function() {
+      assert.equal(teoria.interval('P-4').octaves(), 0);
+    },
+
+    'A descending eleventh has one compound octave': function() {
+      assert.equal(teoria.interval('P-11').octaves(), 1);
+    },
+
+    'A descending augmented third has no compound octaves': function() {
+      assert.equal(teoria.interval('A-3').octaves(), 0);
+    },
+
+    'A descending major 16th has two compound octaves': function() {
+      assert.equal(teoria.interval('M-16').octaves(), 2);
+    },
+
     'A major seventh is greater than a minor seventh': function() {
       assert.equal(teoria.interval('M7').greater(teoria.interval('m7')), true);
     },
