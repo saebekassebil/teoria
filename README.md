@@ -545,6 +545,10 @@ returned wrapped in `TeoriaInterval` objects.
 #### TeoriaInterval#isCompound()
  - Returns a boolean value, showing if the interval is a compound interval
 
+#### TeoriaInterval#add(interval)
+ - Adds the `interval` to this interval, and returns a `TeoriaInterval`
+ representing the result of the addition
+
 #### TeoriaInterval#equal(interval)
  - Returns true if the supplied `interval` is equal to this interval
 
