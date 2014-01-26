@@ -116,6 +116,10 @@ TeoriaInterval.prototype = {
     return !this.equal(interval) && !this.greater(interval);
   },
 
+  add: function(interval) {
+    return new TeoriaInterval(add(this.coord, interval.coord));
+  },
+
   toString: function(ignore) {
     // If given true, return the positive value
     var number = ignore ? this.number() : this.value();

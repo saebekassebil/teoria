@@ -2,6 +2,10 @@ var vows = require('vows'),
     assert = require('assert'),
     teoria = require('../dist/teoria.js');
 
+function addSimple(interval1, interval2) {
+  return teoria.interval(interval1).add(teoria.interval(interval2));
+}
+
 vows.describe('Intervals').addBatch({
   'Relative Intervals': {
     topic: function() {
@@ -414,6 +418,32 @@ vows.describe('Intervals').addBatch({
 
     'A-1 is up (all unison values are up)': function() {
       assert.equal(teoria.interval('A-1').direction(), 'up');
+    }
+  },
+
+  'Interval arithmetic': {
+    'm3 + M2 = P4': function() {
+      assert.equal(addSimple('m3', 'M2').toString(), 'P4');
+    },
+
+    'P4 + P5 = P8': function() {
+      assert.equal(addSimple('P4', 'P5').toString(), 'P8');
+    },
+
+    'M6 + A4 = A9': function() {
+      assert.equal(addSimple('M6', 'A4').toString(), 'A9');
+    },
+
+    'M-2 + m-2 = m-3': function() {
+      assert.equal(addSimple('M-2', 'm-2').toString(), 'm-3');
+    },
+
+    'A11 + M9 = A19': function() {
+      assert.equal(addSimple('A11', 'M9').toString(), 'A19');
+    },
+
+    'm-10 + P4 = m-7': function() {
+      assert.equal(addSimple('m-10', 'P4').toString(), 'm-7');
     }
   }
 }).export(module);
