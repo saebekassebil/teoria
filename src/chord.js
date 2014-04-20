@@ -76,7 +76,7 @@ function TeoriaChord(root, name) {
 
         // Parses for possible alterations of intervals (#5, b9, etc.)
         case 'alterations':
-          var alterations = name.substr(i).split(/(#|b|add|maj|sus|M|no3|no5|5)/i),
+          var alterations = name.substr(i).split(/(#|b|add|maj|sus|M|no3|no5)/i),
               next, nextButOne,nextButTwo, flat = false, sharp = false;
 
           if (alterations.length === 1) {
@@ -105,7 +105,6 @@ function TeoriaChord(root, name) {
 	    case 'no5':
 	      notes[2]=null;
 	      break;
-	    case '5':
 	    case 'no3':
 	      notes[1]=null;
 	      break;
