@@ -27,7 +27,9 @@ function TeoriaChord(root, name) {
     } else {
       bass = null;
     }
-
+    
+    var hasThird = true, hasFifth = true;
+    
     for (i = 0, length = name.length; i < length; i++) {
       if (!(c = name[i])) {
         break;
@@ -103,10 +105,10 @@ function TeoriaChord(root, name) {
               notes[3] = 'M7';
               break;
 	    case 'no5':
-	      notes[2]=null;
+	      hasFifth = false;
 	      break;
 	    case 'no3':
-	      notes[1]=null;
+	      hasThird = false;
 	      break;
 	    
             case 'Sus':
@@ -231,7 +233,11 @@ function TeoriaChord(root, name) {
       additionals.push('M9');
       bass = null;
     }
-
+    if (!hasFifth)
+      notes[2]=null;
+    if (!hasThird)
+      notes[1]=null;
+    
     this.intervals = notes
       .slice(0, chordLength + 1)
       .concat(additionals)

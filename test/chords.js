@@ -28,6 +28,11 @@ vows.describe('Chords').addBatch({
       var notes = simpleArray(teoria.chord('A+'));
       assert.deepEqual(notes, ['a', 'c#', 'e#']);
     },
+    
+    'Ano5': function() {
+      var notes = simpleArray(teoria.chord('Ano5'));
+      assert.deepEqual(notes, ['a', 'c#']);
+    },
 
     'Bb+': function() {
       var notes = simpleArray(teoria.chord('Bb+'));
