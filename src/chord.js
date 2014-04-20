@@ -89,8 +89,8 @@ function TeoriaChord(root, name) {
 
           for (var a = 1, aLength = alterations.length; a < aLength; a++) {
             next = alterations[a + 1];
-	    nextButOne = alterations[a + 2];
-	    nextButTwo = alterations[a + 3];
+            nextButOne = alterations[a + 2];
+            nextButTwo = alterations[a + 3];
 
             switch (alterations[a]) {
             case 'M':
@@ -104,13 +104,13 @@ function TeoriaChord(root, name) {
 
               notes[3] = 'M7';
               break;
-	    case 'no5':
-	      hasFifth = false;
-	      break;
-	    case 'no3':
-	      hasThird = false;
-	      break;
-	    
+            case 'no5':
+              hasFifth = false;
+              break;
+            case 'no3':
+              hasThird = false;
+              break;
+            
             case 'Sus':
             case 'sus':
               var type = 'P4';
@@ -121,13 +121,13 @@ function TeoriaChord(root, name) {
                   type = 'M2';
                 }
               } else if (next === '') {
-		if ((nextButOne === '#') && (nextButTwo === '4')) {
-		  a+=3;
-		  type = 'A4';
-		} else if ((nextButOne === 'b') && (nextButTwo === '2')) {
-		  a+=3;
-		  type = 'm2';
-		}
+                if ((nextButOne === '#') && (nextButTwo === '4')) {
+                  a+=3;
+                  type = 'A4';
+                } else if ((nextButOne === 'b') && (nextButTwo === '2')) {
+                  a+=3;
+                  type = 'm2';
+                }
               }
               
 
