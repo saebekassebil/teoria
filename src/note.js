@@ -32,7 +32,30 @@ TeoriaNote.prototype = {
     else
       return this.coord[0] * 12 + this.coord[1] * 7 + 49;
   },
-
+  
+  /**
+   * Returns the midi number of this note
+   */
+  midi: function() {
+      var midi_letter_pitches = {
+          a: 21,
+          b: 23,
+          c: 12,
+          d: 14,
+          e: 16,
+          f: 17,
+          g: 19
+      };
+      var midiPitchFromNote = function(n) {
+          var matches = /([a-g])(#+|b+)?([0-9]+)$/i.exec(n);
+          var note = matches[1].toLowerCase(),
+              accidental = matches[2] || '',
+              octave = parseInt(matches[3], 10);
+          return (12 * octave) + midi_letter_pitches[note] + (accidental.substr(0, 1) == '#' ? 1 : -1) * accidental.length;
+      }
+      return midiPitchFromNote(this.toString());
+  },
+  
   /**
    * Calculates and returns the frequency of the note.
    * Optional concert pitch (def. 440)
