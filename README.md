@@ -184,6 +184,9 @@ be counted when finding the key number. This is mostly for internal use.
 #### TeoriaNote#fq([concertPitch])
  - Calculates and returns the frequency of the note.
 
+#### TeoriaNote#midi()
+ - Returns the midi number of the note.
+
 *concertPitch* - If supplied this number will be used instead of the normal
 concert pitch which is 440hz. This is useful for some classical music.
 
