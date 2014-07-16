@@ -13,10 +13,25 @@ vows.describe('Chords').addBatch({
       var notes = simpleArray(teoria.chord('Emaj7'));
       assert.deepEqual(notes, ['e', 'g#', 'b', 'd#']);
     },
+    
+    'Esus#4': function() {
+      var notes = simpleArray(teoria.chord('Esus#4'));
+      assert.deepEqual(notes, ['e', 'a#', 'b']);
+    },
+    
+    'Esusb2': function() {
+      var notes = simpleArray(teoria.chord('Esusb2'));
+      assert.deepEqual(notes, ['e', 'f', 'b']);
+    },
 
     'A+': function() {
       var notes = simpleArray(teoria.chord('A+'));
       assert.deepEqual(notes, ['a', 'c#', 'e#']);
+    },
+    
+    'Ano5': function() {
+      var notes = simpleArray(teoria.chord('Ano5'));
+      assert.deepEqual(notes, ['a', 'c#']);
     },
 
     'Bb+': function() {
@@ -212,6 +227,11 @@ vows.describe('Chords').addBatch({
     'A5': function() {
       var notes = simpleArray(teoria.chord('A5'));
       assert.deepEqual(notes, ['a', 'e']);
+    },
+    
+    'Ano39': function() {
+      var notes = simpleArray(teoria.chord('Ano39'));
+      assert.deepEqual(notes, ['a', 'e', 'g', 'b']);
     },
 
     'C13#9b5': function() {
