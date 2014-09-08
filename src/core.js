@@ -305,6 +305,9 @@
     if (typeof to === 'string' && from instanceof TeoriaNote)
       return teoria.interval.from(from, teoria.interval.toCoord(to));
 
+    if (to instanceof TeoriaInterval && from instanceof TeoriaNote)
+      return teoria.interval.from(from, to);
+
     if (to instanceof TeoriaNote && from instanceof TeoriaNote)
       return teoria.interval.between(from, to);
 
