@@ -473,7 +473,7 @@ vows.describe('Intervals').addBatch({
     },
 
     '#simple() works': function(interval) {
-      assert.equal(interval.simple().coord, [-11, 20]);
+      assert.deepEqual(interval.simple().coord, [-11, 20]);
     }
   }
 }).export(module);
