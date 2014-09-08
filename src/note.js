@@ -174,12 +174,20 @@ TeoriaNote.prototype = {
    * as 0 evaluates to false in boolean context
    **/
   scaleDegree: function(scale) {
-    var val = scale.tonic.interval(this);
-    var num = val.number();
-    val = (val.direction() === 'down' || (num > 7 && (num - 1) % 7 === 0)) ?
-      val.invert() : val;
+    var inter = scale.tonic.interval(this);
 
-    return scale.scale.indexOf(val.simple(true).toString()) + 1;
+    // If the direction is down, or we're dealing with an octave - invert it
+    if (inter.direction() === 'down' ||
+       (inter.coord[1] === 0 && inter.coord[0] !== 0)) {
+      inter = inter.invert();
+    }
+
+    inter = inter.simple(true).coord;
+
+    return scale.scale.reduce(function(index, current, i) {
+      var coord = teoria.interval(current).coord;
+      return coord[0] === inter[0] && coord[1] === inter[1] ? i + 1 : index;
+    }, 0);
   },
 
   /**
