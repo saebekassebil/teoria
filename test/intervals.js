@@ -461,5 +461,19 @@ vows.describe('Intervals').addBatch({
     'm-10 + P4 = m-7': function() {
       assert.equal(addSimple('m-10', 'P4').toString(), 'm-7');
     }
+  },
+
+  'Theoretical intervals - Triple augmented': {
+    topic: function() {
+      return teoria.note('F').interval(teoria.note('Bx'));
+    },
+
+    'F to Bx has quality value = 3 (triple augmented)': function(interval) {
+      assert.equal(interval.qualityValue(), 3);
+    },
+
+    '#simple() works': function(interval) {
+      assert.equal(interval.simple().coord, [-11, 20]);
+    }
   }
 }).export(module);
