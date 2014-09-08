@@ -55,12 +55,15 @@ TeoriaInterval.prototype = {
   },
 
   simple: function(ignore) {
-    var number = this.value();
-    if (number > 8 || number < -8)
-        number = number % 7 || (number > 0 ? 7 : -7);
+    // Get the (upwards) base interval (with quality)
+    var simple = intervals[this.base()];
+    simple = add(simple, mul(sharp, this.qualityValue()));
 
-    var str = this.quality() + (ignore ? Math.abs(number) : number);
-    return teoria.interval(str);
+    // Turn it around if necessary
+    if (!ignore)
+      simple = this.direction() === 'down' ? mul(simple, -1) : simple;
+
+    return new TeoriaInterval(simple);
   },
 
   isCompound: function() {
