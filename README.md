@@ -440,6 +440,10 @@ scale step. E.g. 'first', 'second', 'fourth', 'seventh'.
 #### teoria.interval(`TeoriaNote`: from, `string`: to)
  - A sugar method for the `teoria.interval.from` function
 
+#### teoria.interval(`TeoriaNote`: from, `TeoriaInterval`: to)
+ - Like above, but with a `TeoriaInterval` instead of a string representation of
+ the interval
+
 #### teoria.interval(`TeoriaNote`: from, `TeoriaNote`: to)
  - A sugar method for the `teoria.interval.between` function
 
