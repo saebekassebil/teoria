@@ -355,6 +355,10 @@ TeoriaChord.prototype = {
     }
   },
 
+  inverted : function(){
+      return this.root != this.bass;
+  },
+
   chordType: function() { // In need of better name
     var length = this.intervals.length, interval, has, invert, i, name;
 
