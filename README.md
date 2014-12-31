@@ -305,6 +305,13 @@ then the second argument is an optional octave number (`typeof "number"`) of the
 #### TeoriaChord.root
  - Holds the `TeoriaNote` that is the root of the chord.
 
+#### TeoriaChord.bass
+  - Holds the `TeoriaNote` that is the bass of the chord.
+  
+  The bass will be the same as the root except for inverted chords (e.g : with ``Am/B`` A is the root and B is the bass)
+
+  NB : You can check if the chord is inverted with the test ``chord.root === chord.bass``
+
 #### TeoriaChord#notes()
  - Returns an array of `TeoriaNote`s that the chord consists of.
 

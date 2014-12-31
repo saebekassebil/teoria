@@ -242,7 +242,12 @@ function TeoriaChord(root, name) {
 
       this._voicing.push(intervals[i]);
     }
+    this.bass = teoria.interval.from(this.root, bassInterval);
+  }else{
+    // allows testing chord.root == chord.bass
+    this.bass = this.root;
   }
+
 }
 
 TeoriaChord.prototype = {
@@ -413,6 +418,10 @@ TeoriaChord.prototype = {
     this.root.transpose(interval);
     this.name = this.root.name().toUpperCase() +
                 this.root.accidental() + this.symbol;
+
+    if(this.bass !== this.root){
+      this.bass.transpose(interval);
+    }
 
     return this;
   },
