@@ -273,6 +273,8 @@ Examples: `teoria.note('A', 8).durationName() -> 'eighth'`,
 
 *dontShow* - If set to `true` the octave will not be included in the returned string.
 
+### teoria.note.toMIDI()
+ - Returns a number ranging from 0-127 representing a MIDI note value
 
 ## TeoriaChord(root, chord)
  - A chord class with a lot of functionality to alter and analyze the chord.
