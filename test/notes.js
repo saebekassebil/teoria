@@ -170,19 +170,19 @@ vows.describe('TeoriaNote class').addBatch({
 
   'Return MIDI note number': {
     'MIDI#36 is C2': function() {
-      assert.equal(teoria.note('C2').toMIDI(), 36);
+      assert.equal(teoria.note('C2').midi(), 36);
     },
 
     'MIDI#77 is F5': function() {
-      assert.equal(teoria.note('F5').toMIDI(), 77);
+      assert.equal(teoria.note('F5').midi(), 77);
     },
 
     'MIDI#61 is Db4': function() {
-      assert.equal(teoria.note('Db4').toMIDI(), 61);
+      assert.equal(teoria.note('Db4').midi(), 61);
     },
 
     'MIDI#80 is G#5': function() {
-      assert.equal(teoria.note('G#5').toMIDI(), 80);
+      assert.equal(teoria.note('G#5').midi(), 80);
     }
   },
 

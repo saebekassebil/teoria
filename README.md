@@ -181,6 +181,9 @@ Some examples of valid note names: `Eb4`, `C#,,`, `C4`, `d#''`, `Ab2`
 *whitenotes* - If this parameter is set to `true` only the white keys will
 be counted when finding the key number. This is mostly for internal use.
 
+### TeoriaNote#midi()
+ - Returns a number ranging from 0-127 representing a MIDI note value
+
 #### TeoriaNote#fq([concertPitch])
  - Calculates and returns the frequency of the note.
 
@@ -272,9 +275,6 @@ Examples: `teoria.note('A', 8).durationName() -> 'eighth'`,
  - Usability function for returning the note as a string
 
 *dontShow* - If set to `true` the octave will not be included in the returned string.
-
-### teoria.note.toMIDI()
- - Returns a number ranging from 0-127 representing a MIDI note value
 
 ## TeoriaChord(root, chord)
  - A chord class with a lot of functionality to alter and analyze the chord.
