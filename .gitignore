@@ -1,8 +1,5 @@
 # Ignore node modules
 node_modules/
 
-# Ignore build files
-dist/
-
 # Ignore my sandbox file
 index.html
