@@ -34,6 +34,13 @@ TeoriaNote.prototype = {
   },
 
   /**
+  * Returns a number ranging from 0-127 representing a MIDI note value
+  */
+  midi: function() {
+    return this.key() + 20;
+  },
+
+  /**
    * Calculates and returns the frequency of the note.
    * Optional concert pitch (def. 440)
    */
@@ -195,13 +202,6 @@ TeoriaNote.prototype = {
    */
   toString: function(dont) {
     return this.name() + this.accidental() + (dont ? '' : this.octave());
-  },
-
-  /**
-  * Returns a number ranging from 0-127 representing a MIDI note value
-  */
-  toMIDI: function() {
-    return this.key() + 20;
   }
 };
 
