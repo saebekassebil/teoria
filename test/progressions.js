@@ -27,5 +27,25 @@ vows.describe('Progressions').addBatch({
 
             assert.deepEqual(twoFiveOne.simple(), [['eb3','gb3','bb3'],['ab3','c4','eb3'],['db3','f3','ab3']]);
         }
+    },
+    'Creates chords with correct root': {
+        'First chord': function() {
+            var scale = teoria.scale('c4', 'major'),
+                twoFiveOne = teoria.progression(scale, [2,5,1]);
+
+            assert.equal(twoFiveOne.getChord(0).root.toString(), 'd4');
+        },
+        'Second chord': function() {
+            var scale = teoria.scale('c4', 'major'),
+                twoFiveOne = teoria.progression(scale, [2,5,1]);
+
+            assert.equal(twoFiveOne.getChord(1).root.toString(), 'g4');
+        },
+        'Third chord': function() {
+            var scale = teoria.scale('c4', 'major'),
+                twoFiveOne = teoria.progression(scale, [2,5,1]);
+
+            assert.equal(twoFiveOne.getChord(2).root.toString(), 'c4');
+        }
     }
 }).export(module);

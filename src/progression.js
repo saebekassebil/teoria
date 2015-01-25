@@ -10,18 +10,19 @@ function TeoriaProgression(scale, progression) {
   this.scale = scale;
   this.progression = progression;
   this.chords = progression.map(function(chordIndex) {
-    var chord = teoria.chord(scale.tonic),
+    var chord = teoria.chord(scale.notes()[chordIndex - 1]),
         chordLength = 3,
         voicing = [],
-        voiceIndex;
+        noteIndex;
 
     for(var i = 0; i < chordLength; i++) {
-      voiceIndex = (i * 2) + (chordIndex - 1);
-      voiceIndex = voiceIndex % scale.scale.length;
-      voicing.push(scale.scale[voiceIndex]);
+      noteIndex = (chordIndex - 1) + i * 2;
+      noteIndex = noteIndex % scale.notes().length;
+      voicing.push(teoria.interval(chord.root, scale.notes()[noteIndex]).toString());
     }
 
-    return chord.voicing(voicing);
+    chord.voicing(voicing);
+    return chord;
   });
 }
 
@@ -32,5 +33,8 @@ TeoriaProgression.prototype = {
         return note.toString();
       });
     });
+  },
+  getChord: function(i) {
+    return this.chords[i];
   }
 };
