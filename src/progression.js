@@ -8,6 +8,7 @@ function TeoriaProgression(scale, progression) {
   }
 
   this.scale = scale;
+  this.progression = progression;
   this.chords = progression.map(function(chordIndex) {
     var chord = teoria.chord(scale.tonic),
         chordLength = 3,
