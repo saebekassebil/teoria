@@ -10,20 +10,41 @@ function TeoriaProgression(scale, progression) {
   this.scale = scale;
   this.progression = progression;
   this.chords = progression.map(function(chordIndex) {
-    var chord = teoria.chord(scale.notes()[chordIndex - 1]),
+    var root = scale.notes()[chordIndex - 1],
         chordLength = 3,
         voicing = [],
-        noteIndex;
+        noteIndex,
+        interval;
 
-    for(var i = 0; i < chordLength; i++) {
-      noteIndex = (chordIndex - 1) + i * 2;
+    for(var i = 1; i < chordLength; i++) {
+      noteIndex = (chordIndex - 1) + (i * 2);
       noteIndex = noteIndex % scale.notes().length;
-      voicing.push(teoria.interval(chord.root, scale.notes()[noteIndex]).toString());
+      interval = teoria.interval(root, scale.notes()[noteIndex]);
+      interval = interval.direction() === 'down' ? interval.invert() : interval;
+      voicing.push(interval.toString());
     }
 
-    chord.voicing(voicing);
-    return chord;
+    return teoria.chord(root, findMatchingSymbol(voicing));
   });
+
+  function findMatchingSymbol(intervals) {
+    for(var kSymbol in kSymbols) {
+      var symbolIntervals = kSymbols[kSymbol];
+      if(arraysIdentical(intervals, symbolIntervals)) {
+        return kSymbol;
+      }
+    }
+    return '';
+  }
+
+  function arraysIdentical(a, b) {
+    var i = a.length;
+    if (i !== b.length) return false;
+    while (i--) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  }
 }
 
 TeoriaProgression.prototype = {
