@@ -122,8 +122,10 @@ function inputChanged() {
     purge(g);
     purge(panel);
     plotChord(chord, options);
+    input.className = '';
   } catch (e) {
     console.warn(e.toString());
+    input.className = 'error';
   }
 }
 

@@ -32,6 +32,10 @@ h1 {
   margin-bottom: 10px;
 }
 
+#chordinput.error {
+  border-left: 5px solid #df1b1b
+}
+
 #description {
   font-size: 9pt;
   font-weight: 300;
