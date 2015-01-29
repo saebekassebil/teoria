@@ -181,7 +181,7 @@ Some examples of valid note names: `Eb4`, `C#,,`, `C4`, `d#''`, `Ab2`
 *whitenotes* - If this parameter is set to `true` only the white keys will
 be counted when finding the key number. This is mostly for internal use.
 
-### TeoriaNote#midi()
+#### TeoriaNote#midi()
  - Returns a number ranging from 0-127 representing a MIDI note value
 
 #### TeoriaNote#fq([concertPitch])
@@ -395,19 +395,19 @@ absolute intervals that defines the scale. The scales supported by default are:
 ### teoria.scale(tonic, scale)
  - Sugar function for constructing a new `TeoriaScale` object
 
-### TeoriaScale.notes()
+#### TeoriaScale.notes()
  - Returns an array of `TeoriaNote`s which is the scale's notes
 
-### TeoriaScale.name
+#### TeoriaScale.name
  - The name of the scale (if available). Type `string` or `undefined`
 
-### TeoriaScale.tonic
+#### TeoriaScale.tonic
  - The `TeoriaNote` which is the scale's tonic
 
-### TeoriaScale#simple()
+#### TeoriaScale#simple()
  - Returns an `Array` of only the notes' names, not the full `TeoriaNote` objects.
 
-### TeoriaScale#type()
+#### TeoriaScale#type()
  - Returns the type of the scale, depending on the number of notes.
  A scale of length x gives y:
   - 2 gives 'ditonic'
@@ -418,13 +418,13 @@ absolute intervals that defines the scale. The scales supported by default are:
   - 7 gives 'heptatonic',
   - 8 gives 'octatonic'
 
-### TeoriaScale#get(index)
+#### TeoriaScale#get(index)
  - Returns the note at the given scale index
 
 *index* - Can be a number referring to the scale step, or the name (string) of the
 scale step. E.g. 'first', 'second', 'fourth', 'seventh'.
 
-### TeoriaScale#solfege(index, showOctaves)
+#### TeoriaScale#solfege(index, showOctaves)
  - Returns the solfege name of the given scale step
 
 *index* Same as `TeoriaScale#get`
