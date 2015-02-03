@@ -33,6 +33,7 @@
     "vows": ">= 0.6.0"
   },
   "dependencies": {
+    "daccord": "^1.0.1",
     "helmholtz": "^2.0.1",
     "scientific-notation": "^1.0.0"
   }
