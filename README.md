@@ -437,26 +437,33 @@ scale step. E.g. 'first', 'second', 'fourth', 'seventh'.
  for creating `TeoriaInterval` objects.
 
 #### teoria.interval(`string`: from)
- - A sugar method for the `teoria.interval.toCoord` function
+ - A sugar method for the `TeoriaInterval.toCoord` function
 
 #### teoria.interval(`TeoriaNote`: from, `string`: to)
- - A sugar method for the `teoria.interval.from` function
+ - A sugar method for the `TeoriaInterval.from` function
 
 #### teoria.interval(`TeoriaNote`: from, `TeoriaInterval`: to)
  - Like above, but with a `TeoriaInterval` instead of a string representation of
  the interval
 
 #### teoria.interval(`TeoriaNote`: from, `TeoriaNote`: to)
- - A sugar method for the `teoria.interval.between` function
+ - A sugar method for the `TeoriaInterval.between` function
 
-#### teoria.interval.from(from, to)
+
+## TeoriaInterval(coord)
+ - A representation of a music interval
+
+### TeoriaInterval.toCoord(simpleInterval)
+ - Returns a `TeoriaInterval` representing the interval expressed in string form.
+
+### TeoriaInterval.from(from, to)
  - Returns a note which is a given interval away from a root note.
 
 *from* - The `TeoriaNote` which is the root of the measuring
 
 *to* - A `TeoriaInterval`
 
-#### teoria.interval.between(from, to)
+### TeoriaInterval.between(from, to)
  - Returns an interval object which represents the interval between two notes.
 
 *from* and *to* are two `TeoriaNote`s which are the notes that the
@@ -464,13 +471,10 @@ interval is measured from. For example if 'a' and 'c' are given, the resulting
 interval object would represent a minor third.
 
 ```javascript
-teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval('m3')
+TeoriaInterval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval('m3')
 ```
 
-#### teoria.interval.toCoord(simpleInterval)
- - Returns a `TeoriaInterval` representing the interval expressed in string form.
-
-#### teoria.interval.invert(simpleInterval)
+### TeoriaInterval.invert(simpleInterval)
  - Returns the inversion of the interval provided
 
 *simpleInterval* - An interval represented in simple string form. Examples:
@@ -487,9 +491,6 @@ teoria.interval.between(teoria.note("a"), teoria.note("c'")) -> teoria.interval(
 The number may be prefixed with a `-` to signify that its direction is down. E.g.:
 
 `m-3` means a descending minor third, and `P-5` means a descending perfect fifth.
-
-## TeoriaInterval(coord)
- - A representation of a music interval
 
 #### TeoriaInterval.coord
  - The interval representation of the interval
