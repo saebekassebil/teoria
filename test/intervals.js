@@ -231,27 +231,27 @@ vows.describe('Intervals').addBatch({
 
   'Interval inversions': {
     'Invert m2 is M7': function() {
-      assert.equal(teoria.interval.invert('m2'), 'M7');
+      assert.equal(teoria.Interval.invert('m2'), 'M7');
     },
 
     'Invert M2 is m7': function() {
-      assert.equal(teoria.interval.invert('M2'), 'm7');
+      assert.equal(teoria.Interval.invert('M2'), 'm7');
     },
 
     'Invert m3 is M6': function() {
-      assert.equal(teoria.interval.invert('m3'), 'M6');
+      assert.equal(teoria.Interval.invert('m3'), 'M6');
     },
 
     'Invert M3 is m6': function() {
-      assert.equal(teoria.interval.invert('M3'), 'm6');
+      assert.equal(teoria.Interval.invert('M3'), 'm6');
     },
 
     'Invert P4 is P5': function() {
-      assert.equal(teoria.interval.invert('P4'), 'P5');
+      assert.equal(teoria.Interval.invert('P4'), 'P5');
     },
 
     'Invert A5 is d4': function() {
-      assert.equal(teoria.interval.invert('A5'), 'd4');
+      assert.equal(teoria.Interval.invert('A5'), 'd4');
     }
   },
 

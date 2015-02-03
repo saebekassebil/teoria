@@ -3,11 +3,10 @@
 //    Copyright Jakob Miland (saebekassebil)
 //    Teoria may be freely distributed under the MIT License.
 
-var TeoriaNote = require('./lib/note');
-var TeoriaInterval = require('./lib/interval');
-var TeoriaChord = require('./lib/chord');
-var TeoriaScale = require('./lib/scale');
-var scales = require('./lib/scales');
+var Note = require('./lib/note');
+var Interval = require('./lib/interval');
+var Chord = require('./lib/chord');
+var Scale = require('./lib/scale');
 var knowledge = require('./lib/knowledge');
 var vector = require('./lib/vector');
 
@@ -15,9 +14,9 @@ var teoria = {};
 
 teoria.note = function(name, duration) {
   if (typeof name === 'string')
-    return TeoriaNote.fromString(name, duration);
+    return Note.fromString(name, duration);
   else
-    return new TeoriaNote(name, duration);
+    return new Note(name, duration);
 };
 
 teoria.chord = function(name, symbol) {
@@ -26,43 +25,42 @@ teoria.chord = function(name, symbol) {
     root = name.match(/^([a-h])(x|#|bb|b?)/i);
     if (root && root[0]) {
       octave = typeof symbol === 'number' ? symbol.toString(10) : '4';
-      return new TeoriaChord(TeoriaNote.fromString(root[0].toLowerCase() + octave),
+      return new Chord(Note.fromString(root[0].toLowerCase() + octave),
                             name.substr(root[0].length));
     }
-  } else if (name instanceof TeoriaNote)
-    return new TeoriaChord(name, symbol);
+  } else if (name instanceof Note)
+    return new Chord(name, symbol);
 
   throw new Error('Invalid Chord. Couldn\'t find note name');
 };
 
 teoria.interval = function(from, to) {
-  // Construct a TeoriaInterval object from string representation
+  // Construct a Interval object from string representation
   if (typeof from === 'string')
-    return TeoriaInterval.toCoord(from);
+    return Interval.toCoord(from);
 
-  if (typeof to === 'string' && from instanceof TeoriaNote)
-    return TeoriaInterval.from(from, TeoriaInterval.toCoord(to));
+  if (typeof to === 'string' && from instanceof Note)
+    return Interval.from(from, Interval.toCoord(to));
 
-  if (to instanceof TeoriaInterval && from instanceof TeoriaNote)
-    return TeoriaInterval.from(from, to);
+  if (to instanceof Interval && from instanceof Note)
+    return Interval.from(from, to);
 
-  if (to instanceof TeoriaNote && from instanceof TeoriaNote)
-    return TeoriaInterval.between(from, to);
+  if (to instanceof Note && from instanceof Note)
+    return Interval.between(from, to);
 
   throw new Error('Invalid parameters');
 };
 
 
 teoria.scale = function(tonic, scale) {
-  tonic = (tonic instanceof TeoriaNote) ? tonic : teoria.note(tonic);
-  return new TeoriaScale(tonic, scale);
+  tonic = (tonic instanceof Note) ? tonic : teoria.note(tonic);
+  return new Scale(tonic, scale);
 };
 
-teoria.TeoriaNote = TeoriaNote;
-teoria.TeoriaChord = TeoriaChord;
-teoria.TeoriaScale = TeoriaScale;
-teoria.TeoriaInterval = TeoriaInterval;
-teoria.scale.scales = scales;
+teoria.Note = Note;
+teoria.Chord = Chord;
+teoria.Scale = Scale;
+teoria.Interval = Interval;
 
 require('./lib/sugar')(teoria);
 
