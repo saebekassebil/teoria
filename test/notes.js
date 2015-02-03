@@ -146,7 +146,7 @@ vows.describe('TeoriaNote class').addBatch({
     },
 
     '2959.96Hz is F#7': function() {
-      assert.equal(teoria.note.fromFrequency(2959.96).note.scientific(), 'F#7');
+      assert.equal(teoria.Note.fromFrequency(2959.96).note.scientific(), 'F#7');
     }
   },
 

@@ -21,11 +21,11 @@ vows.describe('Intervals').addBatch({
     },
 
     'Diminished second, API method two': function(note) {
-      assert.deepEqual( teoria.interval( note, teoria.interval('d2')), teoria.note('Gb,'));
+      assert.deepEqual(teoria.interval(note, teoria.interval('d2')), teoria.note('Gb,'));
     },
 
     'Diminished second, API method three': function(note) {
-      assert.deepEqual( note.interval( teoria.interval( 'd2' )), teoria.note('Gb,'));
+      assert.deepEqual(note.interval(teoria.interval('d2')), teoria.note('Gb,'));
     },
 
     'Minor second': function(note) {
