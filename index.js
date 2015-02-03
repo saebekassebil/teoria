@@ -13,19 +13,11 @@ var vector = require('./lib/vector');
 
 var teoria = {};
 
-function pad(str, ch, len) {
-  for (; len > 0; len--) {
-    str += ch;
-  }
-
-  return str;
-}
-
 // teoria.note namespace - All notes should be instantiated
 // through this function.
 teoria.note = function(name, duration) {
   if (typeof name === 'string')
-    return teoria.note.fromString(name, duration);
+    return TeoriaNote.fromString(name, duration);
   else
     return new TeoriaNote(name, duration);
 };
@@ -33,11 +25,11 @@ teoria.note = function(name, duration) {
 teoria.note.fromKey = function(key) {
   var octave = Math.floor((key - 4) / 12);
   var distance = key - (octave * 12) - 4;
-  var name = fifths[(2 * Math.round(distance / 2) + 1) % 7];
-  var note = add(sub(notes[name], A4), [octave + 1, 0]);
-  var diff = (key - 49) - sum(mul(note, [12, 7]));
+  var name = knowledge.fifths[(2 * Math.round(distance / 2) + 1) % 7];
+  var note = vector.add(vector.sub(knowledge.notes[name], knowledge.A4), [octave + 1, 0]);
+  var diff = (key - 49) - vector.sum(vector.mul(note, [12, 7]));
 
-  return teoria.note(diff ? add(note, mul(sharp, diff)) : note);
+  return new TeoriaNote(diff ? vector.add(note, vector.mul(knowledge.sharp, diff)) : note);
 };
 
 teoria.note.fromFrequency = function(fq, concertPitch) {
@@ -54,47 +46,6 @@ teoria.note.fromFrequency = function(fq, concertPitch) {
 
 teoria.note.fromMIDI = function(note) {
   return teoria.note.fromKey(note - 20);
-};
-
-teoria.note.fromString = function(name, dur) {
-  var scientific = /^([a-h])(x|#|bb|b?)(-?\d*)/i
-    , helmholtz = /^([a-h])(x|#|bb|b?)([,\']*)$/i
-    , parser, noteName, octave, accidental, note, lower;
-
-  // Try scientific notation first
-  parser = name.match(scientific);
-  if (parser && name === parser[0] && parser[3].length) {
-    noteName = parser[1];
-    octave = +parser[3];
-  } else {
-    name = name.replace(/\u2032/g, "'").replace(/\u0375/g, ',');
-
-    parser = name.match(helmholtz);
-    if (!parser || name !== parser[0])
-      throw new Error('Invalid note format');
-
-    noteName = parser[1];
-    octave = parser[3];
-    lower = noteName === noteName.toLowerCase();
-
-    if (!octave.length)
-      octave = lower ? 3 : 2;
-    else if (octave.match(/^'+$/) && lower)
-      octave = 3 + octave.length;
-    else if (octave.match(/^,+$/) && !lower)
-      octave = 2 - octave.length;
-    else
-      throw new Error('Format must respect the Helmholtz format');
-  }
-
-  accidental = parser[2].length ? parser[2].toLowerCase() : '';
-  noteName = noteName.toLowerCase();
-
-  note = [knowledge.notes[noteName][0], knowledge.notes[noteName][1]];
-  note = vector.add(note, [octave, 0]);
-  note = vector.add(note, vector.mul(knowledge.sharp, knowledge.accidentals.indexOf(accidental) - 2));
-
-  return new TeoriaNote(vector.sub(note, knowledge.A4), dur);
 };
 
 // teoria.chord namespace - All chords should be instantiated
@@ -132,7 +83,7 @@ teoria.interval = function(from, to) {
     return teoria.interval.from(from, to);
 
   if (to instanceof TeoriaNote && from instanceof TeoriaNote)
-    return teoria.interval.between(from, to);
+    return TeoriaInterval.between(from, to);
 
   throw new Error('Invalid parameters');
 };
@@ -143,13 +94,6 @@ teoria.interval = function(from, to) {
  */
 teoria.interval.from = function(from, to) {
   return new TeoriaNote(vector.add(from.coord, to.coord));
-};
-
-/**
- * Returns the interval between two instances of teoria.note
- */
-teoria.interval.between = function(from, to) {
-  return new TeoriaInterval(vector.sub(to.coord, from.coord));
 };
 
 teoria.interval.invert = function(sInterval) {
