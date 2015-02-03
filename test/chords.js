@@ -1,6 +1,6 @@
 var vows = require('vows'),
     assert = require('assert'),
-    teoria = require('../dist/teoria.js');
+    teoria = require('../');
 
 // Utility function
 function simpleArray(chord) {

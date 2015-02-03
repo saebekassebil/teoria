@@ -1,6 +1,6 @@
 var vows = require('vows'),
     assert = require('assert'),
-    teoria = require('../dist/teoria.js');
+    teoria = require('../');
 
 function addSimple(interval1, interval2) {
   return teoria.interval(interval1).add(teoria.interval(interval2));
