@@ -376,16 +376,26 @@
 
   teoria.scale.scales = {};
 
+  // teoria.progression namespace
+  teoria.progression = function(scale, progression) {
+    if(scale instanceof TeoriaScale && progression instanceof Array) {
+      return new TeoriaProgression(scale, progression);
+    }
+    throw new Error('Invalid parameters');
+  };
+
   //=include note.js
   //=include interval.js
   //=include chord.js
   //=include scale.js
   //=include #scales#
+  //=include progression.js
 
   teoria.TeoriaNote = TeoriaNote;
   teoria.TeoriaChord = TeoriaChord;
   teoria.TeoriaScale = TeoriaScale;
   teoria.TeoriaInterval = TeoriaInterval;
+  teoria.TeoriaProgression = TeoriaProgression;
 
   if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports)
