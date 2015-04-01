@@ -8,7 +8,7 @@ function TeoriaChord(root, name) {
 
   var i, length, c, shortQ, parsing = 'quality', additionals = [],
       notes = ['P1', 'M3', 'P5', 'm7', 'M9', 'P11', 'M13'],
-      chordLength = 2, bass, symbol;
+      chordLength = 2, bass, symbol, explicitMajor = false;
 
   function setChord(intervals) {
     for (var n = 0, chordl = intervals.length; n < chordl; n++) {
@@ -50,6 +50,9 @@ function TeoriaChord(root, name) {
 
         setChord(kSymbols[symbol]);
 
+        if (symbol === 'M' || symbol === 'ma' || symbol === 'maj')
+          explicitMajor = true;
+
         i += symbol.length - 1;
         parsing = 'extension';
         break;
@@ -69,6 +72,8 @@ function TeoriaChord(root, name) {
           // Special care for diminished chords
           if (symbol === 'o' || symbol === 'dim') {
             notes[3] = 'd7';
+          } else if (explicitMajor) {
+            notes[3] = 'M7';
           }
 
           i += String(c).length - 1;
