@@ -232,6 +232,31 @@ vows.describe('Chords').addBatch({
     'Ab6/9': function() {
       var notes = simpleArray(teoria.chord('Ab6/9'));
       assert.deepEqual(notes, ['ab', 'c', 'eb', 'f', 'bb']);
+    },
+
+    'CM7': function() {
+      var notes = simpleArray(teoria.chord('CM7'));
+      assert.deepEqual(notes, ['c', 'e', 'g', 'b']);
+    },
+
+    'CmM7': function() {
+      var notes = simpleArray(teoria.chord('CmM7'));
+      assert.deepEqual(notes, ['c', 'eb', 'g', 'b']);
+    },
+
+    'DM': function() {
+      var notes = simpleArray(teoria.chord('DM'));
+      assert.deepEqual(notes, ['d', 'f#', 'a', 'c#']);
+    },
+
+    'EM#5': function() {
+      var notes = simpleArray(teoria.chord('EM#5'));
+      assert.deepEqual(notes, ['e', 'g#', 'b#', 'd#']);
+    },
+
+    'FM9': function() {
+      var notes = simpleArray(teoria.chord('FM9'));
+      assert.deepEqual(notes, ['f', 'a', 'c', 'e', 'g']);
     }
   },
 
