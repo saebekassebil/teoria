@@ -36,9 +36,17 @@ function TeoriaChord(root, name) {
     switch (parsing) {
       // Parses for the "base" chord, either a triad or a seventh chord
       case 'quality':
-        shortQ = ((i + 3) <= length) ? name.substr(i, 3).toLowerCase() : null;
-        symbol = (shortQ in kSymbols) ?
-          shortQ : (c in kSymbols) ? c : '';
+        var sub3 = (i + 2) < length ? name.substr(i, 3).toLowerCase() : null;
+        var sub2 = (i + 1) < length ? name.substr(i, 2).toLowerCase() : null;
+
+        if (sub3 in kSymbols)
+          symbol = sub3;
+        else if (sub2 in kSymbols)
+          symbol = sub2;
+        else if (c in kSymbols)
+          symbol = c;
+        else
+          symbol = '';
 
         setChord(kSymbols[symbol]);
 
