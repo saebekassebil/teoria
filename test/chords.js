@@ -246,12 +246,12 @@ vows.describe('Chords').addBatch({
 
     'DM': function() {
       var notes = simpleArray(teoria.chord('DM'));
-      assert.deepEqual(notes, ['d', 'f#', 'a', 'c#']);
+      assert.deepEqual(notes, ['d', 'f#', 'a']);
     },
 
     'EM#5': function() {
       var notes = simpleArray(teoria.chord('EM#5'));
-      assert.deepEqual(notes, ['e', 'g#', 'b#', 'd#']);
+      assert.deepEqual(notes, ['e', 'g#', 'b#']);
     },
 
     'FM9': function() {
@@ -272,7 +272,7 @@ vows.describe('Chords').addBatch({
 
     'Dma': function() {
       var notes = simpleArray(teoria.chord('Dma'));
-      assert.deepEqual(notes, ['d', 'f#', 'a', 'c#']);
+      assert.deepEqual(notes, ['d', 'f#', 'a']);
     },
 
     'Ema9': function() {
