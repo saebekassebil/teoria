@@ -10,8 +10,10 @@ function simpleArray(chord) {
 vows.describe('Chords').addBatch({
   'Chord parser': {
     'Emaj7': function() {
-      var notes = simpleArray(teoria.chord('Emaj7'));
+      var chord = teoria.chord('Emaj7');
+      var notes = simpleArray(chord);
       assert.deepEqual(notes, ['e', 'g#', 'b', 'd#']);
+      assert.equal(chord.root,chord.bass);
     },
 
     'A+': function() {
@@ -115,8 +117,10 @@ vows.describe('Chords').addBatch({
     },
 
     'C/e': function() {
-      var notes = simpleArray(teoria.chord('C/e'));
+      var chord = teoria.chord('C/e');
+      var notes = simpleArray(chord);
       assert.deepEqual(notes, ['e', 'c', 'g']);
+      assert.equal(chord.bass.name() == 'e');
     },
 
     'A7/g': function() {
@@ -225,8 +229,10 @@ vows.describe('Chords').addBatch({
     },
 
     'C6/9': function() {
-      var notes = simpleArray(teoria.chord('C6/9'));
+      var chord = teoria.chord('C6/9');
+      var notes = simpleArray(chord);
       assert.deepEqual(notes, ['c', 'e', 'g', 'a', 'd']);
+      assert.equal(chord.bass , chord.root);
     },
 
     'Ab6/9': function() {
@@ -346,6 +352,18 @@ vows.describe('Chords').addBatch({
 
     '#quality() of Fm#5': function() {
       assert.equal(teoria.chord('Fm#5').quality(), 'minor');
+    },
+    '#transpose() of Am': function() {
+      var chord = teoria.chord('Am');
+      chord.transpose("M2");
+      assert.equal(chord.root.name(), "b");
+      assert.equal(chord.root, chord.bass);
+    },
+    '#transpose() of Am/B': function() {
+      var chord = teoria.chord('Am/B');
+      chord.transpose("M2");
+      assert.equal(chord.bass.name(), "c");
+      assert.equal(chord.root.name(), "b");
     },
   }
 }).export(module);

@@ -307,6 +307,11 @@ then the second argument is an optional octave number (`typeof "number"`) of the
 #### TeoriaChord.root
  - Holds the `TeoriaNote` that is the root of the chord.
 
+#### TeoriaChord.bass
+  - Holds the `TeoriaNote` that is the bass of the chord. Usefull to get the bass of an inverted chord.
+  
+  NB : The bass will be the same as the root if the chord is in root position and ``chord.root === chord.bass`` will return true
+
 #### TeoriaChord#notes()
  - Returns an array of `TeoriaNote`s that the chord consists of.
 
@@ -330,6 +335,9 @@ bbmaj.notes();    // #-> ['bb', 'f', 'a', 'd'];
 ```
 *NB:* Note that above returned results are pseudo-results, as they will be
 returned wrapped in `TeoriaInterval` and `TeoriaNote` objects.
+
+#### TeoriaChord#inverted()
+ - Returns a boolean ; ``true`` if the chord is inverted ; ``false`` if the chord is not inverted.
 
 #### TeoriaChord#quality()
  - Returns a string which holds the quality of the chord, `'major'`, `'minor'`,
