@@ -391,6 +391,11 @@ absolute intervals that defines the scale. The scales supported by default are:
  - minorpentatonic
  - chromatic
  - harmonicchromatic (Alias for chromatic)
+ - blues
+ - doubleharmonic
+ - flamenco
+ - harmonicminor
+ - melodicminor
 
 ### teoria.scale(tonic, scale)
  - Sugar function for constructing a new `TeoriaScale` object

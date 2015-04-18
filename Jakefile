@@ -63,7 +63,13 @@ var includeScales = {
 
   'majorpentatonic': true,
   'minorpentatonic': true,
-  'chromatic': true
+  'chromatic': true,
+
+  'blues': true,
+  'doubleharmonic': true,
+  'flamenco': true,
+  'harmonicminor': true,
+  'melodicminor': true
 };
 
 // Default task - lint and build
