@@ -1,6 +1,7 @@
 var vows = require('vows'),
-    assert = require('assert'),
-    teoria = require('../dist/teoria.js');
+    assert = require('assert');
+
+var teoria = require('./support/load-dist.js');
 
 vows.describe('Solfege').addBatch({
   'C in C minor': function() {

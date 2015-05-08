@@ -1,6 +1,7 @@
 var vows = require('vows'),
-    assert = require('assert'),
-    teoria = require('../dist/teoria.js');
+    assert = require('assert');
+
+var teoria = require('./support/load-dist.js');
 
 vows.describe('TeoriaNote class').addBatch({
   'A4 - a\'': {
@@ -252,7 +253,7 @@ vows.describe('TeoriaNote class').addBatch({
       var note = teoria.note('bb');
       assert.equal(note.scaleDegree(teoria.scale('c', 'minor')), 7);
     },
-    
+
     'Db is scale degree 4 in an Ab major scale': function() {
       var note = teoria.note('db');
       assert.equal(note.scaleDegree(teoria.scale('ab', 'major')), 4);
