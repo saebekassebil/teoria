@@ -27,45 +27,21 @@ Features
  There's also support for counting the interval span in semitones and inverting the
  interval.
 
-Building
---------
+Usage
+-----
 
-Building the library is simple. Just fetch the code:
+In node environments (including webpack & browserify) you can require the library:
 
-```bash
-git clone git://github.com/saebekassebil/teoria
+```js
+var teoria = require('teoria');
 ```
 
-Install Jake (the build tool)
-
-```bash
-npm install -g jake
+You can also load individual files:
+```js
+var Chord = require('teoria/chord');
 ```
 
-Enter the directory, and install the dependencies:
-```bash
-cd teoria && npm install
-```
-
-And build the library! You can build a minified version, by adding `[minify]` to the command:
-```bash
-jake build
-# or
-jake build[minify]
-```
-
-If you want to include some of the more fancy scales, that ship with the repository
-but doesn't automatically gets added to the build, you can configure which scales
-to include in the build like this:
-```bash
-jake build scales=+blues,+flamenco,-chromatic
-```
-
-As you can see, `scales` is just a comma-separated list of scale names, prefixed
-with either a `+` or a `-` to signify whether they should be included or not.
-
-Take a look in the `src/scales` directory, if you want to know which scales there is,
-and feel free to submit pull requests for other ones!
+For browsers environments there is a distribution file inside `dist` folder that you can use as src with a script tag.
 
 Syntax
 ---------
@@ -571,4 +547,3 @@ returned wrapped in `TeoriaInterval` objects.
  - Returns the relative to default, value of the quality.
  E.g. a teoria.interval('M6'), will have a relative quality value of 1, as all the
  intervals defaults to minor and perfect respectively.
-
