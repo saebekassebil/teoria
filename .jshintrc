@@ -1,38 +1,5 @@
 {
-  "predef": [
-    "TeoriaNote",
-    "TeoriaInterval",
-    "TeoriaChord",
-    "TeoriaScale",
-    "teoria",
-
-    "kDurations",
-    "kAlterations",
-    "kSymbols",
-    "kChordShort",
-    "kStepNumber",
-    "kIntervalSolfege",
-    "kQualityLong",
-
-    "pad",
-    "sum",
-    "mul",
-    "add",
-    "sub",
-    "A4",
-    "accidentals",
-    "sharp",
-    "fifths",
-    "notes",
-    "intervals",
-    "intervalFromFifth",
-    "intervalsIndex"
-  ],
-
   "node":     true,
-  "es5":      true,
-  "browser":  true,
-
   "maxlen":   80,
   "strict":   false,
   "devel":    true,
