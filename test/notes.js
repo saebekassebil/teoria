@@ -116,55 +116,55 @@ vows.describe('TeoriaNote class').addBatch({
 
   'Instantiate from key': {
     '#49 is A4': function() {
-      assert.equal(teoria.Note.fromKey(49).scientific(), 'A4');
+      assert.equal(teoria.note.fromKey(49).scientific(), 'A4');
     },
 
     '#20 is E2': function() {
-      assert.equal(teoria.Note.fromKey(20).scientific(), 'E2');
+      assert.equal(teoria.note.fromKey(20).scientific(), 'E2');
     },
 
     '#57 is F5': function() {
-      assert.equal(teoria.Note.fromKey(57).scientific(), 'F5');
+      assert.equal(teoria.note.fromKey(57).scientific(), 'F5');
     },
 
     '#72 is G#6': function() {
-      assert.equal(teoria.Note.fromKey(72).scientific(), 'G#6');
+      assert.equal(teoria.note.fromKey(72).scientific(), 'G#6');
     }
   },
 
   'Instantiate from frequency': {
     '391.995Hz is G4': function() {
-      assert.equal(teoria.Note.fromFrequency(391.995).note.scientific(), 'G4');
+      assert.equal(teoria.note.fromFrequency(391.995).note.scientific(), 'G4');
     },
 
     '220.000Hz is A3': function() {
-      assert.equal(teoria.Note.fromFrequency(220.000).note.scientific(), 'A3');
+      assert.equal(teoria.note.fromFrequency(220.000).note.scientific(), 'A3');
     },
 
     '155.563Hz is Eb3': function() {
-      assert.equal(teoria.Note.fromFrequency(155.563).note.scientific(), 'Eb3');
+      assert.equal(teoria.note.fromFrequency(155.563).note.scientific(), 'Eb3');
     },
 
     '2959.96Hz is F#7': function() {
-      assert.equal(teoria.Note.fromFrequency(2959.96).note.scientific(), 'F#7');
+      assert.equal(teoria.note.fromFrequency(2959.96).note.scientific(), 'F#7');
     }
   },
 
   'Instantiate from MIDI': {
     'MIDI#36 is C2': function() {
-      assert.equal(teoria.Note.fromMIDI(36).scientific(), 'C2');
+      assert.equal(teoria.note.fromMIDI(36).scientific(), 'C2');
     },
 
     'MIDI#77 is F5': function() {
-      assert.equal(teoria.Note.fromMIDI(77).scientific(), 'F5');
+      assert.equal(teoria.note.fromMIDI(77).scientific(), 'F5');
     },
 
     'MIDI#61 is Db4': function() {
-      assert.equal(teoria.Note.fromMIDI(61).scientific(), 'Db4');
+      assert.equal(teoria.note.fromMIDI(61).scientific(), 'Db4');
     },
 
     'MIDI#80 is G#5': function() {
-      assert.equal(teoria.Note.fromMIDI(80).scientific(), 'G#5');
+      assert.equal(teoria.note.fromMIDI(80).scientific(), 'G#5');
     }
   },
 
