@@ -9,63 +9,30 @@ Sheet Writers, MIDI Players etc.).
 Features
 ---------
 
- - A note object (`teoria.note`), which understands alterations, octaves,
+ - A note object (`teoria.Note`), which understands alterations, octaves,
  key number, frequency and etc. and Helmholtz notation
 
- - A chord object (`teoria.chord`), which understands everything
+ - A chord object (`teoria.Chord`), which understands everything
  from simple major/minor chords to advanced Jazz chords (Ab#5b9, F(#11) and such)
 
- - A scale object (`teoria.scale`), The scale object is a powerful presentation of
+ - A scale object (`teoria.Scale`), The scale object is a powerful presentation of
  a scale, which supports quite a few handy methods. A scale can either be
  constructed from the predefined scales, which by default contains the 7 modes
  (Ionian, Dorian, Phrygian etc.) a major and minor pentatonic and the harmonic
  chromatic scale or from an arbitrary array of intervals. The scale object
  also supports solfège, which makes it perfect for tutorials on sight-reading.
 
- - An interval object (`teoria.interval`), which makes it easy to find the
+ - An interval object (`teoria.Interval`), which makes it easy to find the
  interval between two notes, or find a note that is a given interval from a note.
  There's also support for counting the interval span in semitones and inverting the
  interval.
 
-Building
+Usage
 --------
 
-Building the library is simple. Just fetch the code:
+    $ npm install teoria
 
-```bash
-git clone git://github.com/saebekassebil/teoria
-```
-
-Install Jake (the build tool)
-
-```bash
-npm install -g jake
-```
-
-Enter the directory, and install the dependencies:
-```bash
-cd teoria && npm install
-```
-
-And build the library! You can build a minified version, by adding `[minify]` to the command:
-```bash
-jake build
-# or
-jake build[minify]
-```
-
-If you want to include some of the more fancy scales, that ship with the repository
-but doesn't automatically gets added to the build, you can configure which scales
-to include in the build like this:
-```bash
-jake build scales=+blues,+flamenco,-chromatic
-```
-
-As you can see, `scales` is just a comma-separated list of scale names, prefixed
-with either a `+` or a `-` to signify whether they should be included or not.
-
-Take a look in the `src/scales` directory, if you want to know which scales there is,
-and feel free to submit pull requests for other ones!
+Can be used with both Node and Browserify/webpack/etc.
 
 Syntax
 ---------
@@ -448,6 +415,11 @@ scale step. E.g. 'first', 'second', 'fourth', 'seventh'.
 
 #### teoria.interval(`Note`: from, `Note`: to)
  - A sugar method for the `Interval.between` function
+
+##### teoria.interval.from -> Interval.from
+##### teoria.interval.between -> Interval.between
+##### teoria.interval.invert -> Interval.invert
+##### teoria.interval.toCoord -> Interval.toCoord
 
 
 ## Interval(coord)
