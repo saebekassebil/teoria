@@ -312,6 +312,18 @@ vows.describe('Chords').addBatch({
   },
 
   'Chord Methods': {
+    '#bass of Cmaj7': function() {
+      assert.equal(teoria.chord('Cmaj7').bass().toString(true), 'c');
+    },
+
+    '#bass of A/C#': function() {
+      assert.equal(teoria.chord('A/C#').bass().toString(true), 'c#');
+    },
+
+    '#bass of D6/9': function() {
+      assert.equal(teoria.chord('D6/9').bass().toString(true), 'd');
+    },
+
     '#quality() of Bmaj7': function() {
       assert.equal(teoria.chord('Bmaj7').quality(), 'major');
     },
