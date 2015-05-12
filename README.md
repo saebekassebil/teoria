@@ -279,6 +279,10 @@ then the second argument is an optional octave number (`typeof "number"`) of the
 
 #### Chord.bass()
  - Returns the bass note of the chord (The note voiced the lowest)
+ 
+#### Chord.inverted()
+  - Returns true if the chord is inverted.
+ 
 
 #### Chord#voicing([voicing])
  - Works both as a setter and getter. If no parameter is supplied the

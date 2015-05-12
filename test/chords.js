@@ -324,6 +324,19 @@ vows.describe('Chords').addBatch({
       assert.equal(teoria.chord('D6/9').bass().toString(true), 'd');
     },
 
+    '#inverted() of Cmaj7': function() {
+      assert(!teoria.chord('Cmaj7').inverted());
+    },
+
+    '#inverted() of A/C#': function() {
+      assert(teoria.chord('A/C#').inverted());
+    },
+
+    '#inverted() of D6/9': function() {
+      assert(!teoria.chord('D6/9').inverted());
+    },
+
+
     '#quality() of Bmaj7': function() {
       assert.equal(teoria.chord('Bmaj7').quality(), 'major');
     },
