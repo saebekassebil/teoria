@@ -277,7 +277,7 @@ then the second argument is an optional octave number (`typeof "number"`) of the
 #### Chord#notes()
  - Returns an array of `Note`s that the chord consists of.
 
-#### Chord.bass()
+#### Chord#bass()
  - Returns the bass note of the chord (The note voiced the lowest)
 
 #### Chord#voicing([voicing])
