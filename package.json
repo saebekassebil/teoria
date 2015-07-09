@@ -1,6 +1,6 @@
 {
   "name": "teoria",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Music theory for JavaScript",
   "homepage": "http://saebekassebil.github.com/teoria",
   "keywords": [
@@ -26,7 +26,8 @@
   },
   "scripts": {
     "test": "vows --dot-matric test/*",
-    "lint": "jshint index.js lib/"
+    "lint": "jshint index.js lib/",
+    "bundle": "browserify index.js --standalone teoria > teoria.js"
   },
   "devDependencies": {
     "jshint": ">=0.9.0",
