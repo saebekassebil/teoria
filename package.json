@@ -20,10 +20,7 @@
     "type": "git",
     "url": "https://github.com/saebekassebil/teoria"
   },
-  "license": {
-    "type": "MIT",
-    "url": "https://raw.github.com/saebekassebil/teoria/master/LICENSE"
-  },
+  "license": "MIT",
   "scripts": {
     "test": "vows --dot-matric test/*",
     "lint": "jshint index.js lib/",
