@@ -303,6 +303,7 @@ module.exports = Chord;
 },{"./interval":3,"./knowledge":4,"./note":5,"daccord":9}],3:[function(require,module,exports){
 var knowledge = require('./knowledge');
 var vector = require('./vector');
+var toCoord = require('interval-coords');
 
 function Interval(coord) {
   if (!(this instanceof Interval)) return new Interval(coord);
@@ -446,33 +447,9 @@ Interval.prototype = {
 }
 
 Interval.toCoord = function(simple) {
-  var pattern = /^(AA|A|P|M|m|d|dd)(-?\d+)$/
-    , parser, number, coord, quality, lower, octaves, base, type, alt, down;
-
-  parser = simple.match(pattern);
-  if (!parser)
+  var coord = toCoord(simple);
+  if (!coord)
     throw new Error('Invalid simple format interval');
-
-  quality = parser[1];
-  number = +parser[2];
-  down = number < 0;
-  number = down ? -number : number;
-
-  lower = number > 8 ? ((number % 7) ? number % 7 : 7) : number;
-  octaves = (number - lower) / 7;
-
-  base = knowledge.intervals[knowledge.intervalsIndex[lower - 1]];
-  coord = vector.add(base, [octaves, 0]);
-
-  type = base[0] <= 1 ? 'perfect' : 'minor';
-  if ((type === 'perfect' && (quality === 'M' || quality === 'm')) ||
-      (type === 'minor' && quality === 'P')) {
-    throw new Error('Invalid interval quality');
-  }
-
-  alt = knowledge.alterations[type].indexOf(quality) - 2;
-  coord = vector.add(coord, vector.mul(knowledge.sharp, alt));
-  coord = down ? vector.mul(coord, -1) : coord;
 
   return new Interval(coord);
 }
@@ -491,7 +468,7 @@ Interval.invert = function(sInterval) {
 
 module.exports = Interval;
 
-},{"./knowledge":4,"./vector":8}],4:[function(require,module,exports){
+},{"./knowledge":4,"./vector":8,"interval-coords":13}],4:[function(require,module,exports){
 // Note coordinates [octave, fifth] relative to C
 module.exports = {
   notes: {
@@ -880,7 +857,7 @@ Note.fromMIDI = function(note) {
 
 module.exports = Note;
 
-},{"./interval":3,"./knowledge":4,"./vector":8,"helmholtz":10,"scientific-notation":13}],6:[function(require,module,exports){
+},{"./interval":3,"./knowledge":4,"./vector":8,"helmholtz":10,"scientific-notation":14}],6:[function(require,module,exports){
 var knowledge = require('./knowledge');
 var Interval = require('./interval');
 
@@ -1304,6 +1281,56 @@ module.exports.A4 = [3, 3]; // Relative to C0 (scientic notation, ~16.35Hz)
 module.exports.sharp = [-4, 7];
 
 },{}],13:[function(require,module,exports){
+var pattern = /^(AA|A|P|M|m|d|dd)(-?\d+)$/;
+
+// The interval it takes to raise a note a semitone
+var sharp = [-4, 7];
+
+var pAlts = ['dd', 'd', 'P', 'A', 'AA'];
+var mAlts = ['dd', 'd', 'm', 'M', 'A', 'AA'];
+
+var baseIntervals = [
+  [0, 0],
+  [3, -5],
+  [2, -3],
+  [1, -1],
+  [0, 1],
+  [3, -4],
+  [2, -2],
+  [1, 0]
+];
+
+module.exports = function(simple) {
+  var parser = simple.match(pattern);
+  if (!parser) return null;
+
+  var quality = parser[1];
+  var number = +parser[2];
+  var sign = number < 0 ? -1 : 1;
+
+  number = sign < 0 ? -number : number;
+
+  var lower = number > 8 ? (number % 7 || 7) : number;
+  var octaves = (number - lower) / 7;
+
+  var base = baseIntervals[lower - 1];
+  var alts = base[0] <= 1 ? pAlts : mAlts;
+  var alt = alts.indexOf(quality) - 2;
+
+  // this happens, if the alteration wasn't suitable for this type
+  // of interval, such as P2 or M5 (no "perfect second" or "major fifth")
+  if (alt === -3) return null;
+
+  return [
+    sign * (base[0] + octaves + sharp[0] * alt),
+    sign * (base[1] + sharp[1] * alt)
+  ];
+}
+
+// Copy to avoid overwriting internal base intervals
+module.exports.coords = baseIntervals.slice(0);
+
+},{}],14:[function(require,module,exports){
 var coords = require('notecoord');
 var accval = require('accidental-value');
 
@@ -1327,9 +1354,9 @@ module.exports = function scientific(name) {
   return coord;
 };
 
-},{"accidental-value":14,"notecoord":15}],14:[function(require,module,exports){
+},{"accidental-value":15,"notecoord":16}],15:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"dup":11}],15:[function(require,module,exports){
+},{"dup":11}],16:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
 },{"dup":12}]},{},[1])(1)
 });

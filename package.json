@@ -1,6 +1,6 @@
 {
   "name": "teoria",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Music theory for JavaScript",
   "homepage": "http://saebekassebil.github.com/teoria",
   "keywords": [
@@ -33,6 +33,7 @@
   "dependencies": {
     "daccord": "^1.0.1",
     "helmholtz": "^2.0.1",
+    "interval-coords": "^1.1.1",
     "scientific-notation": "^1.0.0"
   }
 }
