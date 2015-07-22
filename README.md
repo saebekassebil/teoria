@@ -34,6 +34,12 @@ Usage
 
 Can be used with both Node and Browserify/webpack/etc.
 
+### ... or less preferable
+
+Include the bundled build file, `teoria.js` from this repository, directly:
+```html
+<script src="path/to/teoria.js"></script>
+```
 Syntax
 ---------
 
