@@ -1,0 +1,9 @@
+{
+  "name": "teoria",
+  "main": "teoria.js",
+  "ignore": [
+    "*",
+    "!LICENSE",
+    "!teoria.js"
+  ]
+}
