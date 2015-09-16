@@ -8,6 +8,11 @@ vows.describe('Scales').addBatch({
       return teoria.note('Ab2');
     },
 
+    'Blues': function(note) {
+      assert.deepEqual(teoria.note('g#').scale('blues').simple(),
+          ['g#', 'b', 'c#', 'd', 'd#', 'f#']);
+    },
+
     'Ionian/Major': function(note) {
       assert.deepEqual(note.scale('ionian').simple(),
           ['ab', 'bb', 'c', 'db', 'eb', 'f', 'g']);
