@@ -57,6 +57,18 @@ vows.describe('Scales').addBatch({
       assert.deepEqual(note.scale('chromatic').simple(),
           ["ab", "bbb", "bb", "cb", "c", "db",
            "d", "eb", "fb", "f", "gb", "g"]);
+    },
+
+    'Signature': function(note) {
+      function name (note) {return note.name() + note.accidental() }
+
+      assert.equal(teoria.note('f#').scale('major').signature().map(name).toString(), 'f#,c#,g#,d#,a#,e#');
+      assert.equal(teoria.note('db').scale('major').signature().map(name).toString(), 'bb,eb,ab,db,gb');
+
+      assert.equal(teoria.note('c').scale('major').signature().map(name).toString(), '');
+      assert.equal(teoria.note('a').scale('minor').signature().map(name).toString(), '');
+      assert.equal(teoria.note('d').scale('major').signature().map(name).toString(), 'f#,c#');
+      assert.equal(teoria.note('b').scale('minor').signature().map(name).toString(), 'f#,c#');
     }
   }
 }).export(module);
