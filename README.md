@@ -181,9 +181,9 @@ The chroma number is ranging from pitch class C which is 0 to 11 which is B
 #### Note#interval(interval)
  - A sugar function for calling teoria.interval(note, interval);
 
-Returns a new note based on the passed interval.
 
 Look at the documentation for `teoria.interval`
+
 
 #### Note#transpose(interval)
  - Like the `#interval` method, but changes `this` note, instead of returning a new
