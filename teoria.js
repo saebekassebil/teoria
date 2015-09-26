@@ -639,6 +639,7 @@ module.exports = {
 },{}],5:[function(require,module,exports){
 var scientific = require('scientific-notation');
 var helmholtz = require('helmholtz');
+var pitchFq = require('pitch-fq');
 var knowledge = require('./knowledge');
 var vector = require('./vector');
 var Interval = require('./interval');
@@ -700,10 +701,7 @@ Note.prototype = {
    * Optional concert pitch (def. 440)
    */
   fq: function(concertPitch) {
-    concertPitch = concertPitch || 440;
-
-    return concertPitch *
-      Math.pow(2, (this.coord[0] * 12 + this.coord[1] * 7) / 12);
+    return pitchFq(this.coord, concertPitch)
   },
 
   /**
@@ -861,13 +859,13 @@ Note.fromMIDI = function(note) {
 
 module.exports = Note;
 
-},{"./interval":3,"./knowledge":4,"./vector":8,"helmholtz":10,"scientific-notation":14}],6:[function(require,module,exports){
+},{"./interval":3,"./knowledge":4,"./vector":8,"helmholtz":10,"pitch-fq":14,"scientific-notation":15}],6:[function(require,module,exports){
 var knowledge = require('./knowledge');
 var Interval = require('./interval');
 
 var scales = {
   aeolian: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
-  blues: ['P1', 'm3', 'P4', 'A4', 'P5', 'm7'],
+  blues: ['P1', 'm3', 'P4', 'd5', 'P5', 'm7'],
   chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4', 'P5', 'm6', 'M6', 'm7', 'M7'],
   dorian: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
   doubleharmonic: ['P1', 'm2', 'M3', 'P4', 'P5', 'm6', 'M7'],
@@ -1335,6 +1333,19 @@ module.exports = function(simple) {
 module.exports.coords = baseIntervals.slice(0);
 
 },{}],14:[function(require,module,exports){
+module.exports = function(coord, stdPitch) {
+  if (typeof coord === 'number') {
+    stdPitch = coord;
+    return function(coord) {
+      return stdPitch * Math.pow(2, (coord[0] * 12 + coord[1] * 7) / 12);
+    }
+  }
+
+  stdPitch = stdPitch || 440;
+  return stdPitch * Math.pow(2, (coord[0] * 12 + coord[1] * 7) / 12);
+}
+
+},{}],15:[function(require,module,exports){
 var coords = require('notecoord');
 var accval = require('accidental-value');
 
@@ -1358,9 +1369,9 @@ module.exports = function scientific(name) {
   return coord;
 };
 
-},{"accidental-value":15,"notecoord":16}],15:[function(require,module,exports){
+},{"accidental-value":16,"notecoord":17}],16:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"dup":11}],16:[function(require,module,exports){
+},{"dup":11}],17:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
 },{"dup":12}]},{},[1])(1)
 });
