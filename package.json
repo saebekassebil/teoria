@@ -34,6 +34,7 @@
     "daccord": "^1.0.1",
     "helmholtz": "^2.0.1",
     "interval-coords": "^1.1.1",
+    "pitch-fq": "^1.0.0",
     "scientific-notation": "^1.0.0"
   }
 }
