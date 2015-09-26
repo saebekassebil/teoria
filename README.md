@@ -181,7 +181,9 @@ The chroma number is ranging from pitch class C which is 0 to 11 which is B
 #### Note#interval(interval)
  - A sugar function for calling teoria.interval(note, interval);
 
+
 Look at the documentation for `teoria.interval`
+
 
 #### Note#transpose(interval)
  - Like the `#interval` method, but changes `this` note, instead of returning a new
@@ -414,6 +416,9 @@ scale step. E.g. 'first', 'second', 'fourth', 'seventh'.
 *index* Same as `Scale#get`
 
 *showOctaves* - A boolean meaning the same as `showOctaves` in `Note#solfege`
+
+#### Scale#signature()
+ - Returns the sequence of notes representing the key signature of a scale
 
 
 ## teoria.interval(from, to)
