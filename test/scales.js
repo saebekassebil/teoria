@@ -62,6 +62,11 @@ vows.describe('Scales').addBatch({
       assert.deepEqual(note.scale('chromatic').simple(),
           ["ab", "bbb", "bb", "cb", "c", "db",
            "d", "eb", "fb", "f", "gb", "g"]);
+    },
+
+    'Whole Tone': function(note) {
+      assert.deepEqual(teoria.note('c').scale('wholetone').simple(),
+        ["c", "d", "e", "f#", "g#", "a#"]);
     }
   }
 }).export(module);
