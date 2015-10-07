@@ -375,6 +375,7 @@ absolute intervals that defines the scale. The scales supported by default are:
  - flamenco
  - harmonicminor
  - melodicminor
+ - wholetone
 
 ### teoria.scale(tonic, scale)
  - Sugar function for constructing a new `Scale` object
