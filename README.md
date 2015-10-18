@@ -380,14 +380,14 @@ absolute intervals that defines the scale. The scales supported by default are:
 ### teoria.scale(tonic, scale)
  - Sugar function for constructing a new `Scale` object
 
-#### Scale.notes()
- - Returns an array of `Note`s which is the scale's notes
-
 #### Scale.name
  - The name of the scale (if available). Type `string` or `undefined`
 
 #### Scale.tonic
  - The `Note` which is the scale's tonic
+
+#### Scale#notes()
+ - Returns an array of `Note`s which is the scale's notes
 
 #### Scale#simple()
  - Returns an `Array` of only the notes' names, not the full `Note` objects.
