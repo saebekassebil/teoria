@@ -3,6 +3,8 @@ var Interval = require('./lib/interval');
 var Chord = require('./lib/chord');
 var Scale = require('./lib/scale');
 
+var teoria;
+
 // never thought I would write this, but: Legacy support
 function intervalConstructor(from, to) {
   // Construct a Interval object from string representation
@@ -58,7 +60,7 @@ function scaleConstructor(tonic, scale) {
   return new Scale(tonic, scale);
 }
 
-var teoria = {
+teoria = {
   note: noteConstructor,
 
   chord: chordConstructor,
@@ -72,6 +74,7 @@ var teoria = {
   Scale: Scale,
   Interval: Interval
 };
+
 
 require('./lib/sugar')(teoria);
 exports = module.exports = teoria;
