@@ -68,22 +68,5 @@ vows.describe('Scales').addBatch({
       assert.deepEqual(teoria.note('c').scale('wholetone').simple(),
         ["c", "d", "e", "f#", "g#", "a#"]);
     }
-  },
-  'Bb major pentatonic': {
-    topic: function(){
-      return teoria.note('Bb3').scale('majorpentatonic');
-    },
-    
-    'Gets notes w/in octave': function(topic){
-      assert.deepEqual(topic.get(3), teoria.note('D4'));
-    },
-
-    'Gets notes above octave': function(topic){
-      assert.deepEqual(topic.get(12), teoria.note('C6'));
-    },
-
-    'Gets notes below octave': function(topic){
-      assert.deepEqual(topic.get(-12), teoria.note('D1'));
-    }
   }
 }).export(module);
