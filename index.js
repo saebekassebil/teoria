@@ -39,6 +39,7 @@ noteConstructor.fromString = Note.fromString;
 noteConstructor.fromKey = Note.fromKey;
 noteConstructor.fromFrequency = Note.fromFrequency;
 noteConstructor.fromMIDI = Note.fromMIDI;
+noteConstructor.random = Note.random;
 
 function chordConstructor(name, symbol) {
   if (typeof name === 'string') {

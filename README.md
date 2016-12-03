@@ -251,7 +251,7 @@ Examples: `teoria.note('A', 8).durationName() -> 'eighth'`,
 
  - Returns a random note within an octave.
 
-*min* - If supplied, this 'Note' will be used instead of 'C4' as the octave's lower bound.
+*min* - If supplied, this note will be used instead of 'C4' as the octave's lower bound. Can be a 'Note' object, a string in scientific or Helmholtz notation, or a piano key number.
 
 *dontShow* - If set to `true` the octave will not be included in the returned string.
 
