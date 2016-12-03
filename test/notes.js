@@ -168,33 +168,6 @@ vows.describe('TeoriaNote class').addBatch({
     }
   },
 
-  'Instantiate random note': {
-    'Note is within octave above parameter': function(){
-      var rand = teoria.note.random(30).key();
-      assert((rand >= 30) && (rand < 42));
-    },
-
-    'Accepts string parameters in scientific notation': function(){
-      var rand = teoria.note.random('a3').key();
-      assert((rand >= 37) && (rand < 49));
-    },
-
-    'Accepts string parameters in Helmholtz notation': function(){
-      var rand = teoria.note.random("d#''").key();
-      assert((rand >= 55) && (rand < 67));
-    },
-
-    'Accepts Notes as parameters': function(){
-      var rand = teoria.note.random(teoria.note('b5')).key();
-      assert((rand >= 63) && (rand < 75));
-    },
-
-    'Uses middle C as default parameter': function(){
-      var rand = teoria.note.random().key();
-      assert((rand >= 40) && (rand < 52));
-    }
-  },
-
   'Return MIDI note number': {
     'MIDI#36 is C2': function() {
       assert.equal(teoria.note('C2').midi(), 36);
