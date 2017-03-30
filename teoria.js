@@ -1354,7 +1354,7 @@ var accval = require('accidental-value');
 module.exports = function scientific(name) {
   var format = /^([a-h])(x|#|bb|b?)(-?\d*)/i;
 
-  parser = name.match(format);
+  var parser = name.match(format);
   if (!(parser && name === parser[0] && parser[3].length)) return;
 
   var noteName = parser[1];
