@@ -1,8 +1,10 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.teoria=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.teoria = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Note = require('./lib/note');
 var Interval = require('./lib/interval');
 var Chord = require('./lib/chord');
 var Scale = require('./lib/scale');
+
+var teoria;
 
 // never thought I would write this, but: Legacy support
 function intervalConstructor(from, to) {
@@ -59,7 +61,7 @@ function scaleConstructor(tonic, scale) {
   return new Scale(tonic, scale);
 }
 
-var teoria = {
+teoria = {
   note: noteConstructor,
 
   chord: chordConstructor,
@@ -73,6 +75,7 @@ var teoria = {
   Scale: Scale,
   Interval: Interval
 };
+
 
 require('./lib/sugar')(teoria);
 exports = module.exports = teoria;
@@ -100,7 +103,7 @@ function Chord(root, name) {
     bass = null;
   }
 
-  this.intervals = daccord(name).map(Interval.toCoord)
+  this.intervals = daccord(name).map(Interval.toCoord);
   this._voicing = this.intervals.slice();
 
   if (bass) {
@@ -304,7 +307,7 @@ Chord.prototype = {
 
 module.exports = Chord;
 
-},{"./interval":3,"./knowledge":4,"./note":5,"daccord":9}],3:[function(require,module,exports){
+},{"./interval":3,"./knowledge":4,"./note":5,"daccord":10}],3:[function(require,module,exports){
 var knowledge = require('./knowledge');
 var vector = require('./vector');
 var toCoord = require('interval-coords');
@@ -328,12 +331,12 @@ Interval.prototype = {
   },
 
   value: function() {
-    var without = vector.sub(this.coord,
-      vector.mul(knowledge.sharp, Math.floor((this.coord[1] - 2) / 7) + 1))
-      , i, val;
-
-    i = knowledge.intervalFromFifth[without[1] + 5];
-    val = knowledge.stepNumber[i] + (without[0] - knowledge.intervals[i][0]) * 7;
+    var toMultiply = Math.floor((this.coord[1] - 2) / 7) + 1;
+    var product = vector.mul(knowledge.sharp, toMultiply);
+    var without = vector.sub(this.coord, product);
+    var i = knowledge.intervalFromFifth[without[1] + 5];
+    var diff = without[0] - knowledge.intervals[i][0];
+    var val = knowledge.stepNumber[i] + diff * 7;
 
     return (val > 0) ? val : val - 2;
   },
@@ -343,11 +346,12 @@ Interval.prototype = {
   },
 
   base: function() {
-    var fifth = vector.sub(this.coord, vector.mul(knowledge.sharp, this.qualityValue()))[1], name;
+    var product = vector.mul(knowledge.sharp, this.qualityValue());
+    var fifth = vector.sub(this.coord, product)[1];
     fifth = this.value() > 0 ? fifth + 5 : -(fifth - 5) % 7;
     fifth = fifth < 0 ? knowledge.intervalFromFifth.length + fifth : fifth;
 
-    name = knowledge.intervalFromFifth[fifth];
+    var name = knowledge.intervalFromFifth[fifth];
     if (name === 'unison' && this.number() >= 8)
       name = 'octave';
 
@@ -369,7 +373,8 @@ Interval.prototype = {
   simple: function(ignore) {
     // Get the (upwards) base interval (with quality)
     var simple = knowledge.intervals[this.base()];
-    simple = vector.add(simple, vector.mul(knowledge.sharp, this.qualityValue()));
+    var toAdd = vector.mul(knowledge.sharp, this.qualityValue());
+    simple = vector.add(simple, toAdd);
 
     // Turn it around if necessary
     if (!ignore)
@@ -383,13 +388,15 @@ Interval.prototype = {
   },
 
   octaves: function() {
-    var without, octaves;
+    var toSubtract, without, octaves;
 
     if (this.direction() === 'up') {
-      without = vector.sub(this.coord, vector.mul(knowledge.sharp, this.qualityValue()));
+      toSubtract = vector.mul(knowledge.sharp, this.qualityValue());
+      without = vector.sub(this.coord, toSubtract);
       octaves = without[0] - knowledge.intervals[this.base()][0];
     } else {
-      without = vector.sub(this.coord, vector.mul(knowledge.sharp, -this.qualityValue()));
+      toSubtract = vector.mul(knowledge.sharp, -this.qualityValue());
+      without = vector.sub(this.coord, toSubtract);
       octaves = -(without[0] + knowledge.intervals[this.base()][0]);
     }
 
@@ -400,7 +407,8 @@ Interval.prototype = {
     var i = this.base();
     var qual = this.qualityValue();
     var acc = this.type() === 'minor' ? -(qual - 1) : -qual;
-    var coord = knowledge.intervals[knowledge.intervalsIndex[9 - knowledge.stepNumber[i] - 1]];
+    var idx = 9 - knowledge.stepNumber[i] - 1;
+    var coord = knowledge.intervals[knowledge.intervalsIndex[idx]];
     coord = vector.add(coord, vector.mul(knowledge.sharp, acc));
 
     return new Interval(coord);
@@ -448,7 +456,7 @@ Interval.prototype = {
 
     return this.quality() + number;
   }
-}
+};
 
 Interval.toCoord = function(simple) {
   var coord = toCoord(simple);
@@ -456,23 +464,23 @@ Interval.toCoord = function(simple) {
     throw new Error('Invalid simple format interval');
 
   return new Interval(coord);
-}
+};
 
 Interval.from = function(from, to) {
   return from.interval(to);
-}
+};
 
 Interval.between = function(from, to) {
   return new Interval(vector.sub(to.coord, from.coord));
-}
+};
 
 Interval.invert = function(sInterval) {
   return Interval.toCoord(sInterval).invert().toString();
-}
+};
 
 module.exports = Interval;
 
-},{"./knowledge":4,"./vector":8,"interval-coords":13}],4:[function(require,module,exports){
+},{"./knowledge":4,"./vector":8,"interval-coords":12}],4:[function(require,module,exports){
 // Note coordinates [octave, fifth] relative to C
 module.exports = {
   notes: {
@@ -505,7 +513,7 @@ module.exports = {
                       'eleventh', 'twelfth', 'thirteenth', 'fourteenth',
                       'fifteenth'],
 
-// linaer index to fifth = (2 * index + 1) % 7
+// linear index to fifth = (2 * index + 1) % 7
   fifths: ['f', 'c', 'g', 'd', 'a', 'e', 'b'],
   accidentals: ['bb', 'b', '', '#', 'x'],
 
@@ -634,7 +642,7 @@ module.exports = {
     'A8': 'di',
     'AA8': 'dai'
   }
-}
+};
 
 },{}],5:[function(require,module,exports){
 var scientific = require('scientific-notation');
@@ -668,7 +676,9 @@ Note.prototype = {
   },
 
   name: function() {
-    return knowledge.fifths[this.coord[1] + knowledge.A4[1] - this.accidentalValue() * 7 + 1];
+    var value = this.accidentalValue();
+    var idx = this.coord[1] + knowledge.A4[1] - value * 7 + 1;
+    return knowledge.fifths[idx];
   },
 
   accidentalValue: function() {
@@ -701,7 +711,7 @@ Note.prototype = {
    * Optional concert pitch (def. 440)
    */
   fq: function(concertPitch) {
-    return pitchFq(this.coord, concertPitch)
+    return pitchFq(this.coord, concertPitch);
   },
 
   /**
@@ -760,7 +770,8 @@ Note.prototype = {
       var diff = key - (note.key() - acc);
 
       if (diff < limit && diff > -limit) {
-        note.coord = vector.add(note.coord, vector.mul(knowledge.sharp, diff - acc));
+        var product = vector.mul(knowledge.sharp, diff - acc);
+        note.coord = vector.add(note.coord, product);
         return true;
       }
     });
@@ -829,17 +840,19 @@ Note.fromString = function(name, dur) {
   var coord = scientific(name);
   if (!coord) coord = helmholtz(name);
   return new Note(coord, dur);
-}
+};
 
 Note.fromKey = function(key) {
   var octave = Math.floor((key - 4) / 12);
   var distance = key - (octave * 12) - 4;
   var name = knowledge.fifths[(2 * Math.round(distance / 2) + 1) % 7];
-  var note = vector.add(vector.sub(knowledge.notes[name], knowledge.A4), [octave + 1, 0]);
+  var subDiff = vector.sub(knowledge.notes[name], knowledge.A4);
+  var note = vector.add(subDiff, [octave + 1, 0]);
   var diff = (key - 49) - vector.sum(vector.mul(note, [12, 7]));
 
-  return new Note(diff ? vector.add(note, vector.mul(knowledge.sharp, diff)) : note);
-}
+  var arg = diff ? vector.add(note, vector.mul(knowledge.sharp, diff)) : note;
+  return new Note(arg);
+};
 
 Note.fromFrequency = function(fq, concertPitch) {
   var key, cents, originalFq;
@@ -851,22 +864,23 @@ Note.fromFrequency = function(fq, concertPitch) {
   cents = 1200 * (Math.log(fq / originalFq) / Math.log(2));
 
   return { note: Note.fromKey(key), cents: cents };
-}
+};
 
 Note.fromMIDI = function(note) {
   return Note.fromKey(note - 20);
-}
+};
 
 module.exports = Note;
 
-},{"./interval":3,"./knowledge":4,"./vector":8,"helmholtz":10,"pitch-fq":14,"scientific-notation":15}],6:[function(require,module,exports){
+},{"./interval":3,"./knowledge":4,"./vector":8,"helmholtz":11,"pitch-fq":14,"scientific-notation":15}],6:[function(require,module,exports){
 var knowledge = require('./knowledge');
 var Interval = require('./interval');
 
 var scales = {
   aeolian: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
   blues: ['P1', 'm3', 'P4', 'd5', 'P5', 'm7'],
-  chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4', 'A4', 'P5', 'm6', 'M6', 'm7', 'M7'],
+  chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4',
+    'A4', 'P5', 'm6', 'M6', 'm7', 'M7'],
   dorian: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
   doubleharmonic: ['P1', 'm2', 'M3', 'P4', 'P5', 'm6', 'M7'],
   harmonicminor: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'M7'],
@@ -939,7 +953,8 @@ Scale.prototype = {
   },
 
   get: function(i) {
-    i = (typeof i === 'string' && i in knowledge.stepNumber) ? knowledge.stepNumber[i] : i;
+    var isStepStr = typeof i === 'string' && i in knowledge.stepNumber;
+    i = isStepStr ? knowledge.stepNumber[i] : i;
 
     return this.tonic.interval(this.scale[i - 1]);
   },
@@ -980,15 +995,16 @@ module.exports = function(teoria) {
   var Scale = teoria.Scale;
 
   Note.prototype.chord = function(chord) {
-    chord = (chord in knowledge.chordShort) ? knowledge.chordShort[chord] : chord;
+    var isShortChord = chord in knowledge.chordShort;
+    chord = isShortChord ? knowledge.chordShort[chord] : chord;
 
     return new Chord(this, chord);
-  }
+  };
 
   Note.prototype.scale = function(scale) {
     return new Scale(this, scale);
-  }
-}
+  };
+};
 
 },{"./knowledge":4}],8:[function(require,module,exports){
 module.exports = {
@@ -1010,9 +1026,27 @@ module.exports = {
   sum: function(coord) {
     return coord[0] + coord[1];
   }
-}
+};
 
 },{}],9:[function(require,module,exports){
+var accidentalValues = {
+  'bb': -2,
+  'b': -1,
+  '': 0,
+  '#': 1,
+  'x': 2
+};
+
+module.exports = function accidentalNumber(acc) {
+  return accidentalValues[acc];
+}
+
+module.exports.interval = function accidentalInterval(acc) {
+  var val = accidentalValues[acc];
+  return [-4 * val, 7 * val];
+}
+
+},{}],10:[function(require,module,exports){
 var SYMBOLS = {
   'm': ['m3', 'P5'],
   'mi': ['m3', 'P5'],
@@ -1202,7 +1236,7 @@ module.exports = function(symbol) {
   return notes.slice(0, chordLength + 1).concat(additionals);
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var coords = require('notecoord');
 var accval = require('accidental-value');
 
@@ -1245,46 +1279,7 @@ module.exports = function helmholtz(name) {
   return coord;
 };
 
-},{"accidental-value":11,"notecoord":12}],11:[function(require,module,exports){
-var accidentalValues = {
-  'bb': -2,
-  'b': -1,
-  '': 0,
-  '#': 1,
-  'x': 2
-};
-
-module.exports = function accidentalNumber(acc) {
-  return accidentalValues[acc];
-}
-
-module.exports.interval = function accidentalInterval(acc) {
-  var val = accidentalValues[acc];
-  return [-4 * val, 7 * val];
-}
-
-},{}],12:[function(require,module,exports){
-// First coord is octaves, second is fifths. Distances are relative to c
-var notes = {
-  c: [0, 0],
-  d: [-1, 2],
-  e: [-2, 4],
-  f: [1, -1],
-  g: [0, 1],
-  a: [-1, 3],
-  b: [-2, 5],
-  h: [-2, 5]
-};
-
-module.exports = function(name) {
-  return name in notes ? [notes[name][0], notes[name][1]] : null;
-};
-
-module.exports.notes = notes;
-module.exports.A4 = [3, 3]; // Relative to C0 (scientic notation, ~16.35Hz)
-module.exports.sharp = [-4, 7];
-
-},{}],13:[function(require,module,exports){
+},{"accidental-value":9,"notecoord":13}],12:[function(require,module,exports){
 var pattern = /^(AA|A|P|M|m|d|dd)(-?\d+)$/;
 
 // The interval it takes to raise a note a semitone
@@ -1334,6 +1329,27 @@ module.exports = function(simple) {
 // Copy to avoid overwriting internal base intervals
 module.exports.coords = baseIntervals.slice(0);
 
+},{}],13:[function(require,module,exports){
+// First coord is octaves, second is fifths. Distances are relative to c
+var notes = {
+  c: [0, 0],
+  d: [-1, 2],
+  e: [-2, 4],
+  f: [1, -1],
+  g: [0, 1],
+  a: [-1, 3],
+  b: [-2, 5],
+  h: [-2, 5]
+};
+
+module.exports = function(name) {
+  return name in notes ? [notes[name][0], notes[name][1]] : null;
+};
+
+module.exports.notes = notes;
+module.exports.A4 = [3, 3]; // Relative to C0 (scientic notation, ~16.35Hz)
+module.exports.sharp = [-4, 7];
+
 },{}],14:[function(require,module,exports){
 module.exports = function(coord, stdPitch) {
   if (typeof coord === 'number') {
@@ -1354,7 +1370,7 @@ var accval = require('accidental-value');
 module.exports = function scientific(name) {
   var format = /^([a-h])(x|#|bb|b?)(-?\d*)/i;
 
-  parser = name.match(format);
+  var parser = name.match(format);
   if (!(parser && name === parser[0] && parser[3].length)) return;
 
   var noteName = parser[1];
@@ -1371,9 +1387,5 @@ module.exports = function scientific(name) {
   return coord;
 };
 
-},{"accidental-value":16,"notecoord":17}],16:[function(require,module,exports){
-arguments[4][11][0].apply(exports,arguments)
-},{"dup":11}],17:[function(require,module,exports){
-arguments[4][12][0].apply(exports,arguments)
-},{"dup":12}]},{},[1])(1)
+},{"accidental-value":9,"notecoord":13}]},{},[1])(1)
 });
