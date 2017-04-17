@@ -249,6 +249,12 @@ Examples: `teoria.note('A', 8).durationName() -> 'eighth'`,
 
 *dontShow* - If set to `true` the octave will not be included in the returned string.
 
+#### Note#random([min])
+
+ - Returns a random note within an octave.
+
+*min* - If supplied, this note will be used instead of 'C4' as the octave's lower bound. Can be a 'Note' object, a string in scientific or Helmholtz notation, or a piano key number.
+
 ## Chord(root, chord)
  - A chord class with a lot of functionality to alter and analyze the chord.
 
