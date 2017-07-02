@@ -727,7 +727,7 @@ Note.prototype = {
     if (typeof interval === 'string') interval = Interval.toCoord(interval);
 
     if (interval instanceof Interval)
-      return new Note(vector.add(this.coord, interval.coord));
+      return new Note(vector.add(this.coord, interval.coord), this.duration);
     else if (interval instanceof Note)
       return new Interval(vector.sub(interval.coord, this.coord));
   },
