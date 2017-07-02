@@ -955,8 +955,21 @@ Scale.prototype = {
   get: function(i) {
     var isStepStr = typeof i === 'string' && i in knowledge.stepNumber;
     i = isStepStr ? knowledge.stepNumber[i] : i;
+    var len = this.scale.length;
+    var interval, octaves;
 
-    return this.tonic.interval(this.scale[i - 1]);
+    if (i < 0) {
+      interval = this.scale[i % len + len - 1];
+      octaves = Math.floor((i - 1) / len);
+    } else if (i % len === 0) {
+      interval = this.scale[len - 1];
+      octaves = (i / len) - 1;
+    } else {
+      interval = this.scale[i % len - 1];
+      octaves = Math.floor(i / len);
+    }
+
+    return this.tonic.interval(interval).interval(new Interval([octaves, 0]));
   },
 
   solfege: function(index, showOctaves) {
