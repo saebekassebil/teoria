@@ -239,7 +239,7 @@ Chord.prototype = {
     if (length === 2) {
       return 'dyad';
     } else if (length === 3) {
-      has = {first: false, third: false, fifth: false};
+      has = {unison: false, third: false, fifth: false};
       for (i = 0; i < length; i++) {
         interval = this.intervals[i];
         invert = interval.invert();
@@ -250,9 +250,9 @@ Chord.prototype = {
         }
       }
 
-      name = (has.first && has.third && has.fifth) ? 'triad' : 'trichord';
+      name = (has.unison && has.third && has.fifth) ? 'triad' : 'trichord';
     } else if (length === 4) {
-      has = {first: false, third: false, fifth: false, seventh: false};
+      has = {unison: false, third: false, fifth: false, seventh: false};
       for (i = 0; i < length; i++) {
         interval = this.intervals[i];
         invert = interval.invert();
@@ -263,7 +263,7 @@ Chord.prototype = {
         }
       }
 
-      if (has.first && has.third && has.fifth && has.seventh) {
+      if (has.unison && has.third && has.fifth && has.seventh) {
         name = 'tetrad';
       }
     }
