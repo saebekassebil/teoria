@@ -446,6 +446,14 @@ Interval.prototype = {
     return !this.equal(interval) && !this.greater(interval);
   },
 
+  fromSemitones: function(index) {
+    var coord = knowledge.intervalsSemitones[index];
+    if (!coord)
+      throw new Error('Invalid index');
+
+    return new Interval(coord);
+  },
+
   add: function(interval) {
     return new Interval(vector.add(this.coord, interval.coord));
   },
@@ -503,6 +511,22 @@ module.exports = {
     sixth: [3, -4],
     seventh: [2, -2],
     octave: [1, 0]
+  },
+
+  intervalsSemitones: {
+    0:  [0, 0],
+    1:  [3, -5],
+    2:  [-1, 2],
+    3:  [2, -3],
+    4:  [-2, 4],
+    5:  [1, -1],
+    6:  [-3, 6],
+    7:  [0, 1],
+    8:  [3, -4],
+    9:  [-1, 3],
+    10: [2, -2],
+    11: [-2, 5],
+    12: [1, 0]
   },
 
   intervalFromFifth: ['second', 'sixth', 'third', 'seventh', 'fourth',
@@ -735,6 +759,11 @@ Note.prototype = {
   transpose: function(interval) {
     this.coord = vector.add(this.coord, interval.coord);
     return this;
+  },
+
+  transposeNew: function(interval) {
+    var coord = vector.add(this.coord, interval.coord);
+    return new Note(coord);
   },
 
   /**
