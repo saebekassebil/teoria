@@ -296,5 +296,12 @@ vows.describe('TeoriaNote class').addBatch({
       assert.deepEqual(teoria.note('cb4').enharmonics(true),
         ['b3'].map(teoria.note));
     }
+  },
+
+  'copy duration on interval': {
+    'stay whole note on call interval': function() {
+      var note = teoria.note('a#', { duration: 1 });
+      assert.equal(note.duration.value, note.interval('P5').duration.value);
+    }
   }
 }).export(module);

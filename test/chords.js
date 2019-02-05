@@ -288,5 +288,25 @@ vows.describe('Chords').addBatch({
     '#quality() of Fm#5': function() {
       assert.equal(teoria.chord('Fm#5').quality(), 'minor');
     },
+
+    '#chordType() of C': function() {
+      assert.equal(teoria.chord('C').chordType(), 'triad');
+    },
+
+    '#chordType() of Dm': function() {
+      assert.equal(teoria.chord('Dm').chordType(), 'triad');
+    },
+
+    '#chordType() of A7': function() {
+      assert.equal(teoria.chord('A7').chordType(), 'tetrad');
+    },
+
+    '#chordType() of Bsus4': function() {
+      assert.equal(teoria.chord('Bsus4').chordType(), 'trichord');
+    },
+
+    '#chordType() of E5': function() {
+      assert.equal(teoria.chord('E5').chordType(), 'dyad');
+    },
   }
 }).export(module);
