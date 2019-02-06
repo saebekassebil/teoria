@@ -78,5 +78,57 @@ vows.describe('Scales').addBatch({
       assert.deepEqual(teoria.note('c4').scale('ionian').mode(3).simple(), 
         ['e', 'f', 'g', 'a', 'b', 'c', 'd']);
     }
+  },
+
+  'Is the #get() method octave-relative (pentatonic)?': {
+    topic: function(){
+      return teoria.note('Bb3').scale('majorpentatonic');
+    },
+    
+    'Gets notes w/in octave': function(topic){
+      assert.deepEqual(topic.get(3), teoria.note('D4'));
+    },
+
+    'Gets notes above octave': function(topic){
+      assert.deepEqual(topic.get(12), teoria.note('C6'));
+    },
+
+    'Gets notes below octave': function(topic){
+      assert.deepEqual(topic.get(-12), teoria.note('D1'));
+    },
+  },
+
+  'Is the #get() method octave-relative (diatonic)': {
+    topic: function() {
+      return teoria.note('A4').scale('major');
+    },
+
+    '0 is one note down': function(topic) {
+      assert.deepEqual(topic.get(0), teoria.note('G#4'));
+    },
+
+    '7 is one seventh up': function(topic) {
+      assert.deepEqual(topic.get(7), teoria.note('G#5'));
+    },
+
+    '8 is one octave up': function(topic) {
+      assert.deepEqual(topic.get(8), teoria.note('A5'));
+    },
+
+    '9 is one ninth up': function(topic) {
+      assert.deepEqual(topic.get(9), teoria.note('B5'));
+    },
+
+    '-5 is one seventh down': function(topic) {
+      assert.deepEqual(topic.get(-5), teoria.note('B3'));
+    },
+
+    '-6 is one octave down': function(topic) {
+      assert.deepEqual(topic.get(-6), teoria.note('A3'));
+    },
+
+    '-13 is two octaves down': function(topic) {
+      assert.deepEqual(topic.get(-13), teoria.note('A2'));
+    }
   }
 }).export(module);
