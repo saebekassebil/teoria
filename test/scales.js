@@ -67,6 +67,16 @@ vows.describe('Scales').addBatch({
     'Whole Tone': function(note) {
       assert.deepEqual(teoria.note('c').scale('wholetone').simple(),
         ["c", "d", "e", "f#", "g#", "a#"]);
+    },
+
+    'Get First Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(1).simple(), 
+        ['c', 'd', 'e', 'f', 'g', 'a', 'b']);
+    },
+
+    'Get Third Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(3).simple(), 
+        ['e', 'f', 'g', 'a', 'b', 'c', 'd']);
     }
   }
 }).export(module);
