@@ -77,6 +77,21 @@ vows.describe('Scales').addBatch({
     'Get Third Mode' : function(note) {
       assert.deepEqual(teoria.note('c4').scale('ionian').mode(3).simple(), 
         ['e', 'f', 'g', 'a', 'b', 'c', 'd']);
+    },
+
+    'Get Negative Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(-1).simple(), 
+        ['b', 'c', 'd', 'e', 'f', 'g', 'a',]);
+    },
+
+    'Get Negative Tonic via Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(-8).simple(), 
+        ['c', 'd', 'e', 'f', 'g', 'a', 'b']);
+    },
+
+    'Get Really Negative Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(-9).simple(), 
+        ['b', 'c', 'd', 'e', 'f', 'g', 'a',]);
     }
   },
 
