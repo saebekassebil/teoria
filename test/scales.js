@@ -67,7 +67,52 @@ vows.describe('Scales').addBatch({
     'Whole Tone': function(note) {
       assert.deepEqual(teoria.note('c').scale('wholetone').simple(),
         ["c", "d", "e", "f#", "g#", "a#"]);
-    }
+    },
+
+    'Get Ionian First Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(1).simple(), 
+        ['c', 'd', 'e', 'f', 'g', 'a', 'b']);
+    },
+
+    'Get Ionian Third Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(3).simple(), 
+        ['e', 'f', 'g', 'a', 'b', 'c', 'd']);
+    },
+
+    'Get Ionian "Eleventh" Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(11).simple(), 
+        ['e', 'f', 'g', 'a', 'b', 'c', 'd']);
+    },
+
+    'Get Mixolydian Third Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('mixolydian').mode(1).simple(), 
+        ['c', 'd', 'e', 'f', 'g', 'a', 'bb']);
+    },
+
+    'Get Ionian Negative Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(-1).simple(), 
+        ['b', 'c', 'd', 'e', 'f', 'g', 'a']);
+    },
+
+    'Get Mixolydian Negative Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('mixolydian').mode(-1).simple(), 
+        ['bb', 'c', 'd', 'e', 'f', 'g', 'a']);
+    },
+
+    'Get Ionian Negative Tonic via Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(-8).simple(), 
+        ['c', 'd', 'e', 'f', 'g', 'a', 'b']);
+    },
+
+    'Get Ionian "Really" Negative Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('ionian').mode(-9).simple(), 
+        ['b', 'c', 'd', 'e', 'f', 'g', 'a',]);
+    },
+
+    'Get Mixolydian "Really" Negative Mode' : function(note) {
+      assert.deepEqual(teoria.note('c4').scale('mixolydian').mode(-9).simple(), 
+        ['bb', 'c', 'd', 'e', 'f', 'g', 'a']);
+    },
   },
 
   'Is the #get() method octave-relative (pentatonic)?': {

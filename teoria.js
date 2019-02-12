@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.teoria = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.teoria = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var Note = require('./lib/note');
 var Interval = require('./lib/interval');
 var Chord = require('./lib/chord');
@@ -505,6 +505,16 @@ module.exports = {
     octave: [1, 0]
   },
 
+  modes: {
+    ionian: 'ionian',
+    dorian: 'dorian',
+    phrygian: 'phrygian',
+    lydian: 'lydian',
+    mixolydian: 'mixolydian',
+    aeolian: 'aeolian',
+    locrian: 'locrian'
+  },
+
   intervalFromFifth: ['second', 'sixth', 'third', 'seventh', 'fourth',
                          'unison', 'fifth'],
 
@@ -875,24 +885,35 @@ module.exports = Note;
 },{"./interval":3,"./knowledge":4,"./vector":8,"helmholtz":11,"pitch-fq":14,"scientific-notation":15}],6:[function(require,module,exports){
 var knowledge = require('./knowledge');
 var Interval = require('./interval');
+var Note = require('./note');
 
 var scales = {
-  aeolian: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+  [knowledge.modes.aeolian]: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'm7'],
   blues: ['P1', 'm3', 'P4', 'd5', 'P5', 'm7'],
   chromatic: ['P1', 'm2', 'M2', 'm3', 'M3', 'P4',
     'A4', 'P5', 'm6', 'M6', 'm7', 'M7'],
-  dorian: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
+  [knowledge.modes.dorian]: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'm7'],
   doubleharmonic: ['P1', 'm2', 'M3', 'P4', 'P5', 'm6', 'M7'],
   harmonicminor: ['P1', 'M2', 'm3', 'P4', 'P5', 'm6', 'M7'],
-  ionian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
-  locrian: ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
-  lydian: ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
+  [knowledge.modes.ionian]: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7'],
+  [knowledge.modes.locrian]: ['P1', 'm2', 'm3', 'P4', 'd5', 'm6', 'm7'],
+  [knowledge.modes.lydian]: ['P1', 'M2', 'M3', 'A4', 'P5', 'M6', 'M7'],
   majorpentatonic: ['P1', 'M2', 'M3', 'P5', 'M6'],
   melodicminor: ['P1', 'M2', 'm3', 'P4', 'P5', 'M6', 'M7'],
   minorpentatonic: ['P1', 'm3', 'P4', 'P5', 'm7'],
-  mixolydian: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
-  phrygian: ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
+  [knowledge.modes.mixolydian]: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'm7'],
+  [knowledge.modes.phrygian]: ['P1', 'm2', 'm3', 'P4', 'P5', 'm6', 'm7'],
   wholetone: ['P1', 'M2', 'M3', 'A4', 'A5', 'A6']
+};
+ 
+var orderedModes = {
+  1: knowledge.modes.ionian,
+  2: knowledge.modes.dorian,
+  3: knowledge.modes.phrygian,
+  4: knowledge.modes.lydian,
+  5: knowledge.modes.mixolydian,
+  6: knowledge.modes.aeolian,
+  7: knowledge.modes.locrian
 };
 
 // synonyms
@@ -927,6 +948,13 @@ function Scale(tonic, scale) {
   this.name = scaleName;
   this.tonic = tonic;
   this.scale = scale;
+
+  var modeDegree = Object.keys(orderedModes).filter(function(m) {
+    return orderedModes[m] === this.name;
+  }.bind(this));
+ 
+  this.modeDegree = modeDegree && modeDegree.length ? parseInt(modeDegree[0]) : '';
+  this.modeName = this.modeDegree ? orderedModes[this.modeDegree] : '';
 }
 
 Scale.prototype = {
@@ -938,6 +966,36 @@ Scale.prototype = {
     }
 
     return notes;
+  },
+
+  // returns a new Scale object for the mode at the degree relative to the current scale
+  mode: function(degree) {
+    if (this.modeDegree) {
+      let degreeArrayIndex = this.modeDegree - 1;
+      
+      if (degree > 0) {
+        degree -= 1;
+        let movedDegree = degreeArrayIndex + degree;
+        let newDegree = movedDegree > 7 ? movedDegree % 7 : movedDegree;
+        return new Note.fromString(this.simple()[newDegree]).scale(orderedModes[newDegree + 1]);
+      }
+
+      // treat a degree < 0 as a subtraction, i.e. ionian -1 = locrian
+      if (degree < 0) {
+        let movedDegree = this.modeDegree + degree;
+
+        let newDegree = 1;
+        if (movedDegree % -8 == 0) {
+          newDegree = movedDegree < -8 ? 8 + movedDegree % -8 : 8 + movedDegree;
+        }
+        
+        console.log(-9 % -8);
+        console.log(newDegree);
+        return new Note.fromString(this.simple()[newDegree - 1]).scale(orderedModes[newDegree]);
+      }
+    }
+ 
+    return 'Scale does not support Modes';
   },
 
   simple: function() {
@@ -999,7 +1057,7 @@ Scale.KNOWN_SCALES = Object.keys(scales);
 
 module.exports = Scale;
 
-},{"./interval":3,"./knowledge":4}],7:[function(require,module,exports){
+},{"./interval":3,"./knowledge":4,"./note":5}],7:[function(require,module,exports){
 var knowledge = require('./knowledge');
 
 module.exports = function(teoria) {
