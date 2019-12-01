@@ -120,5 +120,33 @@ vows.describe('Scales').addBatch({
     '-13 is two octaves down': function(topic) {
       assert.deepEqual(topic.get(-13), teoria.note('A2'));
     }
+  },
+
+  'Chord Degrees': {
+    'D major': function() {
+      var scale = teoria.note('D').scale('major');
+      var expected = ['DM', 'Em', 'F#m', 'GM', 'AM', 'Bm', 'C#dim'];
+      var actual = scale.notes().map((n, i) => scale.getTriadChord(i+1).name);
+      assert.deepEqual(actual, expected);
+    },
+
+    'Bb minor': function() {
+      var scale = teoria.note('Bb').scale('minor');
+      var expected = ['Bbm', 'Cdim', 'DbM', 'Ebm', 'Fm', 'GbM', 'AbM'];
+      var actual = scale.notes().map((n, i) => scale.getTriadChord(i + 1).name);
+      assert.deepEqual(actual, expected);
+    },
+
+    'G mixolydian': function () {
+      var scale = teoria.note('G').scale('mixolydian');
+      var expected = ['GM', 'Am', 'Bdim', 'CM', 'Dm', 'Em', 'FM'];
+      var actual = scale.notes().map((n, i) => scale.getTriadChord(i + 1).name);
+      assert.deepEqual(actual, expected);
+    },
+
+    'only supports diatonic scales': function() {
+      var scale = teoria.note('C').scale('minorpentatonic');
+      assert.throws(() => scale.getTriadChord(1), Error);
+    }
   }
 }).export(module);
